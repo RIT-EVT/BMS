@@ -1,0 +1,3 @@
+[submodule "libs/EVT-core"]
+	path = libs/EVT-core
+	url = ../EVT-core.git
