@@ -18,10 +18,10 @@ if("${BOARD_LIB_NAME}" STREQUAL CHANGE_ME)
             "You must set the template project name in CmakeLists.txt")
 endif()
 
-file(STRINGS version.txt EVT_VERSION)
+file(STRINGS version.txt BOARD_VERSION)
 
 project(${BOARD_LIB_NAME}
-        VERSION ${EVT_VERSION}
+        VERSION ${BOARD_VERSION}
         LANGUAGES CXX C
         )
 

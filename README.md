@@ -41,7 +41,7 @@ hosted on `readthedocs.io`
    2) Navigate to dashboard page
    3) Import the Repository.  Follow instructions on webpage
 5) Update all instances of BOARD_NAME to match your project name
-   1) `CMakeLists.txt:15`
+   1) `CMakeLists.txt:15,21`
    2) Directory `./include/BOARD_NAME`
    3) Directory `./source/BOARD_NAME`
    4) Directory `./targets/BOARD_NAME`; also update `targets/CMakeLists.txt`
