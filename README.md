@@ -37,9 +37,7 @@ hosted on `readthedocs.io`
    1) `git submodule update --init --recusive && git pull`
    2) The above command can be used at any point to update the submodule from remote
 4) Import the project into Read the Docs
-   1) Log in to [readthedocs.io](https://readthedocs.org/)
-   2) Navigate to dashboard page
-   3) Import the Repository.  Follow instructions on webpage
+   1) Consult with current firmware team lead for help setting up hosting.
 5) Update all instances of BOARD_NAME to match your project name
    1) `CMakeLists.txt:15,21`
    2) Directory `./include/BOARD_NAME`
