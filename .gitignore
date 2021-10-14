@@ -1,0 +1,14 @@
+# Build files
+build/
+html/
+latex/
+compile_commands.json
+
+# Virtual environments
+venv/
+
+# IDE Files
+.idea/
+
+# macOS files
+.DS_Store
