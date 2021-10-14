@@ -11,6 +11,7 @@ Welcome to BMS's documentation!
    :caption: Contents:
 
    api/index.rst
+   srs.rst
 
 Docs
 ====
