@@ -15,7 +15,7 @@ include(${EVT_CORE_DIR}/cmake/evt-core_install.cmake)
 ###############################################################################
 # Project Setup
 ###############################################################################
-set(BOARD_LIB_NAME   EXAMPLE)
+set(BOARD_LIB_NAME   BMS)
 if("${BOARD_LIB_NAME}" STREQUAL CHANGE_ME)
     message(FATAL_ERROR
             "You must set the template project name in CmakeLists.txt")
@@ -26,14 +26,13 @@ file(STRINGS version.txt BOARD_VERSION)
 project(${BOARD_LIB_NAME}
         VERSION ${BOARD_VERSION}
         LANGUAGES CXX C
-        )
+)
 
 add_library(${PROJECT_NAME} STATIC)
 
 # Add sources
 target_sources(${PROJECT_NAME} PRIVATE
-        src/BOARD_NAME/dev/LED.cpp
-        )
+)
 
 ###############################################################################
 # Handle dependencies
@@ -43,8 +42,8 @@ target_sources(${PROJECT_NAME} PRIVATE
 add_compile_definitions(STM32F302x8)
 
 target_link_libraries(${PROJECT_NAME}
-        PUBLIC EVT
-        )
+    PUBLIC EVT
+)
 
 ###############################################################################
 # Install and expose library
