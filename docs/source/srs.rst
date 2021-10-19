@@ -85,8 +85,19 @@ safety of the DEV1 project. A critical component is the safety of the
 battery cells within the battery packs. As such, the DEV1 BMS will need
 to preform safety checks and handle the battery cell balancing logic.
 
+The DEV1 BMS will be a board that will be present in each battery pack.
+Each DEV1 BMS will operate independently and will handle the safety of
+the individual pack. This includes both during normal operation when the pack
+is on the motorcycle as well as when the pack is being charged.
+
 Product Functions
 -----------------
+
+System Startup
+~~~~~~~~~~~~~~
+
+System startup refers to when the DEV1 BMS is being powered up and
+
 
 User Classes and Characteristics
 --------------------------------
