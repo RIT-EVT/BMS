@@ -210,6 +210,13 @@ a critical error takes place with the battery pack the system should first
 be manually inspected and probed for the issue. Then after the issue is
 resolved, the system can be power cycled restarting the state machine logic.
 
+Site Adaptation
+~~~~~~~~~~~~~~~
+
+The DEV1 BMS is intended specifically for the DEV1 system. Therefore, the
+software requirements and design will center around the specifics of the DEV1
+system. No addtional adaptations are currently being considered.
+
 Product Functions
 -----------------
 
@@ -407,6 +414,18 @@ Additional documentation will need to exist for how the DEV1 BMS will
 expose the BQ76952. Exposure of the BQ76952 will take place over CANopen
 and proper documentation will need to exist for users to be able to
 configure the BQ76952.
+
+Constraints
+-----------
+
+Below are some constraints worth considering. They are a fixed part of
+the system.
+
+* Development must be in C/C++
+* Communication will take place using CANopen
+* EVT-core will be used for low level microcontroller interfacing
+* Must be developed for the STM32F302r8
+* Battery monitoring will take place through the BQ76952
 
 Assumptions and Dependencies
 ----------------------------
