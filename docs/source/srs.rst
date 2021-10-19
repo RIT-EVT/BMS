@@ -111,8 +111,14 @@ features will need to be included.
 * Reporting of health of battery pack
 * Control of the flow of current
 
-References
-----------
+Overview
+--------
+
+The rest of this software design document will go further into the specifics
+of the requirements while also looking at the constraints of the system. The
+goal is to clarify the use cases of the DEV1 BMS and specifying what the DEV1
+BMS will do in those use cases. Design considerations will not be discussed,
+however notable design contraints will be covered.
 
 Overall Description
 ===================
@@ -137,6 +143,72 @@ The DEV1 BMS itself is made up of two major configurable components. The
 ST micrcontroller which handles programmable logic and exposes the DEV1 BMS
 on the CANopen network. As well as the BQ76952 battery monitor and protector
 IC which handles the battery safety and monitoring logic.
+
+User Interfaces
+~~~~~~~~~~~~~~~
+
+Users will rarely interact directly with the DEV1 BMS software. The DEV1 BMS
+software will mainly be interfaced with via CANopen and thus will require
+additional tools to interact with the DEV1 BMS. An external tool will be
+needed to interact with the DEV1 BMS and will not be in the scope of the
+DEV1 BMS software.
+
+Hardware Interfaces
+~~~~~~~~~~~~~~~~~~~
+
+The DEV1 BMS will be exposed on the CANopen network which is made up of
+a two-wire differential pair. The connector will be standardized and be
+handled by the DEV1 system team. The software on the ST microcontroller
+will be connected directly to the I2C lines of the BQ76952 chip.
+
+Software Interfaces
+~~~~~~~~~~~~~~~~~~~
+
+The main software interface will be the expose of the BQ76952 chip over
+the CAN network. The DEV1 BMS will need a software interface for acting as
+a bridge between the external actor and the BQ76952 chip. The DEV1 BMS will
+need to be flexible to expose all functionality of the BQ76952 so that the
+BQ76952 can be configured.
+
+Communication Interfaces
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+The main communication interface for the DEV1 BMS will be CANopen. CANopen
+is build ontop of the hardware and data layer specifications of CAN. The
+majority of the CAN based network communication that will be used will
+conform to CANopen including how the DEV1 BMS will expose information on
+the DEV1 system network. The BQ76952 chip expose logic may or may not
+conform to CANopen depending on the final implementation.
+
+Communication between the ST microcontroller and the BQ7695 will be handled
+via I2C. The BQ7695 contains the specifications of the I2C interface.
+
+Memory Constraints
+~~~~~~~~~~~~~~~~~~
+
+The produced software is limited to the 64KB of flash memory that is
+available on the STM32F302r8. Therefore the resulting binary must fit within
+this size.
+
+Operations
+~~~~~~~~~~
+
+The DEV1 BMS will operate in four main states during operation. The main
+output from the states is the current flow control. When flow is enabled,
+current is able to flow into and out of the battery, when flow is disabled,
+current cannot flow. The interlock positioned on the battery connector
+is what triggers the initial mode transition on system startup. The diagram
+below follows the logic that will need to be implemented.
+
+.. image:: _static/images/bms_state.png
+   :width: 200
+   :align: center
+
+Note, when an critical error takes place, the system cannot directly
+recover from the error. This is done intentially. The reasoning is that if
+a critical error takes place with the battery pack the system should first
+be manually inspected and probed for the issue. Then after the issue is
+resolved, the system can be power cycled restarting the state machine logic.
 
 Product Functions
 -----------------
@@ -346,46 +418,120 @@ of the groupings of cells in series. Another large safety based assumption is
 that the BQ76952 will be able to stop the flow of charge into and out of
 the battery pack.
 
+Apportioning of Requirements
+----------------------------
+
+Not all requirements are know at this time as the DEV1 system continues to
+develop. These un-restricted requirements will need to be finalized before
+the implementation of the DEV1 BMS software.
+
+* The CAN messages to capture from the DEV1 system
+* Scope of emergency cases to stop flow of current from the battery pack
+* Specific CAN network IDs
+* Format of CANopen messages that the DEV1 BMS will produce for sharing data
+
+Specific Requirements
+=====================
+
 External Interface Requirements
-===============================
+-------------------------------
 
-User Interfaces
----------------
+BQ76952 CAN Control
+~~~~~~~~~~~~~~~~~~~
 
-Users will rarely interact directly with the DEV1 BMS software. The DEV1 BMS
-software will mainly be interfaced with via CANopen and thus will require
-additional tools to interact with the DEV1 BMS. An external tool will be
-needed to interact with the DEV1 BMS and will not be in the scope of the
-DEV1 BMS software.
+The BQ76952 CAN interface is an exposed ability to communicate with the
+BQ76952. The CAN interface will actually expose the I2C interface that the
+STM32F302r8 has with the BQ76952. This will limit software complexity and
+will ensure that all the features of the BQ76952 are correctly exposed. These
+mesages will come across the network realistically at any point from the
+perspective of the DEV1 BMS, but practically these messages will be received
+when the battery pack is not on the motorcycle.
 
-Hardware Interfaces
--------------------
+Read Requst Message Format
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The DEV1 BMS will be exposed on the CANopen network which is made up of
-a two-wire differential pair. The connector will be standardized and be
-handled by the DEV1 system team. The software on the ST microcontroller
-will be connected directly to the I2C lines of the BQ76952 chip.
+Externally, a CAN message can be sent to the STM32F302r8 which will be
+interpretted as a request to interact with the BQ76952. Messages with
+a data length of 1 will be interpretted as a read reqest.
 
-Software Interfaces
--------------------
+CAN ID Extended: 0x800
+Data Length: 1
 
-The main software interface will be the expose of the BQ76952 chip over
-the CAN network. The DEV1 BMS will need a software interface for acting as
-a bridge between the external actor and the BQ76952 chip. The DEV1 BMS will
-need to be flexible to expose all functionality of the BQ76952 so that the
-BQ76952 can be configured.
+====    ===================================================
+Byte    Description
+----    ---------------------------------------------------
+0       Address of the register to read from of the BQ76952
+====    ===================================================
 
-Communication Interfaces
-------------------------
+Read Response Message Format
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-System Features
-===============
+After a read request made, the ST micrcontroller will respond with a
+response message. The response message will contain a single byte that
+was read from the BQ76952.
+
+CAN ID Extended: 0x801
+
+Data Length: 1
+
+====    ==========================
+Byte    Description
+----    --------------------------
+0       Byte read from the BQ76952
+====    ==========================
+
+Write Request Message Format
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A request to write to the BQ76952 can also be made. Instead of a single
+byte, two bytes will be sent.
+
+CAN ID Extended: 0x800
+
+Data Length: 1
+
+====    ======================================
+Byte    Description
+----    --------------------------------------
+0       The address of the BQ76952 to write to
+1       The value to write to that address
+====    ======================================
+
 
 Other Nonfunctional Requirements
 ================================
+
+* Software will fit within 64KB of Flash memory
+* Design and development will be handled by the firmware team
+* Testing will take place for failure cases
+* Software will need to be robust enough to handle power loss
 
 Appendix
 ========
 
 Glossary
 --------
+
+===========   ===========================================
+Term          Definition
+-----------   -------------------------------------------
+APM           Auxilary Power Module
+BMS           Battery Management System
+BQ7695        Battery monitor IC
+CAN           Controller Area Network
+CANopen       Communication protocol built on CAN
+DEV1          Dirt Electric Vehicle 1
+EVT           Electric Vehicle Team
+I2C           Inter-Integrated Circuit
+KB            Kilo-bytes
+STM32F302r8   ST Micocontroller selected for this project
+TMS           Temperature Management System
+===========   ===========================================
+
+References
+----------
+
+* `BQ76952 3-s to 16-s high-accuracy battery monitor and protector for Li-ion, Li-polymer and LiFePO4 <https://www.ti.com/product/BQ76952>`_
+* `CANopen - The standardized embedded network <https://www.can-cia.org/canopen/>`_
+* `EVT-core <https://evt-core.readthedocs.io/en/latest/>`_
+* `STM32f302r8 Mainstream Mixed signals MCUs Arm Cortex-M4 core with DSP and FPU, 64 Kbytes of Flash memory, 72 MHz CPU, 12-bit ADC 5 MSPS, Comparator, Op-Amp <https://www.st.com/en/microcontrollers-microprocessors/stm32f302r8.html>`_
