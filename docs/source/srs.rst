@@ -12,7 +12,7 @@ Purpose
 The purpose of this document is to detail the software requirements and
 constraints for the firmware of the Dirt Electric Vehicle Battery Management
 System (DEV1 BMS). This document will go into detail on the requirements
-necessary for the system as well as detailing the contrains that the system
+necessary for the system as well as detailing the constraints that the system
 will be under. The intention is that this document will provide a means to
 holistically express the needs to the DEV1 BMS system.
 
@@ -21,14 +21,14 @@ Document Conventions
 
 This document was created based on the IEEE template for software requirements
 specifications. As such it will mainly adhere to the verbage and style
-set by IEEE convention. Additonally, a glossary has been provided in the
+set by IEEE convention. Additionally, a glossary has been provided in the
 Appendix which covers common phrases that will be used in this document.
 
 Intended Audience and Reading Suggestions
 -----------------------------------------
 
 The intention is that this document will be accessible across engineering
-disiplines. The DEV1 BMS represents a highly inter-disiplinary project
+disciplines. The DEV1 BMS represents a highly inter-disciplinary project
 on the RIT Electric Vehicle Team and as such this document should be
 accessible to all involved. Below is a break down of the intended audiences
 and how they may use the document. This list is not exhaustive, but intended
@@ -42,13 +42,13 @@ to guide common readers of this document.
 * Firmware Team Members: Developers on the firmware team who are designing,
   developing, and testing the DEV1 BMS firmware. Members of this team will
   need to refer to this document throughout the development process to ensure
-  all target needs are met within the agreed upon contraints.
+  all target needs are met within the agreed upon constraints.
 * Integration Team Members: RIT EVT team members who handle systems level
   integration on the team. These team members may use this document to gain
   and understanding of how the DEV1 BMS will operate. Most critically, how the
   DEV1 BMS will operate within the structure of the DEV1 architecture.
 
-The document is layed out where it is not strictly necessary to read all
+The document is laid out where it is not strictly necessary to read all
 sections in their entirety. Instead each section should be self-contained
 and self-entirety within its scope. As such audience members are encouraged
 to read the sections that most pertain to their needs. Additionally, the
@@ -93,10 +93,10 @@ will be exposed on the CAN network and the DEV1 BMS will also expose means
 of directly requesting data from the BQ76952 battery monitoring IC.
 
 
-* Transmition of thermal state of battery pack
-* Transmition of battery pack voltage
-* Transmition of average cell voltage
-* Transmition of standard deviation of cell voltage
+* Transmission of thermal state of battery pack
+* Transmission of battery pack voltage
+* Transmission of average cell voltage
+* Transmission of standard deviation of cell voltage
 * Exposure of BQ76952 chip
 
 Charging
@@ -118,7 +118,7 @@ The rest of this software design document will go further into the specifics
 of the requirements while also looking at the constraints of the system. The
 goal is to clarify the use cases of the DEV1 BMS and specifying what the DEV1
 BMS will do in those use cases. Design considerations will not be discussed,
-however notable design contraints will be covered.
+however notable design constraints will be covered.
 
 Overall Description
 ===================
@@ -132,7 +132,7 @@ The target event for the DEV1 motorcycle is a 24 hour endurance race. With
 these considerations in mind, the DEV1 BMS is critical to the success and
 safety of the DEV1 project. A critical component is the safety of the
 battery cells within the battery packs. As such, the DEV1 BMS will need
-to preform safety checks and handle the battery cell balancing logic.
+to perform safety checks and handle the battery cell balancing logic.
 
 The DEV1 BMS will be a board that will be present in each battery pack.
 Each DEV1 BMS will operate independently and will handle the safety of
@@ -140,7 +140,7 @@ the individual pack. This includes both during normal operation when the pack
 is on the motorcycle as well as when the pack is being charged.
 
 The DEV1 BMS itself is made up of two major configurable components. The
-ST micrcontroller which handles programmable logic and exposes the DEV1 BMS
+ST microcontroller which handles programmable logic and exposes the DEV1 BMS
 on the CANopen network. As well as the BQ76952 battery monitor and protector
 IC which handles the battery safety and monitoring logic.
 
@@ -174,7 +174,7 @@ Communication Interfaces
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 The main communication interface for the DEV1 BMS will be CANopen. CANopen
-is build ontop of the hardware and data layer specifications of CAN. The
+is build on top of the hardware and data layer specifications of CAN. The
 majority of the CAN based network communication that will be used will
 conform to CANopen including how the DEV1 BMS will expose information on
 the DEV1 system network. The BQ76952 chip expose logic may or may not
@@ -215,7 +215,7 @@ Site Adaptation
 
 The DEV1 BMS is intended specifically for the DEV1 system. Therefore, the
 software requirements and design will center around the specifics of the DEV1
-system. No addtional adaptations are currently being considered.
+system. No additional adaptations are currently being considered.
 
 Product Functions
 -----------------
@@ -226,7 +226,7 @@ Safety
 Control of the Flow of Current
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The DEV1 BMS will need the ability to control the ability flow of
+The DEV1 BMS will need the ability to control the flow of
 current into and out of the battery pack. This will be a shutoff that will
 stop the flow of charge that will be used both during normal operation and
 during safety critical events. As such, the DEV1 BMS will need a programmable
@@ -234,7 +234,7 @@ means to control that flow so that the system can respond to a range of
 stimuli. Below are listed out the situations that could cause the DEV1 BMS
 to stop the flow of current.
 
-* Thermal situtation where battery pack as passed a configurable threshold
+* Thermal situation where battery pack as passed a configurable threshold
   temperature
 * Interlock does not detect the presence of a battery connector
 * BQ76952 chip has detected one of many configurable safety critical events
@@ -274,7 +274,7 @@ Detection of Battery Connector
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The DEV1 battery pack is equipped with an interlock which can be used to
-detect the precense of a connector attached to the battery pack. Use of this
+detect the presence of a connector attached to the battery pack. Use of this
 interlock is critical for battery operator safety. The contact points of the
 battery should only be active when a valid connector is present. Otherwise,
 the battery contact points should not be active.
@@ -308,7 +308,7 @@ Transmission of Standard Deviation of Cell Voltage
 
 For safety and battery pack longevity, the cells of the battery pack should be
 maintained to very similar levels. The standard deviation of the cell
-voltages should be calculated by the DEV1 BMS and prsented on the CANopen
+voltages should be calculated by the DEV1 BMS and presented on the CANopen
 network.
 
 Exposure of BQ76952 Chip
@@ -347,8 +347,8 @@ Control of the Flow of Current
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 While the charging is taking place. The DEV1 BMS will have the final decision
-if charge will flow. This decision will be made on sefety decisions as well
-as the precense of the interlock detection signal. At any point during
+if charge will flow. This decision will be made on safety decisions as well
+as the presence of the interlock detection signal. At any point during
 charging, if the DEV1 BMS detects a safety critical situation, the flow of
 current can be disabled.
 
@@ -375,10 +375,10 @@ component, a very high technical knowledge will be needed.
 Operating Environments
 ----------------------
 
-The software will operate on the ST micrcontroller present on the DEV1 BMS.
+The software will operate on the ST microcontroller present on the DEV1 BMS.
 The software environment is embedded with no operating system present. All
 development will take place through the EVT-core library and will interact
-directly with the ST micrcontroller.
+directly with the ST microcontroller.
 
 Design and Implementation Constraints
 -------------------------------------
@@ -387,7 +387,7 @@ The DEV1 BMS software will exist in an embedded environment and as such,
 all design considerations will require the software to be runnable on an
 embedded system.
 
-Additionally, for the low level interactions with the ST micrcontroller,
+Additionally, for the low level interactions with the ST microcontroller,
 the EVT-core software library will be used. Any additional required
 functionality will need to be considered and added into the EVT-core library
 itself.
@@ -397,7 +397,7 @@ CANopen. Design of the communication system will need to revolve around
 CANopen and adhere to CANopen standards.
 
 The hardware has already been determined and the software must be designed to
-support the existing hardware. The micrcontroller will be a STM32F302r8 chip
+support the existing hardware. The microcontroller will be a STM32F302r8 chip
 and the battery monitor chip will be a BQ76952. Software design will revolve
 around the limitations of those chips.
 
@@ -462,18 +462,19 @@ The BQ76952 CAN interface is an exposed ability to communicate with the
 BQ76952. The CAN interface will actually expose the I2C interface that the
 STM32F302r8 has with the BQ76952. This will limit software complexity and
 will ensure that all the features of the BQ76952 are correctly exposed. These
-mesages will come across the network realistically at any point from the
+messages will come across the network realistically at any point from the
 perspective of the DEV1 BMS, but practically these messages will be received
 when the battery pack is not on the motorcycle.
 
-Read Requst Message Format
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+Read Request Message Format
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Externally, a CAN message can be sent to the STM32F302r8 which will be
-interpretted as a request to interact with the BQ76952. Messages with
-a data length of 1 will be interpretted as a read reqest.
+interpreted as a request to interact with the BQ76952. Messages with
+a data length of 1 will be interpreted as a read request.
 
 CAN ID Extended: 0x800
+
 Data Length: 1
 
 ====    ===================================================
@@ -485,7 +486,7 @@ Byte    Description
 Read Response Message Format
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-After a read request made, the ST micrcontroller will respond with a
+After a read request made, the ST microcontroller will respond with a
 response message. The response message will contain a single byte that
 was read from the BQ76952.
 
@@ -507,7 +508,7 @@ byte, two bytes will be sent.
 
 CAN ID Extended: 0x800
 
-Data Length: 1
+Data Length: 2
 
 ====    ======================================
 Byte    Description
@@ -534,7 +535,7 @@ Glossary
 ===========   ===========================================
 Term          Definition
 -----------   -------------------------------------------
-APM           Auxilary Power Module
+APM           Auxiliary Power Module
 BMS           Battery Management System
 BQ7695        Battery monitor IC
 CAN           Controller Area Network
@@ -543,7 +544,7 @@ DEV1          Dirt Electric Vehicle 1
 EVT           Electric Vehicle Team
 I2C           Inter-Integrated Circuit
 KB            Kilo-bytes
-STM32F302r8   ST Micocontroller selected for this project
+STM32F302r8   ST Microcontroller selected for this project
 TMS           Temperature Management System
 ===========   ===========================================
 
