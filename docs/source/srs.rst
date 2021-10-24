@@ -537,7 +537,7 @@ Term          Definition
 -----------   -------------------------------------------
 APM           Auxiliary Power Module
 BMS           Battery Management System
-BQ7695        Battery monitor IC
+BQ76952       Battery monitor IC
 CAN           Controller Area Network
 CANopen       Communication protocol built on CAN
 DEV1          Dirt Electric Vehicle 1
