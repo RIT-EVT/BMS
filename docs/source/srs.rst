@@ -555,3 +555,12 @@ References
 * `CANopen - The standardized embedded network <https://www.can-cia.org/canopen/>`_
 * `EVT-core <https://evt-core.readthedocs.io/en/latest/>`_
 * `STM32f302r8 Mainstream Mixed signals MCUs Arm Cortex-M4 core with DSP and FPU, 64 Kbytes of Flash memory, 72 MHz CPU, 12-bit ADC 5 MSPS, Comparator, Op-Amp <https://www.st.com/en/microcontrollers-microprocessors/stm32f302r8.html>`_
+
+Revision
+--------
+
+========    ======================          ==========
+Revision    Description                     Date
+--------    ----------------------          ----------
+1           Initial documentation.          10/19/2021
+========    ======================          ==========
