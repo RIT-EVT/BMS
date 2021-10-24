@@ -1,52 +1,24 @@
-# Project Template
+# DEV1-BMS
 
-## Overview
+## Introduction
 
-### EVT-core
-For an overview of EVT please see the following links:
+### DEV1-BMS
 
-[EVT-core Documentation](https://evt-core.readthedocs.io/)
+The DEV1-BMS is the Battery Management System for the RIT-EVT Dirt
+Electric Vehicle (DEV1). The system is based around the BQ76952 TI battery
+monitor and protector chip. The firmware for the DEV1-BMS is written for
+the STM32f302r8 microcontroller that is designed into the DEV1-BMS.
 
-[EVT-core Github](https://github.com/RIT-EVT/EVT-core/)
+The DEV1-BMS will have the following responsibilities.
 
-### Template Project
+1. Run safety checks during DEV1 operation
+2. Facilitate battery charging
+3. Act as an interface to the on-board BQ76952
+4. Expose the system over the DEV1 CAN network
 
-This project-template serves as the skeleton template that is used for
-all EVT board repositories.  It contains the following capabilities:
+For a more detailed description of the requirements, refer to the
+[DEV1-BMS Software Requirements Specification](https://dev1-bms.readthedocs.io/en/latest/srs.html).
 
-- EVT-core is included as a submodule and compiled as a library for
-the board
-- Template is set up for a library containing code pertinent to the board 
-to be built.
-- The template supports an arbitrary number of executable targets to be built
-and deployed onto a microcontroller
-  - These contain targets to be run on a specific EVT custom boards
-  - Also contain utilities for debugging and debugging
-- Framework for auto-generated and built documentation using Sphinx and
-hosted on `readthedocs.io`
-
-## Steps to Setup a New Project
-
-1) Create a new repo based on the project-template
-   1) From [project-template](https://github.com/RIT-EVT/project-template) click `Use this template`
-   2) Choose a repo name and make sure it's public for auto-documentation to work
-   3) If the owner is not set to RIT-EVT then you need to update the .gitmodules file URL
-2) Clone the new repo
-   1) `git clone <URL>`
-3) Update the EVT submodule
-   1) `git submodule update --init --recusive && git pull`
-   2) The above command can be used at any point to update the submodule from remote
-4) Import the project into Read the Docs
-   1) Consult with current firmware team lead for help setting up hosting.
-5) Update all instances of BOARD_NAME to match your project name
-   1) `CMakeLists.txt:15,21`
-   2) Directory `./include/BOARD_NAME`
-   3) Directory `./source/BOARD_NAME`
-   4) Directory `./targets/BOARD_NAME`; also update `targets/CMakeLists.txt`
-   5) `docs/Doxyfile:35`
-   6) `docs/source/index.rst:6`
-   7) `docs/source/api/index.rst`
-6) Sample files are included in `./src` and `./include`.  These files can likely be removed and 
-updates made accordingly.  There are placeholders to demonstrate the board library building
-functionality.
-
+For more information on the BMS over all and the software level API,
+refer to the
+[Read the Docs DEV1-BMS page](https://dev1-bms.readthedocs.io/en/latest/index.html).
