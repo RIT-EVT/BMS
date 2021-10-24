@@ -22,3 +22,21 @@ For a more detailed description of the requirements, refer to the
 For more information on the BMS over all and the software level API,
 refer to the
 [Read the Docs DEV1-BMS page](https://dev1-bms.readthedocs.io/en/latest/index.html).
+
+### Documentation
+
+Documentation is handled via Sphinx. To build the documentation, navigate
+to the `docs/` folder and run `make html`. You can then open the generated
+`docs/build/html/index.html`.
+
+To generate a PDF of the Software Requirements Specification, run the command
+`rinoh docs/source/srs.rst --output docs`. You can then view the PDF version
+of the SRS in `docs/srs.pdf`. The SRS is identical to the one generated via
+`make html`.
+
+### Related Projects
+
+The DEV1-BMS is one component of the larger DEV1 project, you can find related
+projects in the [RIT-EVT](https://github.com/RIT-EVT) Github page.
+Additionally, the STM32f302r8 driver code is handled via the
+[EVT-core](https://github.com/RIT-EVT/EVT-core) project.
