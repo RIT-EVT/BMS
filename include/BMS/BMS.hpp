@@ -44,6 +44,11 @@ private:
     BQSettingsStorage& bqSettingsStorage;
 
     /**
+     * Test data, to be replaced
+     */
+    uint8_t sampleData;
+
+    /**
      * The object dictionary of the BMS. Includes settings that determine
      * how the BMS functions on the CANopen network as well as the data
      * that is exposed on the network.
@@ -108,7 +113,7 @@ private:
         {
             .Key = CO_KEY(0x1800, 1, CO_UNSIGNED32|CO_OBJ_D__R_),
             .Type = 0,
-            .Data = (uintptr_t)0x40000180 + NODE_ID
+            .Data = (uintptr_t)CO_COBID_TPDO_DEFAULT(0)
         },
         {
             .Key = CO_KEY(0x1800, 2, CO_UNSIGNED8|CO_OBJ_D__R_),
