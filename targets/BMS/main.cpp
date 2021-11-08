@@ -10,6 +10,7 @@
 #include <EVT/utils/types/FixedQueue.hpp>
 #include <EVT/io/CANopen.hpp>
 #include <EVT/dev/platform/f3xx/f302x8/Timerf302x8.hpp>
+#include <BMS/BMSLogger.hpp>
 
 #include <BMS/BMS.hpp>
 
@@ -34,7 +35,9 @@ void canInterruptHandler(IO::CANMessage& message, void* priv) {
 ///////////////////////////////////////////////////////////////////////////////
 // CANopen specific Callbacks. Need to be defined in some location
 ///////////////////////////////////////////////////////////////////////////////
-extern "C" void CONodeFatalError(void) { }
+extern "C" void CONodeFatalError(void) {
+    BMS::LOGGER.log(BMS::BMSLogger::LogLevel::ERROR, "Fatal CANopen error");
+}
 
 extern "C" void COIfCanReceive(CO_IF_FRM *frm) { }
 
@@ -74,10 +77,15 @@ int main() {
     // Initialize the timer
     DEV::Timerf302x8 timer(TIM2, 100);
 
+    IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
+    BMS::LOGGER.setUART(&uart);
+    BMS::LOGGER.setLogLevel(BMS::BMSLogger::LogLevel::DEBUG);
+
     // Setup UART for testing
     // IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
 
-    BMS::BMS bms;
+    BMS::BQSettingsStorage bqSettingsStorage;
+    BMS::BMS bms(bqSettingsStorage);
 
     // Reserved memory for CANopen stack usage
     uint8_t sdoBuffer[1][CO_SDO_BUF_BYTE];

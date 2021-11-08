@@ -3,6 +3,9 @@
 
 namespace BMS {
 
+BMS::BMS(BQSettingsStorage& bqSettingsStorage) : bqSettingsStorage(bqSettingsStorage) {
+}
+
 CO_OBJ_T* BMS::getObjectDictionary() {
     return &objectDictionary[0];
 }

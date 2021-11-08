@@ -1,3 +1,6 @@
+#ifndef _BQ_SETTING_
+#define _BQ_SETTING_
+
 #include <stdint.h>
 
 namespace BMS {
@@ -81,6 +84,8 @@ public:
     uint32_t getData();
 
 private:
+    /** The type of the command */
+    BQSettingType settingType;
     /**
      * The address to write to for the setting. When the setting type is
      * direct, the address is 8 bits. Otherwise it is 16 bits.
@@ -94,3 +99,5 @@ private:
 };
 
 }  // namespace BMS
+
+#endif
