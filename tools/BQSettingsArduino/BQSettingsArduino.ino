@@ -120,7 +120,7 @@ void sendBQSettings() {
    Serial.println(totalBytes);
    // Set the new size
    CAN.beginPacket(0x600 + BMS_NODE_ID);  // SDO of the BMS
-   CAN.write(0b00100011);                 // Command: 001, n: 00, e: 1, s: 1
+   CAN.write(0x2F);                       // Command: 001, n: 00, e: 1, s: 1
    CAN.write(0x00);                       // LSB of index
    CAN.write(0x21);                       // MSB of index
    CAN.write(0x00);                       // Subindex
