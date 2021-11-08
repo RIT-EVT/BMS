@@ -66,7 +66,7 @@ private:
     /**
      * The number of settings that are being stored for the BQ.
      */
-    uint32_t numSettings;
+    uint8_t numSettings;
     /**
      * CANopen stack interface. Exposes the BQ settings over CANopen
      */
