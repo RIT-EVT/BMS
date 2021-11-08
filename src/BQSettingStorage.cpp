@@ -119,6 +119,8 @@ BQSettingsStorage::BQSettingsStorage() {
     canOpenInterface.Write = COBQSettingWrite;
     canOpenInterface.Size = COBQSettingSize;
     canOpenInterface.Private = this;
+
+    numSettings = 0;
 }
 
 uint32_t BQSettingsStorage::getNumSettings() {
