@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <Canopen/co_core.h>
+#include <BMS/BQSettingStorage.hpp>
 
 namespace BMS {
 
@@ -9,6 +10,8 @@ namespace BMS {
  */
 class BMS {
 public:
+    BMS(BQSettingsStorage& bqSettingsStorage);
+
     /**
      * The node ID used to identify the device on the CAN network.
      */
@@ -39,6 +42,11 @@ private:
      * Test data, to be replaced
      */
     uint8_t sampleData;
+
+    /**
+     * The interface for storaging and retrieving BQ Settings.
+     */
+    BQSettingsStorage& bqSettingsStorage;
 
     /**
      * The object dictionary of the BMS. Includes settings that determine
@@ -143,9 +151,13 @@ private:
         {
             .Key = CO_KEY(0x2100, 0, CO_UNSIGNED8|CO_OBJ___PRW),
             .Type = 0,
-            .Data = (uintptr_t)&sampleData
+            .Data = (uintptr_t)&bqSettingsStorage.numSettings
         },
-
+        {
+            .Key = CO_KEY(0x2101, 0, CO_UNSIGNED32|CO_OBJ___PRW),
+            .Type = ((CO_OBJ_TYPE*)&bqSettingsStorage.canOpenInterface),
+            .Data = (uintptr_t)&bqSettingsStorage.canOpenInterface
+        },
         // End of dictionary marker
         CO_OBJ_DIR_ENDMARK
     };

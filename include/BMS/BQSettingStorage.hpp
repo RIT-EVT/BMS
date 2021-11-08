@@ -1,3 +1,6 @@
+#ifndef _BQ_SETTING_STORAGE_
+#define _BQ_SETTING_STORAGE_
+
 #include <stdint.h>
 
 #include <BMS/BQSetting.hpp>
@@ -17,6 +20,8 @@ namespace BMS {
  */
 class BQSettingsStorage {
 public:
+
+    BQSettingsStorage();
 
     /**
      * Get the number of settings stored for the BQ
@@ -66,7 +71,11 @@ private:
      * CANopen stack interface. Exposes the BQ settings over CANopen
      */
     CO_OBJ_TYPE canOpenInterface;
+
+    friend class BMS;
 };
 
 
 }  // namespace BMS
+
+#endif
