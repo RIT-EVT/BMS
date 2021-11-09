@@ -50,7 +50,7 @@ struct BQSetting settings[] = {
   { 0x12, 0x0102, { 0x08, 0x07, 0x06, 0x05 }}, // RAM request to address 0x0102 with data 0x05060708
 };
 uint8_t numSettings = sizeof(settings) / sizeof(settings[0]);
-uint16_t totalBytes = sizeof(settings);
+uint16_t totalBytes = numSettings * 7;
 
 /** Used to represent if the user typed in a character to send the bq setting stream over CAN */
 bool shouldSend = false;
@@ -133,7 +133,7 @@ void sendBQSettings() {
   
    // Initiate download
    CAN.beginPacket(0x600 + BMS_NODE_ID);  // SDO of the BMS
-   CAN.write(0b00100001);                 // Command: 001, n: 00, e: 0, s: 1
+   CAN.write(0x21);                       // Command: 001, n: 00, e: 0, s: 1
    CAN.write(0x01);                       // Index LBS
    CAN.write(0x21);                       // Index MSB
    CAN.write(0x00);                       // Subindex
@@ -145,7 +145,7 @@ void sendBQSettings() {
 
    // Send each piece of data in its own packet
    for(int i = 0; i < numSettings; i++) {
-      uint8_t toggleBit = i % 2 == 0;
+      uint8_t toggleBit = i % 2 != 0;
       uint8_t isLastSegment = i == numSettings - 1;
       uint8_t command = (toggleBit << 4) | (0 << 1) | isLastSegment;
       struct BQSetting* setting = &settings[i];
