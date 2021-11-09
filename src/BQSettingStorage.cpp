@@ -102,7 +102,16 @@ static CO_ERR COBQSettingCtrl(CO_OBJ* obj, CO_NODE_T* node, uint16_t func, uint3
     (void)obj;
     (void)node;
     (void)para;
-    (void)priv;
+
+    if (priv == nullptr) {
+        return CO_ERR_NONE;
+    }
+
+    BMS::BQSettingsStorage* settingsStorage = (BMS::BQSettingsStorage*)priv;
+
+    if (func == CO_CTRL_SET_OFF) {
+        settingsStorage->resetEEPROMOffset();
+    }
 
     BMS::LOGGER.log(BMS::BMSLogger::LogLevel::INFO, "CTRL FUNCTION EXECUTED");
     BMS::LOGGER.log(BMS::BMSLogger::LogLevel::INFO, "Function %u", func);
@@ -113,7 +122,7 @@ static CO_ERR COBQSettingCtrl(CO_OBJ* obj, CO_NODE_T* node, uint16_t func, uint3
 
 namespace BMS {
 
-BQSettingsStorage::BQSettingsStorage() {
+BQSettingsStorage::BQSettingsStorage(EVT::core::DEV::M24C32& eeprom) : eeprom(eeprom) {
     canOpenInterface.Ctrl = COBQSettingCtrl;
     canOpenInterface.Read = COBQSettingRead;
     canOpenInterface.Write = COBQSettingWrite;
@@ -137,6 +146,14 @@ void BQSettingsStorage::readSetting(uint32_t index, BQSetting& setting) {
 
 void BQSettingsStorage::writeSetting(uint32_t index, BQSetting& setting) {
     // TODO: NOT YET IMPLEMENTED
+}
+
+void BQSettingsStorage::resetEEPROMOffset() {
+    eepromOffset = 0;
+}
+
+void BQSettingsStorage::incrementEEPROMOffset() {
+    eepromOffset++;
 }
 
 
