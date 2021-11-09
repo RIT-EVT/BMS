@@ -10,6 +10,8 @@
 #include <EVT/utils/types/FixedQueue.hpp>
 #include <EVT/io/CANopen.hpp>
 #include <EVT/dev/platform/f3xx/f302x8/Timerf302x8.hpp>
+#include <EVT/dev/storage/EEPROM.hpp>
+#include <EVT/dev/storage/platform/M24C32.hpp>
 #include <BMS/BMSLogger.hpp>
 
 #include <BMS/BMS.hpp>
@@ -81,10 +83,10 @@ int main() {
     BMS::LOGGER.setUART(&uart);
     BMS::LOGGER.setLogLevel(BMS::BMSLogger::LogLevel::DEBUG);
 
-    // Setup UART for testing
-    // IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
+    EVT::core::IO::I2C& i2c = EVT::core::IO::getI2C<IO::Pin::PB_8, IO::Pin::PB_9>();
+    EVT::core::DEV::M24C32 eeprom(0x11, i2c);
 
-    BMS::BQSettingsStorage bqSettingsStorage;
+    BMS::BQSettingsStorage bqSettingsStorage(eeprom);
     BMS::BMS bms(bqSettingsStorage);
 
     // Reserved memory for CANopen stack usage
