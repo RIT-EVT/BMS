@@ -39,10 +39,10 @@ int main() {
     BMS::LOGGER.setUART(&uart);
 
     // Instance of the setting repository
-    BMS::BQSettingsStorage bqSettingsStorage;
+    // BMS::BQSettingsStorage bqSettingsStorage;
 
     // Instance of the BMS
-    BMS::BMS bms(bqSettingsStorage);
+    // BMS::BMS bms(bqSettingsStorage);
 
     // Have the CANopen interface run
     while (1) {

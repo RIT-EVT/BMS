@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+#include <EVT/dev/storage/platform/M24C32.hpp>
+
 #include <BMS/BQSetting.hpp>
 
 #include <Canopen/co_obj.h>
@@ -21,7 +23,7 @@ namespace BMS {
 class BQSettingsStorage {
 public:
 
-    BQSettingsStorage();
+    BQSettingsStorage(EVT::core::DEV::M24C32& eeprom);
 
     /**
      * Get the number of settings stored for the BQ
@@ -58,6 +60,16 @@ public:
      */
     void writeSetting(uint32_t index, BQSetting& setting);
 
+    /**
+     * Reset the EEPROM offset back to zero.
+     */
+    void resetEEPROMOffset();
+
+    /**
+     * Increment the EEPROM offset (measured in number of BQSettings)
+     */
+    void incrementEEPROMOffset();
+
 private:
     /**
      * The starting address in EEPROM where the BQ settings are stored.
@@ -68,9 +80,17 @@ private:
      */
     uint8_t numSettings;
     /**
+     * The offset into the EEPROM to write to (measured in numbers of settings)
+     */
+    uint8_t eepromOffset;
+    /**
      * CANopen stack interface. Exposes the BQ settings over CANopen
      */
     CO_OBJ_TYPE canOpenInterface;
+    /**
+     * EEPROM for storing the BQ settings.
+     */
+    EVT::core::DEV::M24C32& eeprom;
 
     friend class BMS;
 };
