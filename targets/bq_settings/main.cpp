@@ -144,4 +144,14 @@ int main() {
     deserializeTest(uart);
     serializeTest(uart);
     serializeDeserializeTest(uart);
+    // Instance of the setting repository
+    // BMS::BQSettingsStorage bqSettingsStorage;
+
+    // Instance of the BMS
+    // BMS::BMS bms(bqSettingsStorage);
+
+    // Have the CANopen interface run
+    while (1) {
+        // Process incoming CAN messages
+    }
 }

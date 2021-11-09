@@ -93,6 +93,16 @@ public:
      */
     EVT::core::DEV::M24C32& getEEPROM();
 
+    /**
+     * Reset the EEPROM offset back to zero.
+     */
+    void resetEEPROMOffset();
+
+    /**
+     * Increment the EEPROM offset (measured in number of BQSettings)
+     */
+    void incrementEEPROMOffset();
+
 private:
     /**
      * The starting address in EEPROM where the BQ settings are stored.
@@ -106,6 +116,10 @@ private:
      * The number of settings that are being stored for the BQ.
      */
     uint16_t numSettings;
+    /**
+     * The offset into the EEPROM to write to (measured in numbers of settings)
+     */
+    uint8_t eepromOffset;
     /**
      * CANopen stack interface. Exposes the BQ settings over CANopen
      */
