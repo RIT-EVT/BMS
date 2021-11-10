@@ -96,6 +96,10 @@ private:
      * is 8 bits in size. Otherwise it can be up to 32 bits in size.
      */
     uint32_t data;
+    /**
+     * Number of bytes of data associated with the settingm can be 0
+     */
+    uint32_t numBytes;
 };
 
 }  // namespace BMS

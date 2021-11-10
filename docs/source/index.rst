@@ -34,6 +34,7 @@ generated for the project including requirements and implementation design.
 
    api/index.rst
    srs.rst
+   BQ/index.rst
 
 EVT-core
 ========

@@ -18,7 +18,18 @@ namespace BMS {
  * Part of the logic for the BQ storage handler is exposing the settings
  * over the CANopen network. This is handled by producing a CANopen stack
  * driver for a custom field. That field has the ability to read and write
- * BQ settings through the storage handler.
+ * BQ settings through the storage handler. The value
+ * `BQSettingsStorage::canOpenInterface` can be added to the CANopen
+ * object dictionary to allow settings to be sent over. The process to write
+ * out the settings should be
+ *
+ *  1) Update the number of settings that are stored. The number of settings
+ *     will be exposed over CANopen (`BQSettingsStorage::numSettings`).
+ *  2) Using SDO segmented download, send over each BQ Setting
+ *
+ * The settings will be written into EEPROM. Once all settings have come
+ * over CANopen, the number of settings in EEPROM will also be updated
+ * accordingly.
  */
 class BQSettingsStorage {
 public:

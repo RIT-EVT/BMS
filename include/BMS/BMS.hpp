@@ -36,12 +36,7 @@ private:
      * Have to know the size of the object dictionary for initialization
      * process.
      */
-    static constexpr uint8_t OBJECT_DIRECTIONARY_SIZE = 16;
-
-    /**
-     * Test data, to be replaced
-     */
-    uint8_t sampleData;
+    static constexpr uint16_t OBJECT_DIRECTIONARY_SIZE = 16;
 
     /**
      * The interface for storaging and retrieving BQ Settings.
