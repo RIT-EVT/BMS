@@ -129,9 +129,6 @@ int main() {
 
     time::wait(500);
 
-    // String to store user input
-    // char buf[100];
-
     while (1) {
         // Process incoming CAN messages
         CONodeProcess(&canNode);
