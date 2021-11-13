@@ -84,7 +84,7 @@ int main() {
     BMS::LOGGER.setLogLevel(BMS::BMSLogger::LogLevel::DEBUG);
 
     EVT::core::IO::I2C& i2c = EVT::core::IO::getI2C<IO::Pin::PB_8, IO::Pin::PB_9>();
-    EVT::core::DEV::M24C32 eeprom(0x11, i2c);
+    EVT::core::DEV::M24C32 eeprom(0x50, i2c);
 
     BMS::BQSettingsStorage bqSettingsStorage(eeprom);
     BMS::BMS bms(bqSettingsStorage);

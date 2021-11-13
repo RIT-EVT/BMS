@@ -64,12 +64,12 @@ public:
     void readSetting(uint32_t index, BQSetting& setting);
 
     /**
-     * Write out the given setting into EEPROM.
+     * Write out the given setting into EEPROM. Will write out the data using
+     * the eepromOffset value.
      *
-     * @param index[in] The index of the setting to write out (0 <= index < numSettings)
      * @param setting[in] The setting to write to EEPROM
      */
-    void writeSetting(uint32_t index, BQSetting& setting);
+    void writeSetting(BQSetting& setting);
 
     /**
      * Reset the EEPROM offset back to zero.
@@ -80,6 +80,14 @@ public:
      * Increment the EEPROM offset (measured in number of BQSettings)
      */
     void incrementEEPROMOffset();
+
+    /**
+     * Get the EEPROM instance, used for CANopen reading and writting into
+     * memory.
+     *
+     * @return The EEPROM instance
+     */
+    EVT::core::DEV::M24C32& getEEPROM();
 
 private:
     /**
@@ -93,7 +101,7 @@ private:
     /**
      * The offset into the EEPROM to write to (measured in numbers of settings)
      */
-    uint8_t eepromOffset;
+    uint32_t eepromOffset;
     /**
      * CANopen stack interface. Exposes the BQ settings over CANopen
      */
