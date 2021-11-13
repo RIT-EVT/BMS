@@ -156,7 +156,7 @@ void BQSettingsStorage::readSetting(uint32_t index, BQSetting& setting) {
     // TODO: NOT YET IMPLEMENTED
 }
 
-void BQSettingsStorage::writeSetting(uint32_t index, BQSetting& setting) {
+void BQSettingsStorage::writeSetting(BQSetting& setting) {
     // Create array for storing the data
     uint8_t buffer[BMS::BQSetting::ARRAY_SIZE];
     setting.toArray(buffer);
