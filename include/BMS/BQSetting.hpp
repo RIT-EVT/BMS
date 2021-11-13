@@ -33,6 +33,18 @@ public:
     };
 
     /**
+     * Constructor with given setting parameters
+     *
+     * @param settingType[in] The type of the setting
+     * @param numBytes[in] The number of bytes the setting will store
+     * @param address[in] The target address of the setting
+     * @param data[in] The data to store (unused if numBytes == 0)
+     */
+    BQSetting(BQSettingType settingType, uint8_t numBytes, uint16_t address, uint32_t data);
+
+    BQSetting();
+
+    /**
      * Populate the content of the object with the values parsed from the
      * provided array. The array is in the format below.
      *
@@ -82,6 +94,13 @@ public:
      * @return The data as a 32 bit value
      */
     uint32_t getData();
+
+    /**
+     * Get the number of bytes stored in the data
+     *
+     * @return The number of bytes of data stored.
+     */
+    uint8_t getNumBytes();
 
 private:
     /** The type of the command */
