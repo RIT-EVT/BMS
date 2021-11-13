@@ -82,9 +82,19 @@ static CO_ERR COBQSettingWrite(CO_OBJ* obj, CO_NODE_T* node, void* buf, uint32_t
 
     uint8_t* buffer = (uint8_t*)buf;
 
-    for(int i = 0; i < len; i++) {
-        BMS::LOGGER.log(BMS::BMSLogger::LogLevel::INFO, "BYTE %u: %u", i, buffer[i]);
+    BMS::BQSettingsStorage* storage = (BMS::BQSettingsStorage*)priv;
+    if(!storage) {
+        BMS::LOGGER.log(BMS::BMSLogger::LogLevel::ERROR, "Storage not provided");
+        return CO_ERR_BAD_ARG;
     }
+
+    // Write the settings into storage
+    // TODO: Add validation to fromArray and handle errors here
+    BMS::BQSetting bqSetting;
+    bqSetting.fromArray(buffer);
+    storage->writeSetting(bqSetting);
+
+    storage->incrementEEPROMOffset();
 
     return CO_ERR_NONE;
 }
@@ -109,6 +119,7 @@ static CO_ERR COBQSettingCtrl(CO_OBJ* obj, CO_NODE_T* node, uint16_t func, uint3
 
     BMS::BQSettingsStorage* settingsStorage = (BMS::BQSettingsStorage*)priv;
 
+    // Reset the offset
     if (func == CO_CTRL_SET_OFF) {
         settingsStorage->resetEEPROMOffset();
     }
@@ -130,6 +141,7 @@ BQSettingsStorage::BQSettingsStorage(EVT::core::DEV::M24C32& eeprom) : eeprom(ee
     canOpenInterface.Private = this;
 
     numSettings = 0;
+    startAddress = 0;
 }
 
 uint32_t BQSettingsStorage::getNumSettings() {
@@ -145,7 +157,13 @@ void BQSettingsStorage::readSetting(uint32_t index, BQSetting& setting) {
 }
 
 void BQSettingsStorage::writeSetting(uint32_t index, BQSetting& setting) {
-    // TODO: NOT YET IMPLEMENTED
+    // Create array for storing the data
+    uint8_t buffer[BMS::BQSetting::ARRAY_SIZE];
+    setting.toArray(buffer);
+
+    // Determine the location to write the data
+    uint32_t address = startAddress + eepromOffset * BMS::BQSetting::ARRAY_SIZE;
+    eeprom.writeBytes(address, buffer, BMS::BQSetting::ARRAY_SIZE);
 }
 
 void BQSettingsStorage::resetEEPROMOffset() {
