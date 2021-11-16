@@ -30,7 +30,7 @@ void canInterruptHandler(IO::CANMessage& message, void* priv) {
         (EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>*)priv;
     if (queue == nullptr)
         return;
-    if(!message.isCANExtended())
+    if (!message.isCANExtended())
         queue->append(message);
 }
 
