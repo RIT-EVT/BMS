@@ -22,9 +22,9 @@ void BQSetting::fromArray(uint8_t buffer[ARRAY_SIZE]) {
            | (static_cast<uint32_t>(buffer[4]) << 8)
            | static_cast<uint32_t>(buffer[3]);
 
-    LOGGER.log(BMSLogger::LogLevel::DEBUG, "Setting Type: %u", settingType);
-    LOGGER.log(BMSLogger::LogLevel::DEBUG, "Address: 0x%4x", address);
-    LOGGER.log(BMSLogger::LogLevel::DEBUG, "Data:0x%8x", data);
+    LOGGER.log(BMSLogger::LogLevel::DEBUG,
+        "Command Type: %u, Address: 0x%04X, Num Bytes: %u, DataL 0x%08X",
+        settingType, address, numBytes, data);
 }
 
 void BQSetting::toArray(uint8_t buffer[ARRAY_SIZE]) {

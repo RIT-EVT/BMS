@@ -82,6 +82,9 @@ static CO_ERR COBQSettingWrite(CO_OBJ* obj, CO_NODE_T* node, void* buf, uint32_t
 
     uint8_t* buffer = (uint8_t*)buf;
 
+    if (len == 0)
+        return CO_ERR_NONE;
+
     BMS::BQSettingsStorage* storage = (BMS::BQSettingsStorage*)priv;
     if(!storage) {
         BMS::LOGGER.log(BMS::BMSLogger::LogLevel::ERROR, "Storage not provided");
@@ -152,8 +155,18 @@ void BQSettingsStorage::setNumSettings(uint32_t numSettings) {
     this->numSettings = numSettings;
 }
 
-void BQSettingsStorage::readSetting(uint32_t index, BQSetting& setting) {
-    // TODO: NOT YET IMPLEMENTED
+void BQSettingsStorage::readSetting(BQSetting& setting) {
+    uint8_t buffer[BMS::BQSetting::ARRAY_SIZE];
+
+    eeprom.readBytes(startAddress + eepromOffset * BMS::BQSetting::ARRAY_SIZE,
+        buffer, BMS::BQSetting::ARRAY_SIZE);
+
+    LOGGER.log(BMSLogger::LogLevel::DEBUG,
+        "{ 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x }",
+        buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5],
+        buffer[6], buffer[7]);
+
+    setting.fromArray(buffer);
 }
 
 void BQSettingsStorage::writeSetting(BQSetting& setting) {
@@ -161,9 +174,16 @@ void BQSettingsStorage::writeSetting(BQSetting& setting) {
     uint8_t buffer[BMS::BQSetting::ARRAY_SIZE];
     setting.toArray(buffer);
 
+    LOGGER.log(BMSLogger::LogLevel::DEBUG,
+        "{ 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x }",
+        buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5],
+        buffer[6], buffer[7]);
+
+    LOGGER.log(BMSLogger::LogLevel::DEBUG, "Writting to address: 0x%02x",
+        startAddress + eepromOffset * BMS::BQSetting::ARRAY_SIZE);
     // Determine the location to write the data
-    uint32_t address = startAddress + eepromOffset * BMS::BQSetting::ARRAY_SIZE;
-    eeprom.writeBytes(address, buffer, BMS::BQSetting::ARRAY_SIZE);
+    eeprom.writeBytes(startAddress + eepromOffset * BMS::BQSetting::ARRAY_SIZE,
+        buffer, BMS::BQSetting::ARRAY_SIZE);
 }
 
 void BQSettingsStorage::resetEEPROMOffset() {

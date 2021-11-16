@@ -58,10 +58,9 @@ public:
     /**
      * Read in a setting from EEPROM and update the provided setting.
      *
-     * @param index[in] The index of the setting to read in (0 <= index < numSettings)
      * @param setting[out] The setting to update from EEPROM
      */
-    void readSetting(uint32_t index, BQSetting& setting);
+    void readSetting(BQSetting& setting);
 
     /**
      * Write out the given setting into EEPROM. Will write out the data using
