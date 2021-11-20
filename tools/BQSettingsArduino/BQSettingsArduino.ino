@@ -120,7 +120,7 @@ void sendBQSettings() {
    Serial.println(totalBytes);
    // Set the new size
    CAN.beginPacket(0x600 + BMS_NODE_ID);  // SDO of the BMS
-   CAN.write(0x2F);                       // Command: 001, n: 00, e: 1, s: 1
+   CAN.write(0x2B);                       // Command: 001, n: 00, e: 1, s: 1
    CAN.write(0x00);                       // LSB of index
    CAN.write(0x21);                       // MSB of index
    CAN.write(0x00);                       // Subindex
@@ -134,9 +134,9 @@ void sendBQSettings() {
    // Initiate download
    CAN.beginPacket(0x600 + BMS_NODE_ID);  // SDO of the BMS
    CAN.write(0x21);                       // Command: 001, n: 00, e: 0, s: 1
-   CAN.write(0x01);                       // Index LBS
+   CAN.write(0x00);                       // Index LBS
    CAN.write(0x21);                       // Index MSB
-   CAN.write(0x00);                       // Subindex
+   CAN.write(0x01);                       // Subindex
    CAN.write(totalBytes & 0xFF);          // LSB of data size
    CAN.write((totalBytes >> 8) & 0xFF);   // MSB of data size
    CAN.endPacket();
