@@ -96,7 +96,7 @@ private:
     /**
      * The number of settings that are being stored for the BQ.
      */
-    uint8_t numSettings;
+    uint16_t numSettings;
     /**
      * The offset into the EEPROM to write to (measured in numbers of settings)
      */

@@ -141,24 +141,24 @@ private:
             .Data = CO_LINK(0x2100, 0, 8) // Link to sample data position in dictionary
         },
 
-        // User defined data, this will be where we put elements that can be
-        // accessed via SDO and depeneding on configuration PDO
+        // BQ Settings exposure over CANopen. The number of settings can be
+        // read and written to over CANopen and the array of settings
+        // themselves can be read and written to. The BQ settings storage
+        // logic is controlled by the custom BQSettingStorage object
         {
-            .Key = CO_KEY(0x2100, 0, CO_UNSIGNED8|CO_OBJ___PRW),
+            // The number of settings stored
+            .Key = CO_KEY(0x2100, 0, CO_UNSIGNED16|CO_OBJ___PRW),
             .Type = 0,
             .Data = (uintptr_t)&bqSettingsStorage.numSettings
         },
         {
-            .Key = CO_KEY(0x2101, 0, CO_UNSIGNED32|CO_OBJ___PRW),
+            // The BQ settings themselves
+            .Key = CO_KEY(0x2100, 1, CO_UNSIGNED32|CO_OBJ___PRW),
             .Type = ((CO_OBJ_TYPE*)&bqSettingsStorage.canOpenInterface),
             .Data = (uintptr_t)&bqSettingsStorage.canOpenInterface
         },
         // End of dictionary marker
         CO_OBJ_DIR_ENDMARK
     };
-
-
 };
-
-
 }  // namspace BMS
