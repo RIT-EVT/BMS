@@ -9,6 +9,7 @@ venv/
 
 # IDE Files
 .idea/
+coc-settings.json
 
 # macOS files
 .DS_Store
