@@ -13,6 +13,9 @@ class BQSetting:
     the ability to be parsed in from CSV.
     """
 
+    # Size of each setting in bytes
+    SETTING_SIZE = 7
+
     class BQSettingType(Enum):
         """
         BQSetting type, as defined in TODO: Add URL
