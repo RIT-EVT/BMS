@@ -57,7 +57,7 @@ def save_to_csv(file_path: str, settings: List[BQSetting]) -> None:
         # Write out header
         csv_file.write('Setting Type,Number of Bytes,Address,Data\n')
         for setting in settings:
-            csv_file.write(setting.to_csv + '\n')
+            csv_file.write(setting.to_csv() + '\n')
 
 
 def save_to_binary(file_path: str, settings: List[BQSetting]) -> None:
@@ -70,7 +70,7 @@ def save_to_binary(file_path: str, settings: List[BQSetting]) -> None:
     """
     with open(file_path, 'wb') as binary_file:
         for setting in settings:
-            binary_file.write(setting.to_binary)
+            binary_file.write(setting.to_binary())
 
 
 def is_ti_file(file_path: str) -> bool:
@@ -109,7 +109,7 @@ def convert_to_csv(args: argparse.Namespace):
         settings = load_from_ti(args.input)
     else:
         return
-    save_to_csv(settings)
+    save_to_csv(args.output, settings)
 
 
 def convert(args: argparse.Namespace):
