@@ -55,7 +55,7 @@ def save_to_csv(file_path: str, settings: List[BQSetting]) -> None:
     """
     with open(file_path, 'w') as csv_file:
         # Write out header
-        csv_file.write('Setting Type,Number of Bytes,Address,Data\n')
+        csv_file.write('* Setting Type,Number of Bytes,Address,Data\n')
         for setting in settings:
             csv_file.write(setting.to_csv() + '\n')
 

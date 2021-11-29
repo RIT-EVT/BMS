@@ -91,7 +91,7 @@ class BQSetting:
         num_bytes = int(line[1])
 
         # Parse address
-        address = int(line[2])
+        address = int(line[2], 16)
 
         # Parse data
         data = int(line[3])
