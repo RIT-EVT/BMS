@@ -120,11 +120,8 @@ the convention above, the Actor will continue sending the bytes making up
 the array of settings until all settings have been transferred. As the settings
 are received, the BMS will store the results into EEPROM.
 
-.. warning::
-   As of writting this, the tools for parsing BQ settings from the output TI
-   produces to a binary format to send over to the BMS has not yet been
-   created. Once that has happen, this section will be updated to show the
-   usage of those tools.
+For instructions on how to transfer the settings, refer to
+:doc:`this documentation <transfer_utility>`.
 
 References
 ==========
