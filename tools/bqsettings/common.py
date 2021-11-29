@@ -47,9 +47,9 @@ class BQSetting:
         result = ''
 
         # Add in setting type
-        if self.command_type == BQSetting.BQSettingType.Direct:
+        if self.setting_type == BQSetting.BQSettingType.Direct:
             result += 'Direct,'
-        elif self.command_type == BQSetting.BQSettingType.Subcommand:
+        elif self.setting_type == BQSetting.BQSettingType.Subcommand:
             result += 'Subcommand,'
         else:
             result += 'RAM,'
@@ -58,7 +58,7 @@ class BQSetting:
         result += '{},'.format(self.num_bytes)
 
         # Add in address
-        result += '{},'.format(self.address)
+        result += '{},'.format(hex(self.address))
 
         # Add in data
         result += '{}'.format(self.data)
@@ -112,23 +112,59 @@ class BQSetting:
             3) Convert the data into its machine recognizable form using the
                provided data type
         """
-        content = string.split(',')
+        content = string.replace('"', '').split(',')
 
         # Read in the original data
+        units = content[3]
         data_type = content[4]
-        num_bytes = int(content[5])
+        num_bytes = int(content[5], 10)
         address = int(content[6], 16)
-        unconverted_data = content[7]
+
+        # Parsing floats
+        if '.' in content[7]:
+            unconverted_data = float(content[7])
+        # Parsing hex
+        elif units == 'Hex':
+            unconverted_data = int(content[7], 16)
+        else:
+            unconverted_data = int(content[7])
         conversion_string = content[12]
 
         # Apply the conversion algorithm
-        conversion_string = conversion_string.replace('x', unconverted_data)
+        conversion_string = conversion_string.replace('x',
+                                                      str(unconverted_data))
         converted_data = eval(conversion_string)
 
-        # Packing the data into IEEE754 float and storing result as a number
-        if data_type == 'F':
-            converted_data = int.from_bytes(struct.pack('f', converted_data),
-                                            'little')
+        # Conversion between the types as defined by TI and how they coorilate
+        # to python stryct format characters. This takes account the size and
+        # type of the data
+        type_conversion = {
+            # Byte sized data
+            ('B', 1): 'B',
+            ('I', 1): 'b',
+            ('U', 1): 'B',
+
+            # Short sized data
+            ('B', 2): 'H',
+            ('I', 2): 'h',
+            ('U', 2): 'H',
+
+            # Long sized data
+            ('B', 4): 'L',
+            ('I', 4): 'l',
+            ('U', 4): 'L',
+            ('F', 4): 'f'
+        }
+
+        if data_type != 'F':
+            converted_data = int(converted_data)
+
+        # Pack the data and store as an int
+        pack_format = type_conversion[(data_type, num_bytes)]
+        converted_data = int.from_bytes(struct.pack(pack_format,
+                                                    converted_data),
+                                        'little')
+
         return BQSetting(BQSetting.BQSettingType.RAM, num_bytes, address,
                          converted_data)
 
