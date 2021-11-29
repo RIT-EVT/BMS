@@ -25,3 +25,4 @@ chip. The main points of interaction are as follows.
    :caption: Features:
 
    settings_transfer.rst
+   transfer_utility.rst
