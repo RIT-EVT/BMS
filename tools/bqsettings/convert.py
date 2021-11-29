@@ -95,7 +95,7 @@ def convert_to_binary(args: argparse.Namespace):
         settings = load_from_ti(args.input)
     else:
         settings = load_from_csv(args.input)
-    save_to_binary(settings)
+    save_to_binary(args.output, settings)
 
 
 def convert_to_csv(args: argparse.Namespace):
