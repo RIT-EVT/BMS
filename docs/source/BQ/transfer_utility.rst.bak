@@ -7,10 +7,10 @@ Introduction
 
 The BMS (Battery Management System) needs the ability to store and transfer
 settings to the BQ chip (battery management IC on the BMS). Those settings are
-stored in the BMS's on-board EEPROM and are loaded onto the BQ chip at system
+stored in the BMS's onboard EEPROM and are loaded onto the BQ chip at system
 start up. The BMS itself however, needs a way to get the settings in the
 first place. Therefore, included in this code base are utilities for converting
-BQ settings into a format that can then be transferred to the BMS as well as
+BQ settings into a format that can then be transfered to the BMS as well as
 a utility for sending those settings over to the BMS. The intention is to
 provide a replicatable process for taking in new settings and updating the
 BMS.
@@ -23,9 +23,9 @@ of applications. As such, the BQ chip is highly configurable. The majority
 of the settings are stored in the BQ chip "RAM" or "Data Memory", however the
 BMS software was designed to also support configuration through commands and
 subcommands. Each time the system starts up, the BQ chip must have all of its
-settings sent over. The BMS handles the logic of transferring the settings to
+settings sent over. The BMS handles the logic of transfering the settings to
 the BQ chip, however, it still needs to be sent of the settings at least once
-to be stored in non-volatile memory (EEPROM). In order to accomplish this,
+to be stored in non-volitile memory (EEPROM). In order to acomplish this,
 the settings for the BQ chip must be converted into a form that can then
 be sent over CANopen to the BMS as well as be saved into EEPROM. The format of
 the data is described in `BQ Setting Representation <https://dev1-bms.readthedocs.io/en/latest/BQ/settings_transfer.html#bq-setting-representation>`_.
@@ -92,7 +92,7 @@ TI settings into a binary format which can then be transfered to the BMS.
 This will focus on the scripts included in the utility. Focus will not be
 on the format of the data, the meaning behind the settings, nor on the
 specifics of the implementation. For more of the specifics on the BQ
-chip, refer to `the corresponding documentation <https://dev1-bms.readthedocs.io/en/latest/BQ/index.html>`_.
+chip, refer to `the cooresponding documentation <https://dev1-bms.readthedocs.io/en/latest/BQ/index.html>`_.
 
 Criteria
 --------
@@ -127,7 +127,7 @@ environment or similar to keep environments clean.
 
 .. code-block:: bash
 
-   pip install -r requirements.txt
+   pip install -r requirments.txt
 
 From here, users should be able to execute the utilities. Users can verify
 this by executing the command below.
@@ -173,10 +173,10 @@ which must be maintained for the script to execute properly. After executing
 the script, a file ``output.bin`` should be produced with the contents being
 the binary representation of the data.
 
-Transferring the Settings
+Transfering the Settings
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-Transferring the settings can take place via any method that allows sending
+Transfering the settings can take place via any method that allows sending
 binary data over the CANopen network. The approach detailed below utilizes the
 provided Arduino code to have an Arduino facilitate sending the data over the
 CANopen network. Users can also utilize tools such as VectorCAN to send the
@@ -184,12 +184,12 @@ settings over. In the case of using another tool, users must first make an
 SDO request to the BMS updating the number of settings before sending the
 settings themselves over in a segmented SDO (which VectorCAN supports via the
 binary file produced by the conversion script executed above). Note, the
-use of third party tools is beyond the scope of this manual, but their
-existence is noteworthy.
+use of third party tools is beyound the scope of this manual, but their
+existance is noteworthy.
 
 First, users need to flash the Arduino code to an Arduino device with a
 compatible CAN shield. The code is located in ``tools/bqsettings/arduinoTransfer``.
-Resources for programming an Arduino are available online.
+Resources for programming an Arduino are avilable online.
 
 The help output for the transfer command is shown below.
 
@@ -207,7 +207,7 @@ The help output for the transfer command is shown below.
        -h, --help  show this help message and exit
 
 
-When transferring the settings, the user must provide the binary file of
+When transfering the settings, the user must provide the binary file of
 settings and the port of the Arduino. Below is an example usage of the script.
 
 .. code-block:: bash
