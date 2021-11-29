@@ -37,6 +37,10 @@ def main():
 
     # Arguments for the transfer command
     transfer_parser = subparsers.add_parser('transfer')
+    transfer_parser.add_argument('input', action='store', help='''The binary
+                                 file containing the settings to transfer''')
+    transfer_parser.add_argument('port', action='store', help='''Port of the
+                                 Arduino to send settings to''')
 
     args = argparser.parse_args()
 
