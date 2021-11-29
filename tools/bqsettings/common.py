@@ -3,7 +3,7 @@ Contains tools and utilities used both by the convert logic and the transfer
 logic.
 """
 from enum import Enum
-from typing import List
+import struct
 
 
 class BQSetting:
@@ -16,7 +16,7 @@ class BQSetting:
     class BQSettingType(Enum):
         """
         BQSetting type, as defined in TODO: Add URL
-        """
+    """
         Direct = 0
         Subcommand = 1
         RAM = 2
@@ -105,13 +105,32 @@ class BQSetting:
         For example, this function will convert fractions into the packed
         IEEE format that is specified in "Section 3.3 Data Formats" of the
         BQ Technical Reference Manual.
+
+        The steps are to
+            1) Read in the data by splitting on commas
+            2) Convert the data by applying the provided conversion equation
+            3) Convert the data into its machine recognizable form using the
+               provided data type
         """
         content = string.split(',')
 
+        # Read in the original data
         data_type = content[4]
+        num_bytes = int(content[5])
         address = int(content[6], 16)
-        unconverted_data = int(content[7])
+        unconverted_data = content[7]
         conversion_string = content[12]
+
+        # Apply the conversion algorithm
+        conversion_string = conversion_string.replace('x', unconverted_data)
+        converted_data = eval(conversion_string)
+
+        # Packing the data into IEEE754 float and storing result as a number
+        if data_type == 'F':
+            converted_data = int.from_bytes(struct.pack('f', converted_data),
+                                            'little')
+        return BQSetting(BQSetting.BQSettingType.RAM, num_bytes, address,
+                         converted_data)
 
     def to_binary(self) -> bytearray:
         """
@@ -133,22 +152,3 @@ class BQSetting:
         result.append(self.data.to_bytes(4, 'little'))
 
         return result
-
-
-def load_from_ti(file_path: str) -> List[BQSetting]:
-    """
-    Load a list of the BQSettings from a TI file. Note, the TI file itself
-    only contains RAM settings so all settings will be of type RAM.
-
-    :param file_path: Path to the TI file to parse.
-    :return: List of parsed BQSettings
-    """
-    settings = []
-    with open(file_path, 'r') as ti_file:
-        for line in ti_file:
-            # Check for, and ignore, comments
-            if line[0] == '*':
-                continue
-
-            settings.append(BQSetting.from_ti(line))
-    return settings
