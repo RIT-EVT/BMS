@@ -12,7 +12,6 @@
  */
 #include <CAN.h>
 
-#define MAX_DATA_BYTES 4
 #define NUM_BYTES_PER_SETTING 7
 #define BMS_NODE_ID 0x05
 
@@ -33,6 +32,7 @@ enum State {
 
 enum State currentState = WAITING_FOR_NUM_SETTINGS_BYTE0;
 
+#if 0
 void onReceive(int packetSize) {
   // if(CAN.packetId() != 0x180)
   //  return;
@@ -69,6 +69,7 @@ void onReceive(int packetSize) {
 
   Serial.println();
 }
+#endif
 
 void setup() {
   Serial.begin(9600);
@@ -83,7 +84,7 @@ void setup() {
   }
 
   // register the receive callback
-  CAN.onReceive(onReceive);
+  // CAN.onReceive(onReceive);
 }
 
 /**
@@ -123,9 +124,11 @@ void initBQSettingDownload() {
  * Logic for sending a single BQ setting over CANopen.
  */
 void sendBQSetting() {  
-  uint8_t toggleBit = settingsSent % 2 != 0;
-  uint8_t isLastSegment = settingsSent == numSettings - 1;
+  uint8_t toggleBit = (settingsSent % 2) != 0;
+  uint8_t isLastSegment = settingsSent == (numSettings - 1);
   uint8_t command = (toggleBit << 4) | (0 << 1) | isLastSegment;
+
+  // command = settingsSent & 0xFF;
   
   CAN.beginPacket(0x600 + BMS_NODE_ID); // SDO of the BMS
   CAN.write(command);                   // Command: 000, t: toggles, n: 0, c: isLastSegment
@@ -137,49 +140,46 @@ void sendBQSetting() {
   CAN.write(settingBuffer[5]);
   CAN.write(settingBuffer[6]);
   CAN.endPacket();
-
-  settingsSent++;
 }
 
 void loop() {
   uint8_t incomingByte = 0;
-  if (Serial.available() > 0)
+  if (Serial.available() > 0) {
     incomingByte = Serial.read();
-  else
-    return;
 
-  // Handle the first byte of the number of settings
-  if (currentState == WAITING_FOR_NUM_SETTINGS_BYTE0) {
-    numSettings = incomingByte;
-    currentState = WAITING_FOR_NUM_SETTINGS_BYTE1;
-  }
-  // Handle the second byte of the number of settings
-  else if(currentState == WAITING_FOR_NUM_SETTINGS_BYTE1) {
-    numSettings |= (incomingByte << 8);
-    
-    sendNumSettings();
-    initBQSettingDownload();
-    
-    currentState = RECEIVING_SETTINGS;
-  }
-  // Handle recieving a byte of the setting
-  else if(currentState == RECEIVING_SETTINGS) {
-    settingBuffer[bufferIndex] = incomingByte;
-    bufferIndex++;
-
-    // Buffer filled, ready to send whole setting over CANopen
-    if (bufferIndex >= NUM_BYTES_PER_SETTING) {
-      sendBQSetting();
-      bufferIndex = 0;
-
-      settingsSent++;
+    // Handle the first byte of the number of settings
+    if (currentState == WAITING_FOR_NUM_SETTINGS_BYTE0) {
+      numSettings = incomingByte;
+      currentState = WAITING_FOR_NUM_SETTINGS_BYTE1;
     }
-    // All settings sent, reset state machine
-    if (settingsSent >= numSettings) {
-      settingsSent = 0;
-      bufferIndex = 0;
-
-      currentState = WAITING_FOR_NUM_SETTINGS_BYTE0;
+    // Handle the second byte of the number of settings
+    else if(currentState == WAITING_FOR_NUM_SETTINGS_BYTE1) {
+      numSettings |= ((uint16_t)incomingByte << 8);
+      
+      sendNumSettings();
+      initBQSettingDownload();
+      
+      currentState = RECEIVING_SETTINGS;
+    }
+    // Handle recieving a byte of the setting
+    else if(currentState == RECEIVING_SETTINGS) {
+      settingBuffer[bufferIndex] = incomingByte;
+      bufferIndex++;
+  
+      // Buffer filled, ready to send whole setting over CANopen
+      if (bufferIndex >= NUM_BYTES_PER_SETTING) {
+        sendBQSetting();
+        bufferIndex = 0;
+  
+        settingsSent++;
+      }
+      // All settings sent, reset state machine
+      if (settingsSent >= numSettings) {
+        settingsSent = 0;
+        bufferIndex = 0;
+  
+        currentState = WAITING_FOR_NUM_SETTINGS_BYTE0;
+      }
     }
   }
 }

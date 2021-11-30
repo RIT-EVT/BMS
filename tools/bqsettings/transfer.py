@@ -13,6 +13,7 @@ import os
 import sys
 import serial
 from common import BQSetting
+import time
 
 
 def get_num_settings(binary_file: str) -> int:
@@ -55,5 +56,6 @@ def transfer(args: argparse.Namespace):
                 raw_setting = input_file.read(BQSetting.SETTING_SIZE)
                 ser.write(raw_setting)
                 total_settings_read += 1
+                time.sleep(0.01)
 
         print(total_settings_read)
