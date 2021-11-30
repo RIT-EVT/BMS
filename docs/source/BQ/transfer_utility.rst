@@ -174,7 +174,7 @@ the script, a file ``output.bin`` should be produced with the contents being
 the binary representation of the data.
 
 Transferring the Settings
-~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Transferring the settings can take place via any method that allows sending
 binary data over the CANopen network. The approach detailed below utilizes the
