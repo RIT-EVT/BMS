@@ -1,5 +1,6 @@
 #include <BMS/BQSettingStorage.hpp>
 #include <BMS/BMSLogger.hpp>
+#include <stdint.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Functions for interacting with the BQSettingsStorage through CANopen
@@ -97,8 +98,6 @@ static CO_ERR COBQSettingWrite(CO_OBJ* obj, CO_NODE_T* node, void* buf, uint32_t
     bqSetting.fromArray(buffer);
     storage->writeSetting(bqSetting);
 
-    storage->incrementEEPROMOffset();
-
     return CO_ERR_NONE;
 }
 
@@ -125,6 +124,9 @@ static CO_ERR COBQSettingCtrl(CO_OBJ* obj, CO_NODE_T* node, uint16_t func, uint3
     // Reset the offset
     if (func == CO_CTRL_SET_OFF) {
         settingsStorage->resetEEPROMOffset();
+
+        // Write out the number of settings into EEPROM
+        settingsStorage->writeNumSettings();
     }
 
     BMS::LOGGER.log(BMS::BMSLogger::LogLevel::INFO, "CTRL FUNCTION EXECUTED");
@@ -143,8 +145,12 @@ BQSettingsStorage::BQSettingsStorage(EVT::core::DEV::M24C32& eeprom) : eeprom(ee
     canOpenInterface.Size = COBQSettingSize;
     canOpenInterface.Private = this;
 
-    numSettings = 0;
     startAddress = 0;
+    addressLocation = startAddress + 2;
+
+    // TODO: This assumes that the number of settings are already written into
+    // the EEPROM. This may or may not be an issue.
+    numSettings = eeprom.readHalfWord(startAddress);
 }
 
 uint32_t BQSettingsStorage::getNumSettings() {
@@ -158,15 +164,20 @@ void BQSettingsStorage::setNumSettings(uint32_t numSettings) {
 void BQSettingsStorage::readSetting(BQSetting& setting) {
     uint8_t buffer[BMS::BQSetting::ARRAY_SIZE];
 
-    eeprom.readBytes(startAddress + eepromOffset * BMS::BQSetting::ARRAY_SIZE,
+    eeprom.readBytes(addressLocation,
         buffer, BMS::BQSetting::ARRAY_SIZE);
 
+    LOGGER.log(BMSLogger::LogLevel::DEBUG,
+            "Address Location: %u", addressLocation);
     LOGGER.log(BMSLogger::LogLevel::DEBUG,
         "{ 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x }",
         buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5],
         buffer[6], buffer[7]);
 
     setting.fromArray(buffer);
+
+    // Increment where to read from next
+    addressLocation += BMS::BQSetting::ARRAY_SIZE;
 }
 
 void BQSettingsStorage::writeSetting(BQSetting& setting) {
@@ -180,19 +191,23 @@ void BQSettingsStorage::writeSetting(BQSetting& setting) {
         buffer[6], buffer[7]);
 
     LOGGER.log(BMSLogger::LogLevel::DEBUG, "Writting to address: 0x%02x",
-        startAddress + eepromOffset * BMS::BQSetting::ARRAY_SIZE);
-    // Determine the location to write the data
-    eeprom.writeBytes(startAddress + eepromOffset * BMS::BQSetting::ARRAY_SIZE,
+        addressLocation);
+    // Write the array of data into the EEPROM
+    eeprom.writeBytes(addressLocation,
         buffer, BMS::BQSetting::ARRAY_SIZE);
+
+    // Increment where to write to next
+    addressLocation += BMS::BQSetting::ARRAY_SIZE;
+}
+
+void BQSettingsStorage::writeNumSettings() {
+    eeprom.writeHalfWord(startAddress, numSettings);
 }
 
 void BQSettingsStorage::resetEEPROMOffset() {
-    eepromOffset = 0;
+    // Update the start address, +2 for the two bytes to store the number of
+    // settings
+    addressLocation = startAddress + 2;
 }
-
-void BQSettingsStorage::incrementEEPROMOffset() {
-    eepromOffset++;
-}
-
 
 }  // namespace BMS
