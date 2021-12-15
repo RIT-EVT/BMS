@@ -11,8 +11,6 @@
 
 namespace IO = EVT::core::IO;
 
-constexpr uint8_t NUM_SETTINGS = 12;
-
 int main() {
     IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
 
@@ -24,18 +22,19 @@ int main() {
     BMS::LOGGER.setUART(&uart);
     BMS::LOGGER.setLogLevel(BMS::BMSLogger::LogLevel::DEBUG);
 
-
     BMS::BQSettingsStorage bqSettingsStorage(eeprom);
     bqSettingsStorage.resetEEPROMOffset();
 
+    // Print the number of settings read in from EEPROM
+    uart.printf("Total settings: %u\r\n", bqSettingsStorage.getNumSettings());
+
     BMS::BQSetting setting;
-    for (uint8_t i = 0; i < NUM_SETTINGS; i++) {
+    uint16_t numSettings = bqSettingsStorage.getNumSettings();
+    for (uint16_t i = 0; i < numSettings; i++) {
         bqSettingsStorage.readSetting(setting);
 
         uart.printf("Command Type: %u, Address: 0x%04X, Num Bytes: %u, Data: 0x%08X\r\n",
             setting.getSettingType(), setting.getAddress(),
             setting.getNumBytes(), setting.getData());
-
-        bqSettingsStorage.incrementEEPROMOffset();
     }
 }

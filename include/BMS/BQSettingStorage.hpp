@@ -56,7 +56,10 @@ public:
     void setNumSettings(uint32_t numSettings);
 
     /**
-     * Read in a setting from EEPROM and update the provided setting.
+     * Read in a setting from EEPROM and update the provided setting. This
+     * will update the location in memory to read the next setting from.
+     * Therefore, users can read sequential setting by simply calling this
+     * method multiple times
      *
      * @param setting[out] The setting to update from EEPROM
      */
@@ -64,21 +67,23 @@ public:
 
     /**
      * Write out the given setting into EEPROM. Will write out the data using
-     * the eepromOffset value.
+     * the eepromOffset value. This will update the location to memory to
+     * write the next setting to. Therefore, users can write sequential
+     * settings by simply calling this method multiple times.
      *
      * @param setting[in] The setting to write to EEPROM
      */
     void writeSetting(BQSetting& setting);
 
     /**
-     * Reset the EEPROM offset back to zero.
+     * Write the number of settings into EEPROM.
      */
-    void resetEEPROMOffset();
+    void writeNumSettings();
 
     /**
-     * Increment the EEPROM offset (measured in number of BQSettings)
+     * Reset the EEPROM offset where to write setting back to the being
      */
-    void incrementEEPROMOffset();
+    void resetEEPROMOffset();
 
     /**
      * Get the EEPROM instance, used for CANopen reading and writting into
@@ -94,13 +99,13 @@ private:
      */
     uint32_t startAddress;
     /**
+     * Keeps track of the address in memory to write to
+     */
+    uint32_t addressLocation;
+    /**
      * The number of settings that are being stored for the BQ.
      */
     uint16_t numSettings;
-    /**
-     * The offset into the EEPROM to write to (measured in numbers of settings)
-     */
-    uint32_t eepromOffset;
     /**
      * CANopen stack interface. Exposes the BQ settings over CANopen
      */
