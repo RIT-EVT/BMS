@@ -1,5 +1,6 @@
 #include <BMS/BMS.hpp>
 #include <BMS/BMSLogger.hpp>
+#include <stdint.h>
 
 namespace BMS {
 
