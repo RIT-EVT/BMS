@@ -103,6 +103,12 @@ public:
      */
     void incrementEEPROMOffset();
 
+    /*
+     * Transfer settings from EEPROM to the BQ chip. This will read the
+     * settings one-by-one and pass the setting to the BQ chip for programming.
+     */
+    void transferSettings();
+
 private:
     /**
      * The starting address in EEPROM where the BQ settings are stored.
