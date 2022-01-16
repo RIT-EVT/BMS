@@ -11,9 +11,12 @@
  * @author Collin Bolles
  */
 #include <CAN.h>
+#include <Wire.h>
 
 #define NUM_BYTES_PER_SETTING 7
 #define BMS_NODE_ID 0x05
+
+#define I2C_ADDR 0x04
 
 /**
  * Temporary storage for settings, once all bytes for a setting has been received, it can
@@ -71,6 +74,21 @@ void onReceive(int packetSize) {
 }
 #endif
 
+void i2c_receive_handler(int count) {
+  Serial.print("I2C Write Request received: ");
+  
+  while (Wire.available()) {
+    char data = Wire.read();
+    Serial.print(data, HEX);
+    Serial.print(" ");
+  }
+  Serial.println();
+}
+
+void i2c_request_handler() {
+  
+}
+
 void setup() {
   Serial.begin(9600);
   while (!Serial);
@@ -82,6 +100,11 @@ void setup() {
     Serial.println("Starting CAN failed!");
     while (1);
   }
+
+  // Join I2C bus
+  Wire.begin(I2C_ADDR);
+  Wire.onReceive(i2c_receive_handler);
+  Wire.onRequest(i2c_request_handler);
 
   // register the receive callback
   // CAN.onReceive(onReceive);

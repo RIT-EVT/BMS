@@ -35,6 +35,9 @@ public:
     void writeSetting(BMS::BQSetting& setting);
 
 private:
+    static constexpr uint8_t RAM_BASE_ADDRESS = 0x3E;
+    static constexpr uint8_t RAM_CHECKSUM_ADDRESS = 0x60;
+
     /** I2C bus to communicate over */
     EVT::core::IO::I2C& i2c;
     /** The address of the BQ76952 on the I2C bus */
