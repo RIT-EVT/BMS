@@ -1,3 +1,5 @@
+#include <EVT/utils/time.hpp>
+
 #include <BMS/BQSettingStorage.hpp>
 #include <BMS/BMSLogger.hpp>
 #include <stdint.h>
@@ -138,7 +140,9 @@ static CO_ERR COBQSettingCtrl(CO_OBJ* obj, CO_NODE_T* node, uint16_t func, uint3
 
 namespace BMS {
 
-BQSettingsStorage::BQSettingsStorage(EVT::core::DEV::M24C32& eeprom) : eeprom(eeprom) {
+BQSettingsStorage::BQSettingsStorage(EVT::core::DEV::M24C32& eeprom, DEV::BQ76952& bq) :
+    eeprom(eeprom),
+    bq(bq) {
     canOpenInterface.Ctrl = COBQSettingCtrl;
     canOpenInterface.Read = COBQSettingRead;
     canOpenInterface.Write = COBQSettingWrite;
@@ -218,5 +222,15 @@ void BQSettingsStorage::incrementEEPROMOffset() {
     eepromOffset++;
 }
 
+void BQSettingsStorage::transferSettings() {
+    BQSetting setting;
+
+    resetEEPROMOffset();
+    for (int i = 0; i < numSettings; i++) {
+        readSetting(setting);
+        bq.writeSetting(setting);
+        EVT::core::time::wait(20);
+    }
+}
 
 }  // namespace BMS

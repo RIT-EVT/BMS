@@ -6,6 +6,7 @@
 #include <EVT/dev/storage/platform/M24C32.hpp>
 
 #include <BMS/BQSetting.hpp>
+#include <BMS/dev/BQ76952.hpp>
 
 #include <Canopen/co_obj.h>
 
@@ -34,7 +35,7 @@ namespace BMS {
 class BQSettingsStorage {
 public:
 
-    BQSettingsStorage(EVT::core::DEV::M24C32& eeprom);
+    BQSettingsStorage(EVT::core::DEV::M24C32& eeprom, DEV::BQ76952& bq);
 
     /**
      * Get the number of settings stored for the BQ
@@ -134,6 +135,10 @@ private:
      * EEPROM for storing the BQ settings.
      */
     EVT::core::DEV::M24C32& eeprom;
+    /**
+     * The BQ chip interface
+     */
+    DEV::BQ76952& bq;
 
     friend class BMS;
 };
