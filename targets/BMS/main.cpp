@@ -12,9 +12,10 @@
 #include <EVT/dev/platform/f3xx/f302x8/Timerf302x8.hpp>
 #include <EVT/dev/storage/EEPROM.hpp>
 #include <EVT/dev/storage/platform/M24C32.hpp>
-#include <BMS/BMSLogger.hpp>
 
+#include <BMS/BMSLogger.hpp>
 #include <BMS/BMS.hpp>
+#include <BMS/dev/BQ76952.hpp>
 
 namespace IO = EVT::core::IO;
 namespace DEV = EVT::core::DEV;
@@ -84,7 +85,8 @@ int main() {
     EVT::core::IO::I2C& i2c = EVT::core::IO::getI2C<IO::Pin::PB_8, IO::Pin::PB_9>();
     EVT::core::DEV::M24C32 eeprom(0x11, i2c);
 
-    BMS::BQSettingsStorage bqSettingsStorage(eeprom);
+    BMS::DEV::BQ76952 bq(i2c, 0x04);
+    BMS::BQSettingsStorage bqSettingsStorage(eeprom, bq);
     BMS::BMS bms(bqSettingsStorage);
 
     // Reserved memory for CANopen stack usage

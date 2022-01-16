@@ -4,10 +4,12 @@
  * correctly.
  */
 #include <EVT/io/manager.hpp>
+#include <EVT/dev/storage/platform/M24C32.hpp>
+
 #include <BMS/BQSetting.hpp>
 #include <BMS/BQSettingStorage.hpp>
 #include <BMS/BMSLogger.hpp>
-#include <EVT/dev/storage/platform/M24C32.hpp>
+#include <BMS/dev/BQ76952.hpp>
 
 namespace IO = EVT::core::IO;
 
@@ -22,7 +24,8 @@ int main() {
     BMS::LOGGER.setUART(&uart);
     BMS::LOGGER.setLogLevel(BMS::BMSLogger::LogLevel::DEBUG);
 
-    BMS::BQSettingsStorage bqSettingsStorage(eeprom);
+    BMS::DEV::BQ76952 bq(i2c, 0x04);
+    BMS::BQSettingsStorage bqSettingsStorage(eeprom, bq);
     bqSettingsStorage.resetEEPROMOffset();
 
     // Print the number of settings read in from EEPROM

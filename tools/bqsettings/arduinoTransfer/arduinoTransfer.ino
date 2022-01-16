@@ -75,7 +75,7 @@ void onReceive(int packetSize) {
 #endif
 
 void i2c_receive_handler(int count) {
-  Serial.print("I2C Write Request received: ");
+  Serial.print("Request received: ");
   
   while (Wire.available()) {
     char data = Wire.read();
