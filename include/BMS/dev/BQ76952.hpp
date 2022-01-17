@@ -34,6 +34,21 @@ public:
      */
     void writeSetting(BMS::BQSetting& setting);
 
+    /**
+     * Enter CONFIG_UPDATE mode. This is the mode that the BQ chip should
+     * be in whenever modifying settings. If settings are modified, and the
+     * BQ is not in CONFIG_UPDATE mode, the results are unpredictable.
+     *
+     * For more information, see Section 7.6 of the BQ76952 Technical
+     * Reference Manual.
+     */
+    void enterConfigUpdateMode();
+
+    /**
+     * Exit CONFIG_UPDATE mode. Will re-enter normal operation mode.
+     */
+    void exitConfigUpdateMode();
+
 private:
     static constexpr uint8_t RAM_BASE_ADDRESS = 0x3E;
     static constexpr uint8_t RAM_CHECKSUM_ADDRESS = 0x60;
