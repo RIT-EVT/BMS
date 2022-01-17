@@ -21,6 +21,16 @@ void BQ76952::writeSetting(BMS::BQSetting& setting) {
     }
 }
 
+void BQ76952::enterConfigUpdateMode() {
+    uint8_t transfer[] = { 0x90, 0x00 };
+    i2c.writeMemReg(i2cAddress, 0x3E, transfer, 2, 1, 100);
+}
+
+void BQ76952::exitConfigUpdateMode() {
+    uint8_t transfer[] = { 0x90, 0x00 };
+    i2c.writeMemReg(i2cAddress, 0x3E, transfer, 2, 1, 100);
+}
+
 void BQ76952::writeDirectSetting(BMS::BQSetting& setting) {
     uint8_t reg = static_cast<uint8_t>(setting.getAddress());
 
@@ -28,7 +38,6 @@ void BQ76952::writeDirectSetting(BMS::BQSetting& setting) {
     uint16_t data = static_cast<uint16_t>(setting.getData());
 
     makeDirectCommand(reg, data);
-
 }
 
 void BQ76952::writeSubcommandSetting(BMS::BQSetting& setting) {

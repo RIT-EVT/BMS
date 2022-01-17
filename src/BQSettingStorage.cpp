@@ -225,14 +225,19 @@ void BQSettingsStorage::incrementEEPROMOffset() {
 void BQSettingsStorage::transferSettings() {
     BQSetting setting;
 
-    // TODO: Put BQ into CONFIG_UPDATE mode before updating settings
+    bq.enterConfigUpdateMode();
 
     resetEEPROMOffset();
     for (int i = 0; i < numSettings; i++) {
         readSetting(setting);
         bq.writeSetting(setting);
+
+        // TODO: Add ability to check status of BQ chip instead of arbitrary
+        // wait statement
         EVT::core::time::wait(20);
     }
+
+    bq.exitConfigUpdateMode();
 }
 
 }  // namespace BMS
