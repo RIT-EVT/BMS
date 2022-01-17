@@ -22,8 +22,20 @@ void BQ76952::writeSetting(BMS::BQSetting& setting) {
 }
 
 void BQ76952::enterConfigUpdateMode() {
+    // Number of times it will wait to see if the device has entered
+    // config update mode
+    // static constexpr uint8_t NUM_ATTEMPTS = 10;
+
     uint8_t transfer[] = { 0x90, 0x00 };
     i2c.writeMemReg(i2cAddress, 0x3E, transfer, 2, 1, 100);
+
+    // TODO: Wait for the 0x12 Battery Status()[CFGUPDATE] flag to set
+    // to ensure the device has entered CONFIG_UPDATE mode
+
+    // uint8_t status = 0;
+    // do {
+    //      status = i2c.readReg(i2cAddress, 0x12) & 0x1;
+    // } while(!status);
 }
 
 void BQ76952::exitConfigUpdateMode() {
