@@ -181,7 +181,7 @@ class BQSetting:
         result = bytearray()
 
         # Add in setting type and number of bytes
-        command_byte = self.num_bytes << 2 & self.setting_type.value
+        command_byte = self.num_bytes << 2 | self.setting_type.value
         result += bytearray(command_byte.to_bytes(1, 'little'))
 
         # Add in address
