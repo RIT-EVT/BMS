@@ -43,15 +43,16 @@ void BQ76952::writeRAMSetting(BMS::BQSetting& setting) {
     // transfer[3:]: Data to put into RAM in little endian
     uint8_t transfer[3 + setting.getNumBytes()];
 
-    transfer[0] = RAM_BASE_ADDRESS;
-    transfer[1] = static_cast<uint8_t>(setting.getAddress() & 0xFF);
-    transfer[2] = static_cast<uint8_t>((setting.getAddress() >> 8) & 0xFF);
+    // transfer[0] = RAM_BASE_ADDRESS;
+    transfer[0] = static_cast<uint8_t>(setting.getAddress() & 0xFF);
+    transfer[1] = static_cast<uint8_t>((setting.getAddress() >> 8) & 0xFF);
 
     for(int i = 0; i < setting.getNumBytes(); i++) {
-        transfer[3 + i] = (setting.getData() >> (i * 8)) & 0xFF;
+        transfer[2 + i] = (setting.getData() >> (i * 8)) & 0xFF;
     }
 
-    i2c.write(i2cAddress, transfer, 3 + setting.getNumBytes());
+    // i2c.write(i2cAddress, transfer, 3 + setting.getNumBytes());
+    i2c.writeMemReg(i2cAddress, RAM_BASE_ADDRESS, transfer, 2 + setting.getNumBytes(), 1, 100);
 
     // Calculate and write out checksum and data length,
     // checksum algorithm = ~(ram_address + sum(data_bytes))
@@ -63,11 +64,13 @@ void BQ76952::writeRAMSetting(BMS::BQSetting& setting) {
     checksum = ~checksum;
     uint8_t length = 1 + 3 + setting.getNumBytes(); // Extra 1 for the I2C address itself
 
-    transfer[0] = RAM_CHECKSUM_ADDRESS;
-    transfer[1] = checksum;
-    transfer[2] = length;
+    // transfer[0] = RAM_CHECKSUM_ADDRESS;
+    transfer[0] = checksum;
+    transfer[1] = length;
 
-    i2c.write(i2cAddress, transfer, 3);
+    // TODO: Determine if the basic I2C write method is correct,
+    // i2c.write(i2cAddress, transfer, 3 + setting.getNumBytes());
+    i2c.writeMemReg(i2cAddress, RAM_CHECKSUM_ADDRESS, transfer, 2, 1, 100);
 }
 
 void BQ76952::makeDirectCommand(uint8_t registerAddr, uint16_t data) {

@@ -225,6 +225,8 @@ void BQSettingsStorage::incrementEEPROMOffset() {
 void BQSettingsStorage::transferSettings() {
     BQSetting setting;
 
+    // TODO: Put BQ into CONFIG_UPDATE mode before updating settings
+
     resetEEPROMOffset();
     for (int i = 0; i < numSettings; i++) {
         readSetting(setting);
