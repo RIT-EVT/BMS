@@ -23,7 +23,6 @@ int main() {
 
     EVT::core::time::wait(500);
 
-
     BMS::DEV::BQ76952 bq(i2c, BQ_I2C_ADDR);
     BMS::BQSettingsStorage settingsStorage(eeprom, bq);
 

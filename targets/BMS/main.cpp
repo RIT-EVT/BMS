@@ -87,7 +87,7 @@ int main() {
 
     BMS::DEV::BQ76952 bq(i2c, 0x04);
     BMS::BQSettingsStorage bqSettingsStorage(eeprom, bq);
-    BMS::BMS bms(bqSettingsStorage);
+    BMS::BMS bms(bqSettingsStorage, bq);
 
     // Reserved memory for CANopen stack usage
     uint8_t sdoBuffer[1][CO_SDO_BUF_BYTE];

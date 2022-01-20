@@ -1,3 +1,5 @@
+#pragma once
+
 #include <stdint.h>
 #include <Canopen/co_core.h>
 #include <BMS/BQSettingStorage.hpp>
@@ -10,7 +12,7 @@ namespace BMS {
  */
 class BMS {
 public:
-    BMS(BQSettingsStorage& bqSettingsStorage);
+    BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq);
 
     /**
      * The node ID used to identify the device on the CAN network.
@@ -36,7 +38,7 @@ private:
      * Have to know the size of the object dictionary for initialization
      * process.
      */
-    static constexpr uint16_t OBJECT_DIRECTIONARY_SIZE = 16;
+    static constexpr uint16_t OBJECT_DIRECTIONARY_SIZE = 17;
 
     /**
      * The interface for storaging and retrieving BQ Settings.
@@ -44,9 +46,9 @@ private:
     BQSettingsStorage& bqSettingsStorage;
 
     /**
-     * Test data, to be replaced
+     * Interface to the BQ chip.
      */
-    uint8_t sampleData;
+    DEV::BQ76952 bq;
 
     /**
      * The object dictionary of the BMS. Includes settings that determine
@@ -162,8 +164,21 @@ private:
             .Type = ((CO_OBJ_TYPE*)&bqSettingsStorage.canOpenInterface),
             .Data = (uintptr_t)&bqSettingsStorage.canOpenInterface
         },
+
+        // Voltage values, as read from the BQ chip. The total voltage will
+        // periodically be broadcasted as a PDO. The individual series cell
+        // voltages will not be broadcasted via PDO, but will still be
+        // accessible over SDO.
+        {
+            .Key = CO_KEY(0x2101, 0, CO_UNSIGNED32|CO_OBJ___PR_),
+            .Type = 0,
+            .Data = (uintptr_t)bq.totalVoltage
+        },
+
+
         // End of dictionary marker
         CO_OBJ_DIR_ENDMARK
     };
 };
 }  // namspace BMS
+
