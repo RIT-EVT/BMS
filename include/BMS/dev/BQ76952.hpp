@@ -1,5 +1,4 @@
-#ifndef _BQ76952_
-#define _BQ76952_
+#pragma once
 
 #include <EVT/io/I2C.hpp>
 
@@ -32,7 +31,7 @@ public:
      *
      * @param setting[in] The BQ setting to write out.
      */
-    void writeSetting(BMS::BQSetting& setting);
+    void writeSetting(BQSetting& setting);
 
     /**
      * Enter CONFIG_UPDATE mode. This is the mode that the BQ chip should
@@ -48,6 +47,10 @@ public:
      * Exit CONFIG_UPDATE mode. Will re-enter normal operation mode.
      */
     void exitConfigUpdateMode();
+
+    // Total voltage read by the BQ chip (measured in millivolts)
+    uint32_t totalVoltage;
+
 
 private:
     static constexpr uint8_t RAM_BASE_ADDRESS = 0x3E;
@@ -66,7 +69,7 @@ private:
      *
      * @param setting[in] The direct setting to write out
      */
-    void writeDirectSetting(BMS::BQSetting& setting);
+    void writeDirectSetting(BQSetting& setting);
 
     /**
      * Write out a subcommand settings. Subcommands take in a 16 bit address
@@ -75,12 +78,12 @@ private:
      * Data associated with the command is written into 0x40-0x44 also in
      * little endian.
      */
-    void writeSubcommandSetting(BMS::BQSetting& setting);
+    void writeSubcommandSetting(BQSetting& setting);
 
     /**
      * Write out a Data Memory Setting otherwise known as a RAM setting.
      */
-    void writeRAMSetting(BMS::BQSetting& setting);
+    void writeRAMSetting(BQSetting& setting);
 
     /**
      * Make a direct command. A direct command is made by making a write
@@ -93,5 +96,3 @@ private:
 };
 
 }
-
-#endif

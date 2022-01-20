@@ -1,5 +1,4 @@
-#ifndef _BQ_SETTING_
-#define _BQ_SETTING_
+#pragma once
 
 #include <stdint.h>
 
@@ -122,5 +121,3 @@ private:
 };
 
 }  // namespace BMS
-
-#endif

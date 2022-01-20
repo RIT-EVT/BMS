@@ -1,5 +1,4 @@
-#ifndef _BQ_SETTING_STORAGE_
-#define _BQ_SETTING_STORAGE_
+#pragma once
 
 #include <stdint.h>
 
@@ -145,5 +144,3 @@ private:
 
 
 }  // namespace BMS
-
-#endif
