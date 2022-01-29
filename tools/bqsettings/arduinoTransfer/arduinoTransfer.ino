@@ -16,7 +16,7 @@
 #define NUM_BYTES_PER_SETTING 7
 #define BMS_NODE_ID 0x05
 
-#define I2C_ADDR 0x04
+#define I2C_ADDR 0x08
 
 /**
  * Temporary storage for settings, once all bytes for a setting has been received, it can
