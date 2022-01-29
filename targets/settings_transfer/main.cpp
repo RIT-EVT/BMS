@@ -12,7 +12,7 @@
 
 namespace IO = EVT::core::IO;
 
-constexpr uint8_t BQ_I2C_ADDR = 0x04;
+constexpr uint8_t BQ_I2C_ADDR = 0x08;
 
 int main() {
     IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);

@@ -85,7 +85,7 @@ int main() {
     EVT::core::IO::I2C& i2c = EVT::core::IO::getI2C<IO::Pin::PB_8, IO::Pin::PB_9>();
     EVT::core::DEV::M24C32 eeprom(0x11, i2c);
 
-    BMS::DEV::BQ76952 bq(i2c, 0x04);
+    BMS::DEV::BQ76952 bq(i2c, 0x10);
     BMS::BQSettingsStorage bqSettingsStorage(eeprom, bq);
     BMS::BMS bms(bqSettingsStorage, bq);
 
