@@ -3,7 +3,6 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-<<<<<<< HEAD
 ===============================
 Welcome to BMS's documentation!
 ===============================
@@ -28,17 +27,12 @@ For a more detailed description of the requirements, refer to the
 
 The DEV1-BMS project is in its rampup phase. Currently documentation is being
 generated for the project including requirements and implementation design.
-=======
-Welcome to BOARD_NAME's documentation!
-======================================
->>>>>>> upstream/main
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
    api/index.rst
-<<<<<<< HEAD
    srs.rst
    BQ/index.rst
 
@@ -48,15 +42,6 @@ EVT-core
 EVT-core is the RIT-EVT produced library for interfacing with the STM32f302r8
 that will be on the DEV1-BMS. For more information on that library, visit
 `RTD for EVT-core <https://evt-core.readthedocs.io/en/latest/>`_
-=======
-
-Docs
-====
-
-To see documentation for EVT-core please see `EVT-core <https://evt-core.readthedocs.io/en/latest/>`_
-
-<Include Documentation for board here>
->>>>>>> upstream/main
 
 Indices and tables
 ==================
