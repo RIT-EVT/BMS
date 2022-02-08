@@ -11,7 +11,7 @@
 #include <EVT/io/CANopen.hpp>
 #include <EVT/dev/platform/f3xx/f302x8/Timerf302x8.hpp>
 #include <EVT/dev/storage/EEPROM.hpp>
-#include <EVT/dev/storage/platform/M24C32.hpp>
+#include <EVT/dev/storage/M24C32.hpp>
 
 #include <BMS/BMSLogger.hpp>
 #include <BMS/BMS.hpp>
