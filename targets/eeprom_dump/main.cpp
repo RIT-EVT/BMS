@@ -4,7 +4,7 @@
  * correctly.
  */
 #include <EVT/io/manager.hpp>
-#include <EVT/dev/storage/platform/M24C32.hpp>
+#include <EVT/dev/storage/M24C32.hpp>
 
 #include <BMS/BQSetting.hpp>
 #include <BMS/BQSettingStorage.hpp>
