@@ -14,6 +14,8 @@ import sys
 import serial
 from common import BQSetting
 import time
+import canopen
+import struct
 
 
 def get_num_settings(binary_file: str) -> int:
@@ -44,18 +46,23 @@ def transfer(args: argparse.Namespace):
               file=sys.stderr)
         exit(1)
 
-    with serial.Serial(args.port, 9600) as ser:
-        num_settings = get_num_settings(args.input)
-        print(num_settings)
+    # Connect to CANopen network
+    network = canopen.Network()
+    network.connect(channel=args.port, bustype='slcan')
 
-        ser.write(num_settings.to_bytes(2, 'little'))
+    # Make an SDO client for communicating with the BMS
+    # TODO: Once we have EDS for the BMS, this None will be replaced with
+    #       a path to the EDS
+    node = network.add_node(5, None)
+    client = node.sdo
 
-        total_settings_read = 0
-        with open(args.input, 'rb') as input_file:
-            while total_settings_read < num_settings:
-                raw_setting = input_file.read(BQSetting.SETTING_SIZE)
-                ser.write(raw_setting)
-                total_settings_read += 1
-                time.sleep(0.01)
+    # Read in all bytes of the data
+    with open(args.input, 'rb') as input_file:
+        settings_bin = input_file.read()
 
-        print(total_settings_read)
+    # Transfer the number of settings over
+    client.download(0x2100, 0x0,
+                    struct.pack('<H', get_num_settings(args.input)))
+
+    # Transfer the settings themselves
+    client.download(0x2100, 0x1, settings_bin)

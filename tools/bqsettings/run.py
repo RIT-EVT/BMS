@@ -40,7 +40,9 @@ def main():
     transfer_parser.add_argument('input', action='store', help='''The binary
                                  file containing the settings to transfer''')
     transfer_parser.add_argument('port', action='store', help='''Port of the
-                                 Arduino to send settings to''')
+                                 SLcan device to send settings to''')
+    transfer_parser.add_argument('bms_node', action='store', type=int,
+                                 help='The CANopen node of the BMS')
 
     args = argparser.parse_args()
 
