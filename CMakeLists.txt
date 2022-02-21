@@ -5,12 +5,12 @@ cmake_minimum_required(VERSION 3.15)
 
 set(EVT_CORE_DIR      ${CMAKE_SOURCE_DIR}/libs/EVT-core)
 
-# Link to the EVT-core library
-add_subdirectory(libs/EVT-core/)
-
 include(CMakeDependentOption)
 include(${EVT_CORE_DIR}/cmake/evt-core_compiler.cmake)
 include(${EVT_CORE_DIR}/cmake/evt-core_install.cmake)
+
+# Link to the EVT-core library
+add_subdirectory(libs/EVT-core/)
 
 ###############################################################################
 # Project Setup
