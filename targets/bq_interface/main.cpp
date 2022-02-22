@@ -42,13 +42,6 @@ void directRead(IO::UART &uart, BMS::DEV::BQ76952 &bq) {
 }
 
 /**
- * Function for making an indirect read request
- *
- * @param[in] uart The UART interface to read in from
- */
-void indirectRead(IO::UART &uart) {}
-
-/**
  * Function for making a subcommand request
  *
  * @param[in] uart The UART interface to read from
@@ -86,10 +79,21 @@ void ramRead(IO::UART &uart, BMS::DEV::BQ76952& bq) {
     uart.gets(inputBuffer, MAX_BUFF);
     uart.printf("\r\n");
 
+    // Determine the target subcommand register
     uint16_t reg = strtol(inputBuffer, nullptr, 16);
 
+    // Make the read request
     uint32_t ramValue = 0;
     auto result = bq.makeRAMRead(reg, &ramValue);
+
+    // Make sure the read was successful
+    if (result != BMS::DEV::BQ76952::BQ76952Status::OK) {
+        uart.printf("Failed to read register: 0x%x\r\n", reg);
+        return;
+    }
+
+    uart.printf("Register 0x%x: 0x%08X\r\n", reg, ramValue);
+
 }
 
 /**
@@ -139,6 +143,7 @@ int main() {
                 break;
             // RAM read
             case 'r':
+                ramRead(uart, bq);
                 break;
             // Direct write
             case 'D':
