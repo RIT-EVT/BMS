@@ -17,6 +17,19 @@ namespace BMS::DEV {
  */
 class BQ76952 {
 public:
+
+    /**
+     * Represent the status reflecting the state of the BQ76952
+     *
+     * This can be used to represent the state of the BQ76952 or the
+     * result of a BQ76952 operation.
+     */
+    enum class BQ76952Status {
+        OK = 0,
+        TIMEOUT = 1,
+        ERROR = 2,
+    };
+
     /**
      * Create a new instance of the BQ76952 which will communicate over the
      * given I2C bus with the given address.
@@ -47,6 +60,17 @@ public:
      * Exit CONFIG_UPDATE mode. Will re-enter normal operation mode.
      */
     void exitConfigUpdateMode();
+
+    /**
+     * Execute direct read request.
+     *
+     * Will make a direct read request to the BQ chip.
+     *
+     * @param[in] reg The I2C register address to read from
+     * @param[out] result The data that was read
+     * @return The status of the read request attempt
+     */
+    BQ76952Status makeDirectRead(uint8_t reg, uint8_t* result);
 
     // Total voltage read by the BQ chip (measured in millivolts)
     uint32_t totalVoltage;
