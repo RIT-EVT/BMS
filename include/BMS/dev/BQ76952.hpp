@@ -70,7 +70,29 @@ public:
      * @param[out] result The data that was read
      * @return The status of the read request attempt
      */
-    BQ76952Status makeDirectRead(uint8_t reg, uint8_t* result);
+    BQ76952Status makeDirectRead(uint8_t reg, uint16_t* result);
+
+    /**
+     * Execute a subcommand read request.
+     *
+     * Will make a subcommand read request to the BQ chup.
+     *
+     * @param[in] reg The subcommand register address
+     * @param[out] The result of the read request
+     * @return The status of the read request attempt
+     */
+    BQ76952Status makeSubcommandRead(uint16_t reg, uint32_t* result);
+
+    /**
+     * Execute RAM read request.
+     *
+     * Will make a RAM read request to the BQ chup
+     *
+     * @param[in] reg The RAM register to read from
+     * @param[out] result The data that was read
+     * @return The status of the read request
+     */
+    BQ76952Status makeRAMRead(uint16_t reg, uint32_t* result);
 
     // Total voltage read by the BQ chip (measured in millivolts)
     uint32_t totalVoltage;

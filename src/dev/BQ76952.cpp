@@ -44,9 +44,7 @@ void BQ76952::exitConfigUpdateMode() {
     i2c.writeMemReg(i2cAddress, 0x3E, transfer, 2, 1, 100);
 }
 
-BQ76952::BQ76952Status BQ76952::makeDirectRead(uint8_t reg,
-                                               uint8_t* result) {
-
+BQ76952::BQ76952Status BQ76952::makeDirectRead(uint8_t reg, uint16_t* result) {
     // Write out the target register
     auto status = i2c.write(i2cAddress, reg);
     if (status != EVT::core::IO::I2C::I2CStatus::OK) {
@@ -54,12 +52,38 @@ BQ76952::BQ76952Status BQ76952::makeDirectRead(uint8_t reg,
     }
 
     // Attempt to read back the value
-    status = i2c.read(i2cAddress, result);
+    uint8_t resultRaw[2];
+    status = i2c.read(i2cAddress, resultRaw, 2);
     if (status != EVT::core::IO::I2C::I2CStatus::OK) {
         return BQ76952Status::ERROR;
     }
 
+    *result = resultRaw[1] << 8 | resultRaw[0];
+
     // Return successful
+    return BQ76952Status::OK;
+}
+
+BQ76952::BQ76952Status BQ76952::makeSubcommandRead(uint16_t reg, uint32_t* result) {
+    // Write out the target subcommand
+    uint8_t targetReg[] = {reg & 0xFF, (reg >> 8) & 0XFF};
+    auto status = i2c.writeMemReg(i2cAddress, 0x3E, targetReg, 2, 1, 1);
+
+    // Read back from the memory
+    uint8_t resultRaw[4];
+    status = i2c.readMemReg(i2cAddress, 0x40, &resultRaw[0], 4, 1);
+    if (status != EVT::core::IO::I2C::I2CStatus::OK) {
+        return BQ76952Status::ERROR;
+    }
+
+    *result = ((resultRaw[3] & 0xFF) << 26) | ((resultRaw[2] & 0xFF) << 16) |
+              ((resultRaw[1] & 0xFF) << 8)  | (resultRaw[0] & 0xFF);
+
+    return BQ76952Status::OK;
+}
+
+BQ76952::BQ76952Status BQ76952::makeRAMRead(uint16_t reg, uint32_t* result) {
+
     return BQ76952Status::OK;
 }
 
