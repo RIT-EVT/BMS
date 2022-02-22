@@ -83,6 +83,19 @@ BQ76952::BQ76952Status BQ76952::makeSubcommandRead(uint16_t reg, uint32_t* resul
 }
 
 BQ76952::BQ76952Status BQ76952::makeRAMRead(uint16_t reg, uint32_t* result) {
+    // Write out the target subcommand
+    uint8_t targetReg[] = {reg & 0xFF, (reg >> 8) & 0XFF};
+    auto status = i2c.writeMemReg(i2cAddress, 0x3E, targetReg, 2, 1, 1);
+
+    // Read back from the memory
+    uint8_t resultRaw[4];
+    status = i2c.readMemReg(i2cAddress, 0x40, &resultRaw[0], 4, 1);
+    if (status != EVT::core::IO::I2C::I2CStatus::OK) {
+        return BQ76952Status::ERROR;
+    }
+
+    *result = ((resultRaw[3] & 0xFF) << 26) | ((resultRaw[2] & 0xFF) << 16) |
+              ((resultRaw[1] & 0xFF) << 8)  | (resultRaw[0] & 0xFF);
 
     return BQ76952Status::OK;
 }
