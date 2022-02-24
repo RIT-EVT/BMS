@@ -116,7 +116,75 @@ void indirectWrite(IO::UART &uart) {}
  *
  * @param[in] uart The UART interface to write in from
  */
-void ramWrite(IO::UART &uart, BMS::DEV::BQ76952& bq) {}
+void ramWrite(IO::UART &uart, BMS::DEV::BQ76952 &bq) {
+    bool inConfigMode;
+    auto result = bq.inConfigMode(&inConfigMode);
+    if (result != BMS::DEV::BQ76952::Status::OK) {
+        uart.printf("Failed to get if the BQ is in config update mode\r\n");
+        return;
+    }
+
+    if (!inConfigMode) {
+        uart.printf(
+            "Cannot write RAM settings unless the BQ is in config update "
+            "mode\r\n");
+        return;
+    }
+
+    const BMS::BQSetting::BQSettingType type =
+        BMS::BQSetting::BQSettingType::RAM;
+
+    uart.printf("Number of bytes in setting: 0x");
+    uart.gets(inputBuffer, MAX_BUFF);
+    uart.printf("\r\n");
+
+    uint8_t numBytes = strtol(inputBuffer, nullptr, 16);
+
+    uart.printf("RAM address: 0x");
+    uart.gets(inputBuffer, MAX_BUFF);
+    uart.printf("\r\n");
+
+    uint16_t ramAddress = strtol(inputBuffer, nullptr, 16);
+
+    uart.printf("Data to write: 0x");
+    uart.gets(inputBuffer, MAX_BUFF);
+    uart.printf("\r\n");
+
+    uint32_t data = strtol(inputBuffer, nullptr, 16);
+
+    uart.printf("RAM Setting to Send\r\n");
+    uart.printf("\tNumber of bytes: 0x%02X\r\n", numBytes);
+    uart.printf("\tRAM Address: 0x%04X\r\n", ramAddress);
+    uart.printf("\tData: 0x%08X\r\n", data);
+
+    uart.printf("Send command (y/n): ");
+    char command = uart.getc();
+    uart.gets(inputBuffer, MAX_BUFF);
+    uart.printf("\r\n");
+
+    if (command == 'y') {
+        uart.printf("Sending RAM setting\r\n");
+
+        BMS::BQSetting setting(type, numBytes, ramAddress, data);
+
+        result = bq.makeRAMWrite(setting);
+
+        if (result != BMS::DEV::BQ76952::Status::OK) {
+            uart.printf("Failed to write out RAM setting\r\n");
+            return;
+        }
+
+        uart.printf("Setting written out\r\n");
+        return;
+    }
+    else {
+        uart.printf("Cancelling RAM setting\r\n");
+        return;
+    }
+
+
+
+}
 
 /**
  * Put the BQ chip into config mode and check the status
@@ -142,11 +210,10 @@ void enterConfigMode(IO::UART &uart, BMS::DEV::BQ76952 &bq) {
         return;
     }
 
-    if(isInConfig) {
+    if (isInConfig) {
         uart.printf("BQ in config update mode\r\n");
         return;
-    }
-    else {
+    } else {
         uart.printf("BQ NOT in config update mode\r\n");
         return;
     }
@@ -176,11 +243,10 @@ void exitConfigMode(IO::UART &uart, BMS::DEV::BQ76952 &bq) {
         return;
     }
 
-    if(isInConfig) {
+    if (isInConfig) {
         uart.printf("BQ in config update mode\r\n");
         return;
-    }
-    else {
+    } else {
         uart.printf("BQ NOT in config update mode\r\n");
         return;
     }
