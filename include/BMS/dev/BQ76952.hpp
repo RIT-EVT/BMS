@@ -23,11 +23,17 @@ public:
      *
      * This can be used to represent the state of the BQ76952 or the
      * result of a BQ76952 operation.
+     *
+     * OK => Operation took place successfully
+     * TIMEOUT => Timeout waiting for an operation
+     * I2C_ERROR => Failed at the I2C level to communicate with the BQ
+     * ERROR => Failed the specific BQ operation (not I2C related)
      */
-    enum class BQ76952Status {
+    enum class Status {
         OK = 0,
         TIMEOUT = 1,
-        ERROR = 2,
+        I2C_ERROR = 2,
+        ERROR = 3,
     };
 
     /**
@@ -70,7 +76,7 @@ public:
      * @param[out] result The data that was read
      * @return The status of the read request attempt
      */
-    BQ76952Status makeDirectRead(uint8_t reg, uint16_t* result);
+    Status makeDirectRead(uint8_t reg, uint16_t* result);
 
     /**
      * Execute a subcommand read request.
@@ -81,7 +87,7 @@ public:
      * @param[out] The result of the read request
      * @return The status of the read request attempt
      */
-    BQ76952Status makeSubcommandRead(uint16_t reg, uint32_t* result);
+    Status makeSubcommandRead(uint16_t reg, uint32_t* result);
 
     /**
      * Execute RAM read request.
@@ -92,7 +98,22 @@ public:
      * @param[out] result The data that was read
      * @return The status of the read request
      */
-    BQ76952Status makeRAMRead(uint16_t reg, uint32_t* result);
+    Status makeRAMRead(uint16_t reg, uint32_t* result);
+
+    /**
+     * Write out a subcommand settings. Subcommands take in a 16 bit address
+     * which are written out to I2C registers 0x3E and 0x3F in little endian.
+     *
+     * Data associated with the command is written into 0x40-0x44 also in
+     * little endian.
+     *
+     * @param[in] setting The setting to write out
+     * @return The result of the setting write attempt
+     *         Status::TIMEOUT => Failed to communicate with the BQ
+     *         Status::ERROR => Setting not accepted by BQ
+     *         Status::OK => Succesfully wrote out the setting
+     */
+    Status makeRAMWrite(BQSetting& setting);
 
     // Total voltage read by the BQ chip (measured in millivolts)
     uint32_t totalVoltage;
@@ -116,20 +137,6 @@ private:
      * @param setting[in] The direct setting to write out
      */
     void writeDirectSetting(BQSetting& setting);
-
-    /**
-     * Write out a subcommand settings. Subcommands take in a 16 bit address
-     * which are written out to I2C registers 0x3E and 0x3F in little endian.
-     *
-     * Data associated with the command is written into 0x40-0x44 also in
-     * little endian.
-     */
-    void writeSubcommandSetting(BQSetting& setting);
-
-    /**
-     * Write out a Data Memory Setting otherwise known as a RAM setting.
-     */
-    void writeRAMSetting(BQSetting& setting);
 
     /**
      * Make a direct command. A direct command is made by making a write
