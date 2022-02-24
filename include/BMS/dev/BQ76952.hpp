@@ -1,8 +1,7 @@
 #pragma once
 
-#include <EVT/io/I2C.hpp>
-
 #include <BMS/BQSetting.hpp>
+#include <EVT/io/I2C.hpp>
 
 namespace BMS::DEV {
 
@@ -16,8 +15,7 @@ namespace BMS::DEV {
  * the cooresponding I2C commands to write out the settings.
  */
 class BQ76952 {
-public:
-
+   public:
     /**
      * Represent the status reflecting the state of the BQ76952
      *
@@ -59,13 +57,17 @@ public:
      *
      * For more information, see Section 7.6 of the BQ76952 Technical
      * Reference Manual.
+     *
+     * @param The result of attempting to enter config update mode
      */
-    void enterConfigUpdateMode();
+    Status enterConfigUpdateMode();
 
     /**
-     * Exit CONFIG_UPDATE mode. Will re-enter normal operation mode.
+     * Exit CONFIG_UPDATE mode.
+     *
+     * @return The result of attempting to exit config update mode
      */
-    void exitConfigUpdateMode();
+    Status exitConfigUpdateMode();
 
     /**
      * Execute direct read request.
@@ -109,17 +111,31 @@ public:
      *
      * @param[in] setting The setting to write out
      * @return The result of the setting write attempt
-     *         Status::TIMEOUT => Failed to communicate with the BQ
+     *         Status::I2C_ERROR => Failed to communicate with the BQ
      *         Status::ERROR => Setting not accepted by BQ
      *         Status::OK => Succesfully wrote out the setting
      */
     Status makeRAMWrite(BQSetting& setting);
 
+    /**
+     * Check to see if the BQ chip is in configure mode. Configure mode is
+     * a state where the BQ chip is able to handle making settings changes.
+     * This mode is discussed in detail in the BQ datasheet.
+     *
+     * @param[out] result Populated with true if the BQ chip is in config mode
+     * @return The status of attemping to get the current mode
+     *          Status::I2C_ERROR => Failed to communicate with the BQ
+     *          Status::ERROR => BQ encountered an error attempting to read
+     *          Status::OK => Configure mode state read successfully
+     */
+    Status inConfigMode(bool* result);
+
     // Total voltage read by the BQ chip (measured in millivolts)
     uint32_t totalVoltage;
 
-
-private:
+   private:
+    /** Keep track of various states of the BQ chip */
+    static constexpr uint8_t BATTERY_STATUS_REG = 0x12;
     static constexpr uint8_t RAM_BASE_ADDRESS = 0x3E;
     static constexpr uint8_t RAM_CHECKSUM_ADDRESS = 0x60;
 
@@ -148,4 +164,4 @@ private:
     void makeDirectCommand(uint8_t address, uint16_t data);
 };
 
-}
+}  // namespace BMS::DEV
