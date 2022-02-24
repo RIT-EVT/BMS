@@ -22,13 +22,16 @@ void BQ76952::writeSetting(BMS::BQSetting& setting) {
     }
 }
 
-void BQ76952::enterConfigUpdateMode() {
+BQ76952::Status BQ76952::enterConfigUpdateMode() {
     // Number of times it will wait to see if the device has entered
     // config update mode
     // static constexpr uint8_t NUM_ATTEMPTS = 10;
 
     uint8_t transfer[] = {0x90, 0x00};
-    i2c.writeMemReg(i2cAddress, 0x3E, transfer, 2, 1, 100);
+    auto result = i2c.writeMemReg(i2cAddress, 0x3E, transfer, 2, 1, 100);
+    if (result != EVT::core::IO::I2C::I2CStatus::OK) {
+        return Status::I2C_ERROR;
+    }
 
     // TODO: Wait for the 0x12 Battery Status()[CFGUPDATE] flag to set
     // to ensure the device has entered CONFIG_UPDATE mode
@@ -37,11 +40,17 @@ void BQ76952::enterConfigUpdateMode() {
     // do {
     //      status = i2c.readReg(i2cAddress, 0x12) & 0x1;
     // } while(!status);
+
+    return Status::OK;
 }
 
-void BQ76952::exitConfigUpdateMode() {
-    uint8_t transfer[] = {0x90, 0x00};
-    i2c.writeMemReg(i2cAddress, 0x3E, transfer, 2, 1, 100);
+BQ76952::Status BQ76952::exitConfigUpdateMode() {
+    uint8_t transfer[] = {0x92, 0x00};
+    auto result = i2c.writeMemReg(i2cAddress, 0x3E, transfer, 2, 1, 100);
+    if (result != EVT::core::IO::I2C::I2CStatus::OK) {
+        return Status::I2C_ERROR;
+    }
+    return Status::OK;
 }
 
 BQ76952::Status BQ76952::makeDirectRead(uint8_t reg, uint16_t* result) {
@@ -169,6 +178,26 @@ void BQ76952::makeDirectCommand(uint8_t registerAddr, uint16_t data) {
                        static_cast<uint8_t>(data >> 8)};
 
     i2c.writeReg(i2cAddress, reg, 1, bytes, 2);
+}
+
+BQ76952::Status BQ76952::inConfigMode(bool* result) {
+    /** Bit 0 in the BATTERY_STATUS_REG is the config mode status */
+    const uint8_t configMask = 0x1;
+
+    auto status = i2c.write(i2cAddress, BATTERY_STATUS_REG);
+    if (status != EVT::core::IO::I2C::I2CStatus::OK) {
+        return Status::I2C_ERROR;
+    }
+
+    // Attempt to read back the value
+    uint8_t resultRaw[2];
+    status = i2c.read(i2cAddress, resultRaw, 2);
+    if (status != EVT::core::IO::I2C::I2CStatus::OK) {
+        return Status::I2C_ERROR;
+    }
+
+    *result = resultRaw[0] & configMask;
+    return Status::OK;
 }
 
 }  // namespace BMS::DEV

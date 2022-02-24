@@ -47,7 +47,7 @@ void directRead(IO::UART &uart, BMS::DEV::BQ76952 &bq) {
  * @param[in] uart The UART interface to read from
  * @param[in] bq The BQ interface
  */
-void subcommandRead(IO::UART& uart, BMS::DEV::BQ76952& bq) {
+void subcommandRead(IO::UART &uart, BMS::DEV::BQ76952 &bq) {
     uart.printf("Enter the subcommand address in hex: 0x");
     uart.gets(inputBuffer, MAX_BUFF);
     uart.printf("\r\n");
@@ -74,7 +74,7 @@ void subcommandRead(IO::UART& uart, BMS::DEV::BQ76952& bq) {
  * @param[in] uart The UART interface to read in from
  * @param[in] bq The BQ interface to use
  */
-void ramRead(IO::UART &uart, BMS::DEV::BQ76952& bq) {
+void ramRead(IO::UART &uart, BMS::DEV::BQ76952 &bq) {
     uart.printf("Enter the RAM address in hex: 0x");
     uart.gets(inputBuffer, MAX_BUFF);
     uart.printf("\r\n");
@@ -93,7 +93,6 @@ void ramRead(IO::UART &uart, BMS::DEV::BQ76952& bq) {
     }
 
     uart.printf("Register 0x%x: 0x%08X\r\n", reg, ramValue);
-
 }
 
 /**
@@ -113,9 +112,79 @@ void indirectWrite(IO::UART &uart) {}
 /**
  * Function for making a RAM write request
  *
+ * NOTE: BQ chip must be in config mode
+ *
  * @param[in] uart The UART interface to write in from
  */
-void ramWrite(IO::UART &uart) {}
+void ramWrite(IO::UART &uart, BMS::DEV::BQ76952& bq) {}
+
+/**
+ * Put the BQ chip into config mode and check the status
+ *
+ * @param[in] uart The interface to print status messages to
+ * @param[in] bq The interface to communicate with the BQ
+ */
+void enterConfigMode(IO::UART &uart, BMS::DEV::BQ76952 &bq) {
+    uart.printf("Putting the BQ chip into config mode\r\n");
+
+    // Attempt to put the BQ into configure update mode
+    auto result = bq.enterConfigUpdateMode();
+    if (result != BMS::DEV::BQ76952::Status::OK) {
+        uart.printf("Failed writing out config update mode\r\n");
+        return;
+    }
+
+    // Check to make sure the BQ is actually in configure update mode
+    bool isInConfig;
+    result = bq.inConfigMode(&isInConfig);
+    if (result != BMS::DEV::BQ76952::Status::OK) {
+        uart.printf("Failed to try to read back the config update status\r\n");
+        return;
+    }
+
+    if(isInConfig) {
+        uart.printf("BQ in config update mode\r\n");
+        return;
+    }
+    else {
+        uart.printf("BQ NOT in config update mode\r\n");
+        return;
+    }
+}
+
+/**
+ * Have the BQ chip exit config update mode
+ *
+ * @param[in] uart The interface to print status messages to
+ * @param[in] bq The interface to communicate with the BQ
+ */
+void exitConfigMode(IO::UART &uart, BMS::DEV::BQ76952 &bq) {
+    uart.printf("Pulling the BQ chip out of config mode\r\n");
+
+    // Attempt to put the BQ into configure update mode
+    auto result = bq.exitConfigUpdateMode();
+    if (result != BMS::DEV::BQ76952::Status::OK) {
+        uart.printf("Failed writing out config update mode\r\n");
+        return;
+    }
+
+    // Check to make sure the BQ is actually in configure update mode
+    bool isInConfig;
+    result = bq.inConfigMode(&isInConfig);
+    if (result != BMS::DEV::BQ76952::Status::OK) {
+        uart.printf("Failed to try to read back the config update status\r\n");
+        return;
+    }
+
+    if(isInConfig) {
+        uart.printf("BQ in config update mode\r\n");
+        return;
+    }
+    else {
+        uart.printf("BQ NOT in config update mode\r\n");
+        return;
+    }
+}
 
 int main() {
     IO::I2C &i2c = IO::getI2C<IO::Pin::PB_8, IO::Pin::PB_9>();
@@ -153,6 +222,15 @@ int main() {
                 break;
             // RAM write
             case 'R':
+                ramWrite(uart, bq);
+                break;
+            // Enter config mode
+            case 'c':
+                enterConfigMode(uart, bq);
+                break;
+            // Exist config mode
+            case 'x':
+                exitConfigMode(uart, bq);
                 break;
         }
     }
