@@ -11,13 +11,13 @@ void BQ76952::writeSetting(BMS::BQSetting& setting) {
     // Call the cooresponding setting write command
     switch (setting.getSettingType()) {
         case BMS::BQSetting::BQSettingType::DIRECT:
-            this->writeDirectSetting(setting);
+            // this->writeDirectSetting(setting);
             break;
         case BMS::BQSetting::BQSettingType::SUBCOMMAND:
-            this->writeSubcommandSetting(setting);
+            // this->writeSubcommandSetting(setting);
             break;
         case BMS::BQSetting::BQSettingType::RAM:
-            this->writeRAMSetting(setting);
+            this->makeRAMWrite(setting);
             break;
     }
 }
@@ -44,27 +44,27 @@ void BQ76952::exitConfigUpdateMode() {
     i2c.writeMemReg(i2cAddress, 0x3E, transfer, 2, 1, 100);
 }
 
-BQ76952::BQ76952Status BQ76952::makeDirectRead(uint8_t reg, uint16_t* result) {
+BQ76952::Status BQ76952::makeDirectRead(uint8_t reg, uint16_t* result) {
     // Write out the target register
     auto status = i2c.write(i2cAddress, reg);
     if (status != EVT::core::IO::I2C::I2CStatus::OK) {
-        return BQ76952Status::ERROR;
+        return Status::I2C_ERROR;
     }
 
     // Attempt to read back the value
     uint8_t resultRaw[2];
     status = i2c.read(i2cAddress, resultRaw, 2);
     if (status != EVT::core::IO::I2C::I2CStatus::OK) {
-        return BQ76952Status::ERROR;
+        return Status::I2C_ERROR;
     }
 
     *result = resultRaw[1] << 8 | resultRaw[0];
 
     // Return successful
-    return BQ76952Status::OK;
+    return Status::OK;
 }
 
-BQ76952::BQ76952Status BQ76952::makeSubcommandRead(uint16_t reg, uint32_t* result) {
+BQ76952::Status BQ76952::makeSubcommandRead(uint16_t reg, uint32_t* result) {
     // Write out the target subcommand
     uint8_t targetReg[] = {reg & 0xFF, (reg >> 8) & 0XFF};
     auto status = i2c.writeMemReg(i2cAddress, 0x3E, targetReg, 2, 1, 1);
@@ -73,16 +73,16 @@ BQ76952::BQ76952Status BQ76952::makeSubcommandRead(uint16_t reg, uint32_t* resul
     uint8_t resultRaw[4];
     status = i2c.readMemReg(i2cAddress, 0x40, &resultRaw[0], 4, 1);
     if (status != EVT::core::IO::I2C::I2CStatus::OK) {
-        return BQ76952Status::ERROR;
+        return Status::I2C_ERROR;
     }
 
     *result = ((resultRaw[3] & 0xFF) << 26) | ((resultRaw[2] & 0xFF) << 16) |
               ((resultRaw[1] & 0xFF) << 8)  | (resultRaw[0] & 0xFF);
 
-    return BQ76952Status::OK;
+    return Status::OK;
 }
 
-BQ76952::BQ76952Status BQ76952::makeRAMRead(uint16_t reg, uint32_t* result) {
+BQ76952::Status BQ76952::makeRAMRead(uint16_t reg, uint32_t* result) {
     // Write out the target subcommand
     uint8_t targetReg[] = {reg & 0xFF, (reg >> 8) & 0XFF};
     auto status = i2c.writeMemReg(i2cAddress, 0x3E, targetReg, 2, 1, 1);
@@ -91,13 +91,13 @@ BQ76952::BQ76952Status BQ76952::makeRAMRead(uint16_t reg, uint32_t* result) {
     uint8_t resultRaw[4];
     status = i2c.readMemReg(i2cAddress, 0x40, &resultRaw[0], 4, 1);
     if (status != EVT::core::IO::I2C::I2CStatus::OK) {
-        return BQ76952Status::ERROR;
+        return Status::I2C_ERROR;
     }
 
     *result = ((resultRaw[3] & 0xFF) << 26) | ((resultRaw[2] & 0xFF) << 16) |
               ((resultRaw[1] & 0xFF) << 8)  | (resultRaw[0] & 0xFF);
 
-    return BQ76952Status::OK;
+    return Status::OK;
 }
 
 void BQ76952::writeDirectSetting(BMS::BQSetting& setting) {
@@ -109,9 +109,7 @@ void BQ76952::writeDirectSetting(BMS::BQSetting& setting) {
     makeDirectCommand(reg, data);
 }
 
-void BQ76952::writeSubcommandSetting(BMS::BQSetting& setting) {}
-
-void BQ76952::writeRAMSetting(BMS::BQSetting& setting) {
+BQ76952::Status BQ76952::makeRAMWrite(BMS::BQSetting& setting) {
     // Array which stores all bytes that make up a RAM write request
     // transfer[0]: LSB of the RAM register address
     // transfer[1]: LSB of the address in RAM
@@ -128,8 +126,13 @@ void BQ76952::writeRAMSetting(BMS::BQSetting& setting) {
     }
 
     // i2c.write(i2cAddress, transfer, 3 + setting.getNumBytes());
-    i2c.writeMemReg(i2cAddress, RAM_BASE_ADDRESS, transfer,
-                    2 + setting.getNumBytes(), 1, 100);
+    auto result = i2c.writeMemReg(i2cAddress, RAM_BASE_ADDRESS, transfer,
+                                  2 + setting.getNumBytes(), 1, 100);
+
+    // Make sure the transfer take place successfully
+    if (result != EVT::core::IO::I2C::I2CStatus::OK) {
+        return Status::I2C_ERROR;
+    }
 
     // Calculate and write out checksum and data length,
     // checksum algorithm = ~(ram_address + sum(data_bytes))
@@ -148,7 +151,15 @@ void BQ76952::writeRAMSetting(BMS::BQSetting& setting) {
 
     // TODO: Determine if the basic I2C write method is correct,
     // i2c.write(i2cAddress, transfer, 3 + setting.getNumBytes());
-    i2c.writeMemReg(i2cAddress, RAM_CHECKSUM_ADDRESS, transfer, 2, 1, 100);
+    result = i2c.writeMemReg(i2cAddress, RAM_CHECKSUM_ADDRESS, transfer, 2, 1,
+                             100);
+
+    // Make sure the checksum transfer took place successfully
+    if (result != EVT::core::IO::I2C::I2CStatus::OK) {
+        return Status::I2C_ERROR;
+    }
+    // TODO: Add check to make sure the setting was stored correctly
+    return Status::OK;
 }
 
 void BQ76952::makeDirectCommand(uint8_t registerAddr, uint16_t data) {

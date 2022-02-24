@@ -32,7 +32,7 @@ void directRead(IO::UART &uart, BMS::DEV::BQ76952 &bq) {
     auto result = bq.makeDirectRead(reg, &regValue);
 
     // Make sure the read was successful
-    if (result != BMS::DEV::BQ76952::BQ76952Status::OK) {
+    if (result != BMS::DEV::BQ76952::Status::OK) {
         uart.printf("Failed to read register: 0x%x\r\n", reg);
         return;
     }
@@ -60,7 +60,7 @@ void subcommandRead(IO::UART& uart, BMS::DEV::BQ76952& bq) {
     auto result = bq.makeSubcommandRead(reg, &subcommandValue);
 
     // Make sure the read was successful
-    if (result != BMS::DEV::BQ76952::BQ76952Status::OK) {
+    if (result != BMS::DEV::BQ76952::Status::OK) {
         uart.printf("Failed to read register: 0x%x\r\n", reg);
         return;
     }
@@ -87,7 +87,7 @@ void ramRead(IO::UART &uart, BMS::DEV::BQ76952& bq) {
     auto result = bq.makeRAMRead(reg, &ramValue);
 
     // Make sure the read was successful
-    if (result != BMS::DEV::BQ76952::BQ76952Status::OK) {
+    if (result != BMS::DEV::BQ76952::Status::OK) {
         uart.printf("Failed to read register: 0x%x\r\n", reg);
         return;
     }
