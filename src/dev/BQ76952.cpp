@@ -146,13 +146,12 @@ BQ76952::Status BQ76952::makeRAMWrite(BMS::BQSetting& setting) {
     // Calculate and write out checksum and data length,
     // checksum algorithm = ~(ram_address + sum(data_bytes))
     // Detailed in BQ76952 Software Development Guide
-    uint8_t checksum = 0;
-    for (int i = 1; i < (3 + setting.getNumBytes()); i++) {
+    uint8_t checksum = transfer[0] + transfer[1];
+    for (int i = 2; i < (2 + setting.getNumBytes()); i++) {
         checksum += transfer[i];
     }
     checksum = ~checksum;
-    uint8_t length =
-        1 + 3 + setting.getNumBytes();  // Extra 1 for the I2C address itself
+    uint8_t length = 4 + setting.getNumBytes();
 
     // transfer[0] = RAM_CHECKSUM_ADDRESS;
     transfer[0] = checksum;
