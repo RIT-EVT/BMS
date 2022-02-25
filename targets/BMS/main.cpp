@@ -122,12 +122,14 @@ int main() {
     };
 
     CO_NODE canNode;
+    time::wait(500);
+
+    can.connect();
 
     CONodeInit(&canNode, &canSpec);
     CONodeStart(&canNode);
     CONmtSetMode(&canNode.Nmt, CO_OPERATIONAL);
 
-    time::wait(500);
 
     // String to store user input
     // char buf[100];
