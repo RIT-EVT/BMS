@@ -35,7 +35,7 @@
 "Calibration","Current","Capacity Gain","mΩ","F","4","0x000091ac","1.012","2.98262E+03","4.193046E+08","f.ffffff","2257363.227/x","2257363.227/x","","","—"
 "Calibration","Vcell Offset","Vcell Offset","mV","I","2","0x000091b0","0","-32767","32767","ddd","x+0","x","","","mV"
 "Calibration","V Divider Offset","Vdiv Offset","userV","I","2","0x000091b2","0","-32767","32767","ddd","x+0","x","","","userV"
-"Calibration","Current Offset","Coulomb Counter Offset Samples","—","U","2","0x000091c6","64","0","65535","ddd","x+0","x","","","—"
+"Calibration","Current Offset","Coulomb Counter Offset Samples","—","U","2","0x000091c6","65","0","65535","ddd","x+0","x","","","—"
 "Calibration","Current Offset","Board Offset","—","I","2","0x000091c8","0","-32768","32767","ddd","x+0","x","","","—"
 "Calibration","Temperature","Internal Temp Offset","°C","I","1","0x000091ca","0","-128","127","dd.d","x+0","x","","","0.1°C"
 "Calibration","Temperature","CFETOFF Temp Offset","°C","I","1","0x000091cb","0","-128","127","dd.d","x+0","x","","","0.1°C"
