@@ -48,7 +48,7 @@ class BQ76952 {
      *
      * @param setting[in] The BQ setting to write out.
      */
-    void writeSetting(BQSetting& setting);
+    Status writeSetting(BQSetting& setting);
 
     /**
      * Enter CONFIG_UPDATE mode. This is the mode that the BQ chip should

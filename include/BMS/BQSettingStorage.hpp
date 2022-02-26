@@ -107,7 +107,7 @@ public:
      * Transfer settings from EEPROM to the BQ chip. This will read the
      * settings one-by-one and pass the setting to the BQ chip for programming.
      */
-    void transferSettings();
+    BMS::DEV::BQ76952::Status transferSettings();
 
 private:
     /**
