@@ -52,6 +52,16 @@ uint16_t BQSetting::getAddress() {
 }
 
 uint32_t BQSetting::getData() {
+    switch(numBytes) {
+        case 1:
+            return data & 0xFF;
+        case 2:
+            return data & 0xFFFF;
+        case 3:
+            return data & 0xFFFFFF;
+        case 4:
+            return data & 0xFFFFFFFF;
+    }
     return data;
 }
 
