@@ -169,14 +169,14 @@ BQ76952::Status BQ76952::makeRAMWrite(BMS::BQSetting& setting) {
     // written out
     uint16_t address = 0;
     uint16_t targetAddress = setting.getAddress();
-    uint16_t rawResponse[2];
+    uint16_t rawResponse;
     uint32_t startTime = EVT::core::time::millis();
 
     // Try to read back the address that was written out
     while(address != targetAddress) {
         // Attempt to reach back the address
-        RETURN_IF_ERR(makeDirectRead(RAM_BASE_ADDRESS, rawResponse));
-        address = rawResponse[1] << 8 | rawResponse[0];
+        RETURN_IF_ERR(makeDirectRead(RAM_BASE_ADDRESS, &rawResponse));
+        address = rawResponse;
 
         // Check to see if a timeout occured
         if(EVT::core::time::millis() - startTime > TIMEOUT) {
@@ -184,13 +184,10 @@ BQ76952::Status BQ76952::makeRAMWrite(BMS::BQSetting& setting) {
         }
     }
 
-    // Read back the checksum and data length
-    RETURN_IF_ERR(makeDirectRead(RAM_CHECKSUM_ADDRESS, rawResponse));
-    uint8_t readChecksum = rawResponse[0];
-    uint8_t readLength = rawResponse[1];
-
-    // Verify the results matches expectations
-    if(checksum != readChecksum || length != readLength) {
+    // Verify the data written matches
+    uint32_t readData;
+    RETURN_IF_ERR(makeRAMRead(0x40, &readData));
+    if(readData != setting.getData()) {
         return Status::ERROR;
     }
 
