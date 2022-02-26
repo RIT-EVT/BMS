@@ -1,4 +1,5 @@
 #include <BMS/dev/BQ76952.hpp>
+#include <EVT/utils/time.hpp>
 
 /// Macro to make an I2C transfer and return an error on failure
 #define I2C_RETURN_IF_ERR(func) if(func != EVT::core::IO::I2C::I2CStatus::OK) {\
@@ -161,7 +162,38 @@ BQ76952::Status BQ76952::makeRAMWrite(BMS::BQSetting& setting) {
     I2C_RETURN_IF_ERR(i2c.writeMemReg(i2cAddress, RAM_CHECKSUM_ADDRESS,
                                       transfer, 2, 1, 100));
 
-    // TODO: Add check to make sure the setting was stored correctly
+    // Verify the transfer took place successfully. From the BQ Technical
+    // Reference Manual Chapter 3. This can be done by polling the address
+    // register until the address matches what was written out can be read
+    // back. Then you can verify the checksum and length matches what was
+    // written out
+    uint16_t address = 0;
+    uint16_t targetAddress = setting.getAddress();
+    uint16_t rawResponse[2];
+    uint32_t startTime = EVT::core::time::millis();
+
+    // Try to read back the address that was written out
+    while(address != targetAddress) {
+        // Attempt to reach back the address
+        RETURN_IF_ERR(makeDirectRead(RAM_BASE_ADDRESS, rawResponse));
+        address = rawResponse[1] << 8 | rawResponse[0];
+
+        // Check to see if a timeout occured
+        if(EVT::core::time::millis() - startTime > TIMEOUT) {
+            return Status::TIMEOUT;
+        }
+    }
+
+    // Read back the checksum and data length
+    RETURN_IF_ERR(makeDirectRead(RAM_CHECKSUM_ADDRESS, rawResponse));
+    uint8_t readChecksum = rawResponse[0];
+    uint8_t readLength = rawResponse[1];
+
+    // Verify the results matches expectations
+    if(checksum != readChecksum || length != readLength) {
+        return Status::ERROR;
+    }
+
     return Status::OK;
 }
 
