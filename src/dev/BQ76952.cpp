@@ -5,6 +5,14 @@
     return Status::I2C_ERROR; \
 }
 
+// Macro to pass along errors that may have been generated
+#define RETURN_IF_ERR(func) {\
+    Status result_ = func;\
+    if(result_ != Status::OK) {\
+        return result_;\
+    } \
+}
+
 namespace BMS::DEV {
 
 BQ76952::BQ76952(EVT::core::IO::I2C& i2c, uint8_t i2cAddress)
@@ -35,13 +43,12 @@ BQ76952::Status BQ76952::enterConfigUpdateMode() {
     uint8_t transfer[] = {0x90, 0x00};
     I2C_RETURN_IF_ERR(i2c.writeMemReg(i2cAddress, 0x3E, transfer, 2, 1, 100));
 
-    // TODO: Wait for the 0x12 Battery Status()[CFGUPDATE] flag to set
-    // to ensure the device has entered CONFIG_UPDATE mode
-
-    // uint8_t status = 0;
-    // do {
-    //      status = i2c.readReg(i2cAddress, 0x12) & 0x1;
-    // } while(!status);
+    // Make sure the device actually entered Config Update Mode
+    bool isInConfigMode;
+    RETURN_IF_ERR(inConfigMode(&isInConfigMode));
+    if(!isInConfigMode) {
+        return Status::ERROR;
+    }
 
     return Status::OK;
 }
@@ -49,6 +56,16 @@ BQ76952::Status BQ76952::enterConfigUpdateMode() {
 BQ76952::Status BQ76952::exitConfigUpdateMode() {
     uint8_t transfer[] = {0x92, 0x00};
     I2C_RETURN_IF_ERR(i2c.writeMemReg(i2cAddress, 0x3E, transfer, 2, 1, 100));
+
+     // Make sure the device actually exited Config Update Mode
+    bool isInConfigMode;
+    RETURN_IF_ERR(inConfigMode(&isInConfigMode));
+    if(isInConfigMode) {
+        return Status::ERROR;
+    }
+
+    return Status::OK;
+
     return Status::OK;
 }
 

@@ -202,21 +202,7 @@ void enterConfigMode(IO::UART &uart, BMS::DEV::BQ76952 &bq) {
         return;
     }
 
-    // Check to make sure the BQ is actually in configure update mode
-    bool isInConfig;
-    result = bq.inConfigMode(&isInConfig);
-    if (result != BMS::DEV::BQ76952::Status::OK) {
-        uart.printf("Failed to try to read back the config update status\r\n");
-        return;
-    }
-
-    if (isInConfig) {
-        uart.printf("BQ in config update mode\r\n");
-        return;
-    } else {
-        uart.printf("BQ NOT in config update mode\r\n");
-        return;
-    }
+    uart.printf("BQ in config mode\r\n");
 }
 
 /**
@@ -235,21 +221,7 @@ void exitConfigMode(IO::UART &uart, BMS::DEV::BQ76952 &bq) {
         return;
     }
 
-    // Check to make sure the BQ is actually in configure update mode
-    bool isInConfig;
-    result = bq.inConfigMode(&isInConfig);
-    if (result != BMS::DEV::BQ76952::Status::OK) {
-        uart.printf("Failed to try to read back the config update status\r\n");
-        return;
-    }
-
-    if (isInConfig) {
-        uart.printf("BQ in config update mode\r\n");
-        return;
-    } else {
-        uart.printf("BQ NOT in config update mode\r\n");
-        return;
-    }
+    uart.printf("BQ not in config mode\r\n");
 }
 
 int main() {
