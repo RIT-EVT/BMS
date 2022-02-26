@@ -6,6 +6,8 @@
 #include <EVT/utils/time.hpp>
 #include <EVT/dev/storage/M24C32.hpp>
 
+
+#include <BMS/BMSLogger.hpp>
 #include <BMS/dev/BQ76952.hpp>
 #include <BMS/BQSetting.hpp>
 #include <BMS/BQSettingStorage.hpp>
@@ -21,12 +23,34 @@ int main() {
 
     uart.printf("\r\n\r\nBQ Setting Transfer Test\r\n");
 
+    BMS::LOGGER.setUART(&uart);
+    BMS::LOGGER.setLogLevel(BMS::BMSLogger::LogLevel::DEBUG);
+
+
     EVT::core::time::wait(500);
 
     BMS::DEV::BQ76952 bq(i2c, BQ_I2C_ADDR);
     BMS::BQSettingsStorage settingsStorage(eeprom, bq);
 
-    settingsStorage.transferSettings();
+    auto status = settingsStorage.transferSettings();
+
+    switch(status) {
+        case BMS::DEV::BQ76952::Status::ERROR:
+            uart.printf("FAILED: BQ specific error\r\n");
+            break;
+        case BMS::DEV::BQ76952::Status::I2C_ERROR:
+            uart.printf("FAILED: I2C error\r\n");
+            break;
+        case BMS::DEV::BQ76952::Status::TIMEOUT:
+            uart.printf("FAILED: Timeout waiting for BQ\r\n");
+            break;
+        case BMS::DEV::BQ76952::Status::OK:
+            uart.printf("SUCCESS\r\n");
+            break;
+        default:
+            uart.printf("FAILED: Unknown error\r\n");
+            break;
+    }
 
     EVT::core::time::wait(500);
 

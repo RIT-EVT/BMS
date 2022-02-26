@@ -222,19 +222,24 @@ void BQSettingsStorage::incrementEEPROMOffset() {
     eepromOffset++;
 }
 
-void BQSettingsStorage::transferSettings() {
+BMS::DEV::BQ76952::Status BQSettingsStorage::transferSettings() {
     BQSetting setting;
 
     bq.enterConfigUpdateMode();
 
     resetEEPROMOffset();
+    BMS::DEV::BQ76952::Status status;
     for (int i = 0; i < numSettings; i++) {
         readSetting(setting);
-        bq.writeSetting(setting);
+        status = bq.writeSetting(setting);
 
-        // TODO: Add ability to check status of BQ chip instead of arbitrary
-        // wait statement
-        EVT::core::time::wait(20);
+        // Verify the setting transferred successfully
+        if(status != BMS::DEV::BQ76952::Status::OK) {
+            LOGGER.log(BMSLogger::LogLevel::DEBUG,
+                       "Failed with address: 0x%04x, data: 0x%04x",
+                       setting.getAddress(), setting.getData());
+            return status;
+        }
     }
 
     bq.exitConfigUpdateMode();

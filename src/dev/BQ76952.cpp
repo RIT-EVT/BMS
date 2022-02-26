@@ -21,7 +21,7 @@ BQ76952::BQ76952(EVT::core::IO::I2C& i2c, uint8_t i2cAddress)
     // Empty constructor
 }
 
-void BQ76952::writeSetting(BMS::BQSetting& setting) {
+BQ76952::Status BQ76952::writeSetting(BMS::BQSetting& setting) {
     // Call the cooresponding setting write command
     switch (setting.getSettingType()) {
         case BMS::BQSetting::BQSettingType::DIRECT:
@@ -31,8 +31,7 @@ void BQ76952::writeSetting(BMS::BQSetting& setting) {
             // this->writeSubcommandSetting(setting);
             break;
         case BMS::BQSetting::BQSettingType::RAM:
-            this->makeRAMWrite(setting);
-            break;
+            return this->makeRAMWrite(setting);
     }
 }
 
