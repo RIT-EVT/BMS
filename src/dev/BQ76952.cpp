@@ -186,6 +186,20 @@ BQ76952::Status BQ76952::makeRAMWrite(BMS::BQSetting& setting) {
     // Verify the data written matches
     uint32_t readData;
     RETURN_IF_ERR(makeRAMRead(0x40, &readData));
+    switch(setting.getNumBytes()) {
+        case 1:
+            readData = readData & 0xFF;
+            break;
+        case 2:
+            readData = readData & 0xFFFF;
+            break;
+        case 3:
+            readData = readData & 0xFFFFFF;
+            break;
+        case 4:
+            readData = readData & 0xFFFFFFFF;
+            break;
+    }
     if(readData != setting.getData()) {
         return Status::ERROR;
     }
