@@ -107,8 +107,10 @@ BQ76952::Status BQ76952::makeRAMRead(uint16_t reg, uint32_t* result) {
     uint8_t resultRaw[4];
     I2C_RETURN_IF_ERR(i2c.readMemReg(i2cAddress, 0x40, &resultRaw[0], 4, 1));
 
-    *result = ((resultRaw[3] & 0xFF) << 26) | ((resultRaw[2] & 0xFF) << 16) |
-              ((resultRaw[1] & 0xFF) << 8)  | (resultRaw[0] & 0xFF);
+    *result = static_cast<uint32_t>(resultRaw[3] & 0xFF) << 24 |
+              static_cast<uint32_t>(resultRaw[2] & 0xFF) << 16 |
+              static_cast<uint32_t>(resultRaw[1] & 0xFF) << 8  |
+              static_cast<uint32_t>(resultRaw[0] & 0xFF);
 
     return Status::OK;
 }
@@ -127,7 +129,7 @@ BQ76952::Status BQ76952::makeRAMWrite(BMS::BQSetting& setting) {
     // transfer[0]: LSB of the address in RAM
     // transfer[1]: MSB of the address in RAM
     // transfer[2:]: Data associated with the setting
-    uint8_t transfer[3 + setting.getNumBytes()];
+    uint8_t transfer[7];
 
     // Insert RAM address into transfer buffer
     transfer[0] = static_cast<uint8_t>(setting.getAddress() & 0xFF);
@@ -140,7 +142,7 @@ BQ76952::Status BQ76952::makeRAMWrite(BMS::BQSetting& setting) {
 
     // Send over the settings
     I2C_RETURN_IF_ERR(i2c.writeMemReg(i2cAddress, RAM_BASE_ADDRESS, transfer,
-                                      2 + setting.getNumBytes(), 1, 100));
+                                      3 + setting.getNumBytes(), 1, 100));
 
     // Calculate and write out checksum and data length,
     // checksum algorithm = ~(ram_address + sum(data_bytes))
@@ -185,7 +187,7 @@ BQ76952::Status BQ76952::makeRAMWrite(BMS::BQSetting& setting) {
 
     // Verify the data written matches
     uint32_t readData;
-    RETURN_IF_ERR(makeRAMRead(0x40, &readData));
+    RETURN_IF_ERR(makeRAMRead(setting.getAddress(), &readData));
     switch(setting.getNumBytes()) {
         case 1:
             readData = readData & 0xFF;
