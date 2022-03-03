@@ -6,7 +6,6 @@ namespace BMS {
 BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq) : bqSettingsStorage(bqSettingsStorage), bq(bq) {
 }
 
-
 CO_OBJ_T* BMS::getObjectDictionary() {
     return &objectDictionary[0];
 }

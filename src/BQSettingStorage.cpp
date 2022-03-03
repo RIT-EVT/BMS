@@ -214,14 +214,6 @@ void BQSettingsStorage::resetEEPROMOffset() {
     addressLocation = startAddress + 2;
 }
 
-void BQSettingsStorage::resetEEPROMOffset() {
-    eepromOffset = 0;
-}
-
-void BQSettingsStorage::incrementEEPROMOffset() {
-    eepromOffset++;
-}
-
 BMS::DEV::BQ76952::Status BQSettingsStorage::transferSettings() {
     BQSetting setting;
 

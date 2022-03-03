@@ -6,7 +6,7 @@
 #include <EVT/io/manager.hpp>
 #include <EVT/io/pin.hpp>
 #include <EVT/io/UART.hpp>
-#include <EVT/io/types/CANmessage.hpp>
+#include <EVT/io/types/CANMessage.hpp>
 #include <EVT/utils/types/FixedQueue.hpp>
 #include <EVT/io/CANopen.hpp>
 #include <EVT/dev/platform/f3xx/f302x8/Timerf302x8.hpp>
@@ -31,14 +31,16 @@ void canInterruptHandler(IO::CANMessage& message, void* priv) {
         (EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>*)priv;
     if (queue == nullptr)
         return;
-    if(!message.isCANExtended())
+    if (!message.isCANExtended())
         queue->append(message);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // CANopen specific Callbacks. Need to be defined in some location
 ///////////////////////////////////////////////////////////////////////////////
-extern "C" void CONodeFatalError(void) { }
+extern "C" void CONodeFatalError(void) {
+    BMS::LOGGER.log(BMS::BMSLogger::LogLevel::ERROR, "Fatal CANopen error");
+}
 
 extern "C" void COIfCanReceive(CO_IF_FRM *frm) { }
 
@@ -83,7 +85,7 @@ int main() {
     BMS::LOGGER.setLogLevel(BMS::BMSLogger::LogLevel::DEBUG);
 
     EVT::core::IO::I2C& i2c = EVT::core::IO::getI2C<IO::Pin::PB_8, IO::Pin::PB_9>();
-    EVT::core::DEV::M24C32 eeprom(0x11, i2c);
+    EVT::core::DEV::M24C32 eeprom(0x50, i2c);
 
     BMS::DEV::BQ76952 bq(i2c, 0x10);
     BMS::BQSettingsStorage bqSettingsStorage(eeprom, bq);
@@ -130,9 +132,6 @@ int main() {
     CONodeStart(&canNode);
     CONmtSetMode(&canNode.Nmt, CO_OPERATIONAL);
 
-
-    // String to store user input
-    // char buf[100];
 
     while (1) {
         // Process incoming CAN messages
