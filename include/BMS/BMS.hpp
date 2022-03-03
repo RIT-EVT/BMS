@@ -115,7 +115,7 @@ private:
         {
             .Key = CO_KEY(0x1800, 1, CO_UNSIGNED32|CO_OBJ_D__R_),
             .Type = 0,
-            .Data = (uintptr_t)CO_COBID_TPDO_DEFAULT(0)
+            .Data = (uintptr_t)0x40000180 + NODE_ID
         },
         {
             .Key = CO_KEY(0x1800, 2, CO_UNSIGNED8|CO_OBJ_D__R_),
