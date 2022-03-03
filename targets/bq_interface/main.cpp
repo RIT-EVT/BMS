@@ -167,7 +167,7 @@ void ramWrite(IO::UART &uart, BMS::DEV::BQ76952 &bq) {
 
         BMS::BQSetting setting(type, numBytes, ramAddress, data);
 
-        result = bq.makeRAMWrite(setting);
+        result = bq.writeRAMSetting(setting);
 
         if (result != BMS::DEV::BQ76952::Status::OK) {
             uart.printf("Failed to write out RAM setting\r\n");

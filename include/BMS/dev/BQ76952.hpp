@@ -15,7 +15,7 @@ namespace BMS::DEV {
  * the cooresponding I2C commands to write out the settings.
  */
 class BQ76952 {
-   public:
+public:
     /**
      * Represent the status reflecting the state of the BQ76952
      *
@@ -103,6 +103,16 @@ class BQ76952 {
     Status makeRAMRead(uint16_t reg, uint32_t* result);
 
     /**
+     * Execute a direct command write. This involves writing out at
+     * most 16 bytes to a register.
+     *
+     * @param[in] reg The I2C register address to write to
+     * @param[in] data The data to write out
+     * @return The status of the write request attempt
+     */
+    Status makeDirectWrite(uint8_t reg, uint16_t data);
+
+    /**
      * Write out a subcommand settings. Subcommands take in a 16 bit address
      * which are written out to I2C registers 0x3E and 0x3F in little endian.
      *
@@ -115,7 +125,7 @@ class BQ76952 {
      *         Status::ERROR => Setting not accepted by BQ
      *         Status::OK => Succesfully wrote out the setting
      */
-    Status makeRAMWrite(BQSetting& setting);
+    Status writeRAMSetting(BQSetting& setting);
 
     /**
      * Check to see if the BQ chip is in configure mode. Configure mode is
@@ -133,7 +143,7 @@ class BQ76952 {
     // Total voltage read by the BQ chip (measured in millivolts)
     uint32_t totalVoltage;
 
-   private:
+private:
     /** Keep track of various states of the BQ chip */
     static constexpr uint8_t BATTERY_STATUS_REG = 0x12;
     static constexpr uint8_t RAM_BASE_ADDRESS = 0x3E;
@@ -146,25 +156,6 @@ class BQ76952 {
     EVT::core::IO::I2C& i2c;
     /** The address of the BQ76952 on the I2C bus */
     int8_t i2cAddress;
-
-    /**
-     * Write out a direct settings. Direct settings are controls that are
-     * written into a single I2C register which is a byte wide
-     *
-     * Direct settings can have a maximum of 16 bites of data.
-     *
-     * @param setting[in] The direct setting to write out
-     */
-    void writeDirectSetting(BQSetting& setting);
-
-    /**
-     * Make a direct command. A direct command is made by making a write
-     * request to a 7-bit address with at most 2 bytes of data.
-     *
-     * @param address[in] 7 bit address
-     * @param data[in] 16 byte data to write out
-     */
-    void makeDirectCommand(uint8_t address, uint16_t data);
 };
 
-}  // namespace BMS::DEV
+}// namespace BMS::DEV
