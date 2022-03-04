@@ -14,5 +14,4 @@ uint16_t BMS::getObjectDictionarySize() {
     return OBJECT_DIRECTIONARY_SIZE;
 }
 
-
-}  // namespace BMS
+}// namespace BMS

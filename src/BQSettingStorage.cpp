@@ -1,7 +1,7 @@
 #include <EVT/utils/time.hpp>
 
-#include <BMS/BQSettingStorage.hpp>
 #include <BMS/BMSLogger.hpp>
+#include <BMS/BQSettingStorage.hpp>
 #include <stdint.h>
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -19,14 +19,14 @@
  * @return Number of bytes to store all BQSettings
  */
 static uint32_t COBQSettingSize(struct CO_OBJ_T* obj, struct CO_NODE_T* node,
-        uint32_t width, void* priv) {
-    BMS::BQSettingsStorage* storage = (BMS::BQSettingsStorage*)priv;
+                                uint32_t width, void* priv) {
+    BMS::BQSettingsStorage* storage = (BMS::BQSettingsStorage*) priv;
 
-    (void)obj;
-    (void)node;
-    (void)width;
+    (void) obj;
+    (void) node;
+    (void) width;
 
-    if(!storage) {
+    if (!storage) {
         BMS::LOGGER.log(BMS::BMSLogger::LogLevel::ERROR, "Storage not provided");
         return 0;
     }
@@ -55,12 +55,12 @@ static uint32_t COBQSettingSize(struct CO_OBJ_T* obj, struct CO_NODE_T* node,
  * @param priv[in] The private data (BQSettingsStorage)
  * @return CO_ERR_NONE on success
  */
-static CO_ERR COBQSettingRead(CO_OBJ_T* obj, CO_NODE_T* node, void *buf, uint32_t len, void* priv) {
+static CO_ERR COBQSettingRead(CO_OBJ_T* obj, CO_NODE_T* node, void* buf, uint32_t len, void* priv) {
 
-    (void)obj;
-    (void)node;
-    (void)buf;
-    (void)len;
+    (void) obj;
+    (void) node;
+    (void) buf;
+    (void) len;
 
     BMS::LOGGER.log(BMS::BMSLogger::LogLevel::WARNING, "Read not supported for BQSettings");
 
@@ -83,13 +83,13 @@ static CO_ERR COBQSettingWrite(CO_OBJ* obj, CO_NODE_T* node, void* buf, uint32_t
     BMS::LOGGER.log(BMS::BMSLogger::LogLevel::INFO, "WRITE REQUEST MADE");
     BMS::LOGGER.log(BMS::BMSLogger::LogLevel::INFO, "Bytes incoming: %u", len);
 
-    uint8_t* buffer = (uint8_t*)buf;
+    uint8_t* buffer = (uint8_t*) buf;
 
     if (len == 0)
         return CO_ERR_NONE;
 
-    BMS::BQSettingsStorage* storage = (BMS::BQSettingsStorage*)priv;
-    if(!storage) {
+    BMS::BQSettingsStorage* storage = (BMS::BQSettingsStorage*) priv;
+    if (!storage) {
         BMS::LOGGER.log(BMS::BMSLogger::LogLevel::ERROR, "Storage not provided");
         return CO_ERR_BAD_ARG;
     }
@@ -113,15 +113,15 @@ static CO_ERR COBQSettingWrite(CO_OBJ* obj, CO_NODE_T* node, void* buf, uint32_t
  * @param priv[in] The private data (BQSettingsStorage)
  */
 static CO_ERR COBQSettingCtrl(CO_OBJ* obj, CO_NODE_T* node, uint16_t func, uint32_t para, void* priv) {
-    (void)obj;
-    (void)node;
-    (void)para;
+    (void) obj;
+    (void) node;
+    (void) para;
 
     if (priv == nullptr) {
         return CO_ERR_NONE;
     }
 
-    BMS::BQSettingsStorage* settingsStorage = (BMS::BQSettingsStorage*)priv;
+    BMS::BQSettingsStorage* settingsStorage = (BMS::BQSettingsStorage*) priv;
 
     // Reset the offset
     if (func == CO_CTRL_SET_OFF) {
@@ -137,12 +137,10 @@ static CO_ERR COBQSettingCtrl(CO_OBJ* obj, CO_NODE_T* node, uint16_t func, uint3
     return CO_ERR_NONE;
 }
 
-
 namespace BMS {
 
-BQSettingsStorage::BQSettingsStorage(EVT::core::DEV::M24C32& eeprom, DEV::BQ76952& bq) :
-    eeprom(eeprom),
-    bq(bq) {
+BQSettingsStorage::BQSettingsStorage(EVT::core::DEV::M24C32& eeprom, DEV::BQ76952& bq) : eeprom(eeprom),
+                                                                                         bq(bq) {
     canOpenInterface.Ctrl = COBQSettingCtrl;
     canOpenInterface.Read = COBQSettingRead;
     canOpenInterface.Write = COBQSettingWrite;
@@ -169,14 +167,14 @@ void BQSettingsStorage::readSetting(BQSetting& setting) {
     uint8_t buffer[BMS::BQSetting::ARRAY_SIZE];
 
     eeprom.readBytes(addressLocation,
-        buffer, BMS::BQSetting::ARRAY_SIZE);
+                     buffer, BMS::BQSetting::ARRAY_SIZE);
 
     LOGGER.log(BMSLogger::LogLevel::DEBUG,
-            "Address Location: %u", addressLocation);
+               "Address Location: %u", addressLocation);
     LOGGER.log(BMSLogger::LogLevel::DEBUG,
-        "{ 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x }",
-        buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5],
-        buffer[6], buffer[7]);
+               "{ 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x }",
+               buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5],
+               buffer[6], buffer[7]);
 
     setting.fromArray(buffer);
 
@@ -190,15 +188,15 @@ void BQSettingsStorage::writeSetting(BQSetting& setting) {
     setting.toArray(buffer);
 
     LOGGER.log(BMSLogger::LogLevel::DEBUG,
-        "{ 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x }",
-        buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5],
-        buffer[6], buffer[7]);
+               "{ 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x }",
+               buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5],
+               buffer[6], buffer[7]);
 
     LOGGER.log(BMSLogger::LogLevel::DEBUG, "Writting to address: 0x%02x",
-        addressLocation);
+               addressLocation);
     // Write the array of data into the EEPROM
     eeprom.writeBytes(addressLocation,
-        buffer, BMS::BQSetting::ARRAY_SIZE);
+                      buffer, BMS::BQSetting::ARRAY_SIZE);
 
     // Increment where to write to next
     addressLocation += BMS::BQSetting::ARRAY_SIZE;
@@ -226,7 +224,7 @@ BMS::DEV::BQ76952::Status BQSettingsStorage::transferSettings() {
         status = bq.writeSetting(setting);
 
         // Verify the setting transferred successfully
-        if(status != BMS::DEV::BQ76952::Status::OK) {
+        if (status != BMS::DEV::BQ76952::Status::OK) {
             LOGGER.log(BMSLogger::LogLevel::DEBUG,
                        "Failed with address: 0x%04x, data: 0x%04x",
                        setting.getAddress(), setting.getData());
@@ -237,4 +235,4 @@ BMS::DEV::BQ76952::Status BQSettingsStorage::transferSettings() {
     bq.exitConfigUpdateMode();
 }
 
-}  // namespace BMS
+}// namespace BMS

@@ -1,6 +1,6 @@
 #include <stdarg.h>
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
 
 #include <BMS/BMSLogger.hpp>
 
@@ -18,25 +18,25 @@ void BMSLogger::setLogLevel(LogLevel level) {
 
 void BMSLogger::log(LogLevel level, const char* format, ...) {
     // If there isn't a UART interface, cannot print
-    if(!uart)
+    if (!uart)
         return;
     // If the log level is too low, don't print
-    if(level < this->level)
+    if (level < this->level)
         return;
 
-    switch(level) {
-        case LogLevel::DEBUG:
-            uart->printf("DEBUG::");
-            break;
-        case LogLevel::INFO:
-            uart->printf("INFO::");
-            break;
-        case LogLevel::WARNING:
-            uart->printf("WARNING::");
-            break;
-        case LogLevel::ERROR:
-            uart->printf("ERROR::");
-            break;
+    switch (level) {
+    case LogLevel::DEBUG:
+        uart->printf("DEBUG::");
+        break;
+    case LogLevel::INFO:
+        uart->printf("INFO::");
+        break;
+    case LogLevel::WARNING:
+        uart->printf("WARNING::");
+        break;
+    case LogLevel::ERROR:
+        uart->printf("ERROR::");
+        break;
     }
 
     va_list args;
@@ -49,4 +49,4 @@ void BMSLogger::log(LogLevel level, const char* format, ...) {
     va_end(args);
 }
 
-}  // namespace BMS
+}// namespace BMS

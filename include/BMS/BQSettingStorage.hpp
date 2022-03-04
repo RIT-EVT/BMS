@@ -33,7 +33,6 @@ namespace BMS {
  */
 class BQSettingsStorage {
 public:
-
     BQSettingsStorage(EVT::core::DEV::M24C32& eeprom, DEV::BQ76952& bq);
 
     /**
@@ -128,5 +127,4 @@ private:
     friend class BMS;
 };
 
-
-}  // namespace BMS
+}// namespace BMS

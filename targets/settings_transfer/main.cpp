@@ -2,15 +2,14 @@
  * This test is to explore the ability to transfer settings from EEPROM to the
  * BQ chip.
  */
+#include <EVT/dev/storage/M24C32.hpp>
 #include <EVT/io/manager.hpp>
 #include <EVT/utils/time.hpp>
-#include <EVT/dev/storage/M24C32.hpp>
-
 
 #include <BMS/BMSLogger.hpp>
-#include <BMS/dev/BQ76952.hpp>
 #include <BMS/BQSetting.hpp>
 #include <BMS/BQSettingStorage.hpp>
+#include <BMS/dev/BQ76952.hpp>
 
 namespace IO = EVT::core::IO;
 
@@ -26,7 +25,6 @@ int main() {
     BMS::LOGGER.setUART(&uart);
     BMS::LOGGER.setLogLevel(BMS::BMSLogger::LogLevel::DEBUG);
 
-
     EVT::core::time::wait(500);
 
     BMS::DEV::BQ76952 bq(i2c, BQ_I2C_ADDR);
@@ -34,22 +32,22 @@ int main() {
 
     auto status = settingsStorage.transferSettings();
 
-    switch(status) {
-        case BMS::DEV::BQ76952::Status::ERROR:
-            uart.printf("FAILED: BQ specific error\r\n");
-            break;
-        case BMS::DEV::BQ76952::Status::I2C_ERROR:
-            uart.printf("FAILED: I2C error\r\n");
-            break;
-        case BMS::DEV::BQ76952::Status::TIMEOUT:
-            uart.printf("FAILED: Timeout waiting for BQ\r\n");
-            break;
-        case BMS::DEV::BQ76952::Status::OK:
-            uart.printf("SUCCESS\r\n");
-            break;
-        default:
-            uart.printf("FAILED: Unknown error\r\n");
-            break;
+    switch (status) {
+    case BMS::DEV::BQ76952::Status::ERROR:
+        uart.printf("FAILED: BQ specific error\r\n");
+        break;
+    case BMS::DEV::BQ76952::Status::I2C_ERROR:
+        uart.printf("FAILED: I2C error\r\n");
+        break;
+    case BMS::DEV::BQ76952::Status::TIMEOUT:
+        uart.printf("FAILED: Timeout waiting for BQ\r\n");
+        break;
+    case BMS::DEV::BQ76952::Status::OK:
+        uart.printf("SUCCESS\r\n");
+        break;
+    default:
+        uart.printf("FAILED: Unknown error\r\n");
+        break;
     }
 
     EVT::core::time::wait(500);

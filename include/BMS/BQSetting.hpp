@@ -120,4 +120,4 @@ private:
     uint32_t numBytes;
 };
 
-}  // namespace BMS
+}// namespace BMS
