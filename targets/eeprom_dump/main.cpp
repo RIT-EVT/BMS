@@ -3,12 +3,12 @@
  * the data is properly formatter and verify that the data is parsed
  * correctly.
  */
-#include <EVT/io/manager.hpp>
 #include <EVT/dev/storage/M24C32.hpp>
+#include <EVT/io/manager.hpp>
 
+#include <BMS/BMSLogger.hpp>
 #include <BMS/BQSetting.hpp>
 #include <BMS/BQSettingStorage.hpp>
-#include <BMS/BMSLogger.hpp>
 #include <BMS/dev/BQ76952.hpp>
 
 namespace IO = EVT::core::IO;
@@ -37,7 +37,7 @@ int main() {
         bqSettingsStorage.readSetting(setting);
 
         uart.printf("Command Type: %u, Address: 0x%04X, Num Bytes: %u, Data: 0x%08X\r\n",
-            setting.getSettingType(), setting.getAddress(),
-            setting.getNumBytes(), setting.getData());
+                    setting.getSettingType(), setting.getAddress(),
+                    setting.getNumBytes(), setting.getData());
     }
 }

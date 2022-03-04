@@ -21,7 +21,7 @@ char inputBuffer[MAX_BUFF];
  * @param[in] uart The UART interface to read in from
  * @param[in] bq The BQ interface to communicate with
  */
-void directRead(IO::UART &uart, BMS::DEV::BQ76952 &bq) {
+void directRead(IO::UART& uart, BMS::DEV::BQ76952& bq) {
     uart.printf("Enter the direct address in hex: 0x");
     uart.gets(inputBuffer, MAX_BUFF);
     uart.printf("\r\n");
@@ -47,7 +47,7 @@ void directRead(IO::UART &uart, BMS::DEV::BQ76952 &bq) {
  * @param[in] uart The UART interface to read from
  * @param[in] bq The BQ interface
  */
-void subcommandRead(IO::UART &uart, BMS::DEV::BQ76952 &bq) {
+void subcommandRead(IO::UART& uart, BMS::DEV::BQ76952& bq) {
     uart.printf("Enter the subcommand address in hex: 0x");
     uart.gets(inputBuffer, MAX_BUFF);
     uart.printf("\r\n");
@@ -74,7 +74,7 @@ void subcommandRead(IO::UART &uart, BMS::DEV::BQ76952 &bq) {
  * @param[in] uart The UART interface to read in from
  * @param[in] bq The BQ interface to use
  */
-void ramRead(IO::UART &uart, BMS::DEV::BQ76952 &bq) {
+void ramRead(IO::UART& uart, BMS::DEV::BQ76952& bq) {
     uart.printf("Enter the RAM address in hex: 0x");
     uart.gets(inputBuffer, MAX_BUFF);
     uart.printf("\r\n");
@@ -100,14 +100,14 @@ void ramRead(IO::UART &uart, BMS::DEV::BQ76952 &bq) {
  *
  * @param[in] uart The UART interface to write in from
  */
-void directWrite(IO::UART &uart) {}
+void directWrite(IO::UART& uart) {}
 
 /**
  * Function for making an indirect write request
  *
  * @param[in] uart The UART interface to write in from
  */
-void indirectWrite(IO::UART &uart) {}
+void indirectWrite(IO::UART& uart) {}
 
 /**
  * Function for making a RAM write request
@@ -116,7 +116,7 @@ void indirectWrite(IO::UART &uart) {}
  *
  * @param[in] uart The UART interface to write in from
  */
-void ramWrite(IO::UART &uart, BMS::DEV::BQ76952 &bq) {
+void ramWrite(IO::UART& uart, BMS::DEV::BQ76952& bq) {
     bool inConfigMode;
     auto result = bq.inConfigMode(&inConfigMode);
     if (result != BMS::DEV::BQ76952::Status::OK) {
@@ -176,14 +176,10 @@ void ramWrite(IO::UART &uart, BMS::DEV::BQ76952 &bq) {
 
         uart.printf("Setting written out\r\n");
         return;
-    }
-    else {
+    } else {
         uart.printf("Cancelling RAM setting\r\n");
         return;
     }
-
-
-
 }
 
 /**
@@ -192,7 +188,7 @@ void ramWrite(IO::UART &uart, BMS::DEV::BQ76952 &bq) {
  * @param[in] uart The interface to print status messages to
  * @param[in] bq The interface to communicate with the BQ
  */
-void enterConfigMode(IO::UART &uart, BMS::DEV::BQ76952 &bq) {
+void enterConfigMode(IO::UART& uart, BMS::DEV::BQ76952& bq) {
     uart.printf("Putting the BQ chip into config mode\r\n");
 
     // Attempt to put the BQ into configure update mode
@@ -211,7 +207,7 @@ void enterConfigMode(IO::UART &uart, BMS::DEV::BQ76952 &bq) {
  * @param[in] uart The interface to print status messages to
  * @param[in] bq The interface to communicate with the BQ
  */
-void exitConfigMode(IO::UART &uart, BMS::DEV::BQ76952 &bq) {
+void exitConfigMode(IO::UART& uart, BMS::DEV::BQ76952& bq) {
     uart.printf("Pulling the BQ chip out of config mode\r\n");
 
     // Attempt to put the BQ into configure update mode
@@ -225,10 +221,10 @@ void exitConfigMode(IO::UART &uart, BMS::DEV::BQ76952 &bq) {
 }
 
 int main() {
-    IO::I2C &i2c = IO::getI2C<IO::Pin::PB_8, IO::Pin::PB_9>();
+    IO::I2C& i2c = IO::getI2C<IO::Pin::PB_8, IO::Pin::PB_9>();
     BMS::DEV::BQ76952 bq(i2c, 0x08);
 
-    IO::UART &uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
+    IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
 
     time::wait(500);
 
@@ -240,36 +236,36 @@ int main() {
         uart.printf("\r\n");
 
         switch (command) {
-            // Direct read
-            case 'd':
-                directRead(uart, bq);
-                break;
-            // Subcommand read
-            case 's':
-                subcommandRead(uart, bq);
-                break;
-            // RAM read
-            case 'r':
-                ramRead(uart, bq);
-                break;
-            // Direct write
-            case 'D':
-                break;
-            // Subcommand write
-            case 'S':
-                break;
-            // RAM write
-            case 'R':
-                ramWrite(uart, bq);
-                break;
-            // Enter config mode
-            case 'c':
-                enterConfigMode(uart, bq);
-                break;
-            // Exist config mode
-            case 'x':
-                exitConfigMode(uart, bq);
-                break;
+        // Direct read
+        case 'd':
+            directRead(uart, bq);
+            break;
+        // Subcommand read
+        case 's':
+            subcommandRead(uart, bq);
+            break;
+        // RAM read
+        case 'r':
+            ramRead(uart, bq);
+            break;
+        // Direct write
+        case 'D':
+            break;
+        // Subcommand write
+        case 'S':
+            break;
+        // RAM write
+        case 'R':
+            ramWrite(uart, bq);
+            break;
+        // Enter config mode
+        case 'c':
+            enterConfigMode(uart, bq);
+            break;
+        // Exist config mode
+        case 'x':
+            exitConfigMode(uart, bq);
+            break;
         }
     }
 

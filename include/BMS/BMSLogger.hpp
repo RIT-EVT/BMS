@@ -45,7 +45,6 @@ public:
      */
     void log(LogLevel level, const char* format, ...);
 
-
 private:
     /** UART to use for printing, nullptr means nothing will be logged */
     EVT::core::IO::UART* uart = nullptr;
@@ -54,11 +53,10 @@ private:
      * be logged
      */
     LogLevel level = LogLevel::WARNING;
-
 };
 
 extern BMSLogger LOGGER;
 
-}  // namespace BMS
+}// namespace BMS
 
 #endif

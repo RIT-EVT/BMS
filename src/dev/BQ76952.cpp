@@ -2,17 +2,19 @@
 #include <EVT/utils/time.hpp>
 
 /// Macro to make an I2C transfer and return an error on failure
-#define I2C_RETURN_IF_ERR(func) if(func != EVT::core::IO::I2C::I2CStatus::OK) {\
-    return Status::I2C_ERROR; \
-}
+#define I2C_RETURN_IF_ERR(func)                      \
+    if (func != EVT::core::IO::I2C::I2CStatus::OK) { \
+        return Status::I2C_ERROR;                    \
+    }
 
 // Macro to pass along errors that may have been generated
-#define RETURN_IF_ERR(func) {\
-    Status result_ = func;\
-    if(result_ != Status::OK) {\
-        return result_;\
-    } \
-}
+#define RETURN_IF_ERR(func)          \
+    {                                \
+        Status result_ = func;       \
+        if (result_ != Status::OK) { \
+            return result_;          \
+        }                            \
+    }
 
 namespace BMS::DEV {
 
@@ -23,7 +25,7 @@ BQ76952::BQ76952(EVT::core::IO::I2C& i2c, uint8_t i2cAddress)
 
 BQ76952::Status BQ76952::writeSetting(BMS::BQSetting& setting) {
     // Right now, the BQ only accepts settings made into RAM
-    if(setting.getSettingType() != BMS::BQSetting::BQSettingType::RAM) {
+    if (setting.getSettingType() != BMS::BQSetting::BQSettingType::RAM) {
         return Status::ERROR;
     }
     return writeRAMSetting(setting);
@@ -40,7 +42,7 @@ BQ76952::Status BQ76952::enterConfigUpdateMode() {
     // Make sure the device actually entered Config Update Mode
     bool isInConfigMode;
     RETURN_IF_ERR(inConfigMode(&isInConfigMode));
-    if(!isInConfigMode) {
+    if (!isInConfigMode) {
         return Status::ERROR;
     }
 
@@ -51,10 +53,10 @@ BQ76952::Status BQ76952::exitConfigUpdateMode() {
     uint8_t transfer[] = {0x92, 0x00};
     I2C_RETURN_IF_ERR(i2c.writeMemReg(i2cAddress, 0x3E, transfer, 2, 1, 100));
 
-     // Make sure the device actually exited Config Update Mode
+    // Make sure the device actually exited Config Update Mode
     bool isInConfigMode;
     RETURN_IF_ERR(inConfigMode(&isInConfigMode));
-    if(isInConfigMode) {
+    if (isInConfigMode) {
         return Status::ERROR;
     }
 
@@ -86,8 +88,7 @@ BQ76952::Status BQ76952::makeSubcommandRead(uint16_t reg, uint32_t* result) {
     uint8_t resultRaw[4];
     I2C_RETURN_IF_ERR(i2c.readMemReg(i2cAddress, 0x40, &resultRaw[0], 4, 1));
 
-    *result = ((resultRaw[3] & 0xFF) << 26) | ((resultRaw[2] & 0xFF) << 16) |
-              ((resultRaw[1] & 0xFF) << 8)  | (resultRaw[0] & 0xFF);
+    *result = ((resultRaw[3] & 0xFF) << 26) | ((resultRaw[2] & 0xFF) << 16) | ((resultRaw[1] & 0xFF) << 8) | (resultRaw[0] & 0xFF);
 
     return Status::OK;
 }
@@ -101,10 +102,7 @@ BQ76952::Status BQ76952::makeRAMRead(uint16_t reg, uint32_t* result) {
     uint8_t resultRaw[4];
     I2C_RETURN_IF_ERR(i2c.readMemReg(i2cAddress, 0x40, &resultRaw[0], 4, 1));
 
-    *result = static_cast<uint32_t>(resultRaw[3] & 0xFF) << 24 |
-              static_cast<uint32_t>(resultRaw[2] & 0xFF) << 16 |
-              static_cast<uint32_t>(resultRaw[1] & 0xFF) << 8  |
-              static_cast<uint32_t>(resultRaw[0] & 0xFF);
+    *result = static_cast<uint32_t>(resultRaw[3] & 0xFF) << 24 | static_cast<uint32_t>(resultRaw[2] & 0xFF) << 16 | static_cast<uint32_t>(resultRaw[1] & 0xFF) << 8 | static_cast<uint32_t>(resultRaw[0] & 0xFF);
 
     return Status::OK;
 }
@@ -159,13 +157,13 @@ BQ76952::Status BQ76952::writeRAMSetting(BMS::BQSetting& setting) {
     uint32_t startTime = EVT::core::time::millis();
 
     // Try to read back the address that was written out
-    while(address != targetAddress) {
+    while (address != targetAddress) {
         // Attempt to reach back the address
         RETURN_IF_ERR(makeDirectRead(RAM_BASE_ADDRESS, &rawResponse));
         address = rawResponse;
 
         // Check to see if a timeout occured
-        if(EVT::core::time::millis() - startTime > TIMEOUT) {
+        if (EVT::core::time::millis() - startTime > TIMEOUT) {
             return Status::TIMEOUT;
         }
     }
@@ -173,21 +171,21 @@ BQ76952::Status BQ76952::writeRAMSetting(BMS::BQSetting& setting) {
     // Verify the data written matches
     uint32_t readData;
     RETURN_IF_ERR(makeRAMRead(setting.getAddress(), &readData));
-    switch(setting.getNumBytes()) {
-        case 1:
-            readData = readData & 0xFF;
-            break;
-        case 2:
-            readData = readData & 0xFFFF;
-            break;
-        case 3:
-            readData = readData & 0xFFFFFF;
-            break;
-        case 4:
-            readData = readData & 0xFFFFFFFF;
-            break;
+    switch (setting.getNumBytes()) {
+    case 1:
+        readData = readData & 0xFF;
+        break;
+    case 2:
+        readData = readData & 0xFFFF;
+        break;
+    case 3:
+        readData = readData & 0xFFFFFF;
+        break;
+    case 4:
+        readData = readData & 0xFFFFFFFF;
+        break;
     }
-    if(readData != setting.getData()) {
+    if (readData != setting.getData()) {
         return Status::ERROR;
     }
 
@@ -217,4 +215,4 @@ BQ76952::Status BQ76952::inConfigMode(bool* result) {
     return Status::OK;
 }
 
-}  // namespace BMS::DEV
+}// namespace BMS::DEV

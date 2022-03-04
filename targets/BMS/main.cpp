@@ -3,18 +3,18 @@
  * basic echo functionality where the uart will write back whatever the user
  * enters.
  */
-#include <EVT/io/manager.hpp>
-#include <EVT/io/pin.hpp>
-#include <EVT/io/UART.hpp>
-#include <EVT/io/types/CANMessage.hpp>
-#include <EVT/utils/types/FixedQueue.hpp>
-#include <EVT/io/CANopen.hpp>
 #include <EVT/dev/platform/f3xx/f302x8/Timerf302x8.hpp>
 #include <EVT/dev/storage/EEPROM.hpp>
 #include <EVT/dev/storage/M24C32.hpp>
+#include <EVT/io/CANopen.hpp>
+#include <EVT/io/UART.hpp>
+#include <EVT/io/manager.hpp>
+#include <EVT/io/pin.hpp>
+#include <EVT/io/types/CANMessage.hpp>
+#include <EVT/utils/types/FixedQueue.hpp>
 
-#include <BMS/BMSLogger.hpp>
 #include <BMS/BMS.hpp>
+#include <BMS/BMSLogger.hpp>
 #include <BMS/dev/BQ76952.hpp>
 
 namespace IO = EVT::core::IO;
@@ -28,7 +28,7 @@ namespace time = EVT::core::time;
  */
 void canInterruptHandler(IO::CANMessage& message, void* priv) {
     EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>* queue =
-        (EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>*)priv;
+        (EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>*) priv;
     if (queue == nullptr)
         return;
     if (!message.isCANExtended())
@@ -42,29 +42,29 @@ extern "C" void CONodeFatalError(void) {
     BMS::LOGGER.log(BMS::BMSLogger::LogLevel::ERROR, "Fatal CANopen error");
 }
 
-extern "C" void COIfCanReceive(CO_IF_FRM *frm) { }
+extern "C" void COIfCanReceive(CO_IF_FRM* frm) {}
 
 extern "C" int16_t COLssStore(uint32_t baudrate, uint8_t nodeId) { return 0; }
 
-extern "C" int16_t COLssLoad(uint32_t *baudrate, uint8_t *nodeId) { return 0; }
+extern "C" int16_t COLssLoad(uint32_t* baudrate, uint8_t* nodeId) { return 0; }
 
-extern "C" void CONmtModeChange(CO_NMT *nmt, CO_MODE mode) { }
+extern "C" void CONmtModeChange(CO_NMT* nmt, CO_MODE mode) {}
 
-extern "C" void CONmtHbConsEvent(CO_NMT *nmt, uint8_t nodeId) { }
+extern "C" void CONmtHbConsEvent(CO_NMT* nmt, uint8_t nodeId) {}
 
-extern "C" void CONmtHbConsChange(CO_NMT *nmt, uint8_t nodeId, CO_MODE mode) { }
+extern "C" void CONmtHbConsChange(CO_NMT* nmt, uint8_t nodeId, CO_MODE mode) {}
 
-extern "C" int16_t COParaDefault(CO_PARA *pg) { return 0; }
+extern "C" int16_t COParaDefault(CO_PARA* pg) { return 0; }
 
-extern "C" void COPdoTransmit(CO_IF_FRM *frm) { }
+extern "C" void COPdoTransmit(CO_IF_FRM* frm) {}
 
-extern "C" int16_t COPdoReceive(CO_IF_FRM *frm) { return 0; }
+extern "C" int16_t COPdoReceive(CO_IF_FRM* frm) { return 0; }
 
-extern "C" void COPdoSyncUpdate(CO_RPDO *pdo) { }
+extern "C" void COPdoSyncUpdate(CO_RPDO* pdo) {}
 
-extern "C" void COTmrLock(void) { }
+extern "C" void COTmrLock(void) {}
 
-extern "C" void COTmrUnlock(void) { }
+extern "C" void COTmrUnlock(void) {}
 
 int main() {
     // Initialize system
@@ -131,7 +131,6 @@ int main() {
     CONodeInit(&canNode, &canSpec);
     CONodeStart(&canNode);
     CONmtSetMode(&canNode.Nmt, CO_OPERATIONAL);
-
 
     while (1) {
         // Process incoming CAN messages

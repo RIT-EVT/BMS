@@ -3,9 +3,8 @@
  * the data is properly formatter and verify that the data is parsed
  * correctly.
  */
-#include <EVT/io/manager.hpp>
 #include <BMS/BQSetting.hpp>
-
+#include <EVT/io/manager.hpp>
 
 namespace IO = EVT::core::IO;
 
@@ -36,35 +35,35 @@ void deserializeTest(IO::UART& uart) {
      * Address: 0x0001
      * Data: 0xAA
      */
-    uint8_t knownValues[] = { 0x04, 0x01, 0x00, 0xAA, 0x00, 0x00, 0x00 };
+    uint8_t knownValues[] = {0x04, 0x01, 0x00, 0xAA, 0x00, 0x00, 0x00};
     BMS::BQSetting setting;
     setting.fromArray(knownValues);
 
     // Check setting type
     if (setting.getSettingType() != BMS::BQSetting::BQSettingType::DIRECT) {
         uart.printf("Deserialization FAILED, invalid setting type, got %u, expected, %u\r\n",
-                setting.getSettingType(), BMS::BQSetting::BQSettingType::DIRECT);
+                    setting.getSettingType(), BMS::BQSetting::BQSettingType::DIRECT);
         return;
     }
 
     // Check address
     if (setting.getAddress() != 0x0001) {
         uart.printf("Deserialization FAILED, invalid address, got 0x%04x, expected, 0x%04x\r\n",
-                setting.getAddress(), 0x0001);
+                    setting.getAddress(), 0x0001);
         return;
     }
 
     // Check number of bytes
     if (setting.getNumBytes() != 1) {
         uart.printf("Deserialization FAILED, invalid number of bytes, got %u, expected, %u\r\n",
-                setting.getNumBytes(), 1);
+                    setting.getNumBytes(), 1);
         return;
     }
 
     // Check the data itself
     if (setting.getData() != 0xAA) {
         uart.printf("Deserialization FAILED, invalid data, got 0x%2x, expected 0x%2x\r\n",
-                setting.getData(), 0xAA);
+                    setting.getData(), 0xAA);
         return;
     }
 
@@ -78,11 +77,10 @@ void deserializeTest(IO::UART& uart) {
  */
 void serializeTest(IO::UART& uart) {
     BMS::BQSetting setting(BMS::BQSetting::BQSettingType::RAM, 4, 0x1122, 0x12345678);
-    uint8_t expectedArray[] = { 0x12, 0x22, 0x11, 0x78, 0x56, 0x34, 0x12 };
+    uint8_t expectedArray[] = {0x12, 0x22, 0x11, 0x78, 0x56, 0x34, 0x12};
 
     uint8_t actualArray[BMS::BQSetting::ARRAY_SIZE];
     setting.toArray(actualArray);
-
 
     if (!arraysEqual(expectedArray, actualArray, BMS::BQSetting::ARRAY_SIZE)) {
         uart.printf("Serialization FAILED, expected ");
@@ -111,25 +109,25 @@ void serializeDeserializeTest(IO::UART& uart) {
     // Ensure all the values are identical
     if (original.getSettingType() != output.getSettingType()) {
         uart.printf("Ser/Des FAILED, expected setting type %u, got %u\n",
-            original.getSettingType(), output.getSettingType());
+                    original.getSettingType(), output.getSettingType());
         return;
     }
 
     if (original.getAddress() != output.getAddress()) {
         uart.printf("Ser/Des FAILED, expected address 0x%04x, got 0x%04x\r\n",
-            original.getAddress(), output.getAddress());
+                    original.getAddress(), output.getAddress());
         return;
     }
 
     if (original.getNumBytes() != output.getNumBytes()) {
         uart.printf("Ser/Des FAILED, expected number of bytes %u, got %u\r\n",
-            original.getNumBytes(), output.getNumBytes());
+                    original.getNumBytes(), output.getNumBytes());
         return;
     }
 
     if (original.getData() != output.getData()) {
         uart.printf("Ser/Des FAILED, expected data 0x%08x, got 0x%08x\r\n",
-            original.getData(), output.getData());
+                    original.getData(), output.getData());
         return;
     }
 
