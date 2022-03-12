@@ -61,8 +61,6 @@ BQ76952::Status BQ76952::exitConfigUpdateMode() {
     }
 
     return Status::OK;
-
-    return Status::OK;
 }
 
 BQ76952::Status BQ76952::makeDirectRead(uint8_t reg, uint16_t* result) {

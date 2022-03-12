@@ -3,14 +3,16 @@
  * basic echo functionality where the uart will write back whatever the user
  * enters.
  */
-#include <EVT/dev/platform/f3xx/f302x8/Timerf302x8.hpp>
-#include <EVT/dev/storage/EEPROM.hpp>
-#include <EVT/dev/storage/M24C32.hpp>
 #include <EVT/io/CANopen.hpp>
 #include <EVT/io/UART.hpp>
 #include <EVT/io/manager.hpp>
 #include <EVT/io/pin.hpp>
 #include <EVT/io/types/CANMessage.hpp>
+
+#include <EVT/dev/platform/f3xx/f302x8/Timerf302x8.hpp>
+#include <EVT/dev/storage/EEPROM.hpp>
+#include <EVT/dev/storage/M24C32.hpp>
+
 #include <EVT/utils/types/FixedQueue.hpp>
 
 #include <BMS/BMS.hpp>
