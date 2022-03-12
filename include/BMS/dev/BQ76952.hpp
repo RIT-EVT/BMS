@@ -83,7 +83,7 @@ public:
     /**
      * Execute a subcommand read request.
      *
-     * Will make a subcommand read request to the BQ chup.
+     * Will make a subcommand read request to the BQ chip.
      *
      * @param[in] reg The subcommand register address
      * @param[out] The result of the read request
@@ -94,7 +94,7 @@ public:
     /**
      * Execute RAM read request.
      *
-     * Will make a RAM read request to the BQ chup
+     * Will make a RAM read request to the BQ chip
      *
      * @param[in] reg The RAM register to read from
      * @param[out] result The data that was read
