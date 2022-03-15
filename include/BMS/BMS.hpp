@@ -12,6 +12,31 @@ namespace BMS {
  */
 class BMS {
 public:
+    /**
+     * Represents the different states the BMS can be in. At any point,
+     * it will be in one of these states
+     */
+    enum class State {
+        /// When the BMS is powered on
+        START,
+        /// When the BMS fails startup sequence
+        INITIALIZATION_ERROR,
+        /// When the system is waiting for settings to be sent to the BMS
+        FACTORY_INIT,
+        /// When the BMS is actively sending settings over to the BQ
+        TRANSFER_SETTINGS,
+        /// When the BMS is ready for charging / discharging
+        SYSTEM_READY,
+        /// When the system is running in a low power mode
+        DEEP_SLEEP,
+        /// When a fault is detected during normal operation
+        UNSAFE_CONDITIONS_ERROR,
+        /// When the BMS is on the bike and delivering power
+        POWER_DELIVERY,
+        /// When the BMS is handling charging the battery pack
+        CHARGING
+    };
+
     BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq);
 
     /**
@@ -33,6 +58,14 @@ public:
      */
     uint16_t getObjectDictionarySize();
 
+    /**
+     * Handle running the core logic of the BMS. This involves
+     * 1. Checking for state machine related updates
+     * 2. Polling sensor diagnostic sensor information
+     * 3. Responding to error conditions
+     */
+    void process();
+
 private:
     /**
      * Have to know the size of the object dictionary for initialization
@@ -49,6 +82,106 @@ private:
      * Interface to the BQ chip.
      */
     DEV::BQ76952 bq;
+
+    /**
+     * The current state of the BMS
+     */
+    State state;
+
+    /**
+     * Handles the start of the state machine logic. This considers the health
+     * of the system, and the existance of BQ settings.
+     *
+     * State: State::START
+     *
+     * Output:
+     *
+     * State Transitions:
+     */
+    void startState();
+
+    /**
+     * Handles holding the BMS in the intialization error state.
+     *
+     * State: State::INITIALIZATION_ERROR
+     *
+     * Output:
+     *
+     * State Transitions:
+     *
+     */
+    void initializationErrorState();
+
+    /**
+     * Handles the factory init state. This will check for the presence of
+     * settings having arrived over CANopen.
+     *
+     * State: State::FACTORY_INIT
+     *
+     * Output:
+     *
+     * State Transitions:
+     */
+    void factoryInitState();
+
+    /**
+     * Handles the state where settings are activly being sent from
+     * the BMS to the BQ chip.
+     *
+     * State: State::TRANSFER_SETTINGS
+     *
+     * Output:
+     *
+     * State Transitions:
+     */
+    void transferSettingsState();
+
+    /**
+     * Handles when the system is ready for charging/discharging. Will
+     * poll health data and sensor information while waiting for input.
+     *
+     * State: State::SYSTEM_READY
+     *
+     * Output:
+     *
+     * State Transitions:
+     */
+    void systemReadyState();
+
+    /**
+     * Handles when an unsafe condition is detected during normal
+     * operations.
+     *
+     * State: State::UNSAFE_CONDITIONS_ERROR
+     *
+     * Output:
+     *
+     * State Transitions:
+     */
+    void unsafeConditionsError();
+
+    /**
+     * Handles when the BMS is actively delivering power to the bike
+     * system.
+     *
+     * State: State::POWER_DELIVERY
+     *
+     * Output:
+     *
+     * State Transitions:
+     */
+    void powerDeliveryState();
+
+    /**
+     * Handles when the BMS is handling taking in charge.
+     *
+     * State: State::CHARGING
+     *
+     * Output:
+     *
+     * State Transitions:
+     */
+    void chargingState();
 
     /**
      * The object dictionary of the BMS. Includes settings that determine

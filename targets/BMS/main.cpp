@@ -75,21 +75,24 @@ int main() {
     // Queue that will store CANopen messages
     EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage> canOpenQueue;
 
-    // Initialize CAN, add an IRQ that will populate the above queue
+    // Initialize IO
     IO::CAN& can = IO::getCAN<IO::Pin::PA_12, IO::Pin::PA_11>();
     can.addIRQHandler(canInterruptHandler, reinterpret_cast<void*>(&canOpenQueue));
+    IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
+    EVT::core::IO::I2C& i2c = EVT::core::IO::getI2C<IO::Pin::PB_8, IO::Pin::PB_9>();
 
     // Initialize the timer
     DEV::Timerf302x8 timer(TIM2, 100);
 
-    IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
+    // Initialize the EEPROM
+    EVT::core::DEV::M24C32 eeprom(0x50, i2c);
+
+    // Intialize the logger
     BMS::LOGGER.setUART(&uart);
     BMS::LOGGER.setLogLevel(BMS::BMSLogger::LogLevel::DEBUG);
 
-    EVT::core::IO::I2C& i2c = EVT::core::IO::getI2C<IO::Pin::PB_8, IO::Pin::PB_9>();
-    EVT::core::DEV::M24C32 eeprom(0x50, i2c);
-
-    BMS::DEV::BQ76952 bq(i2c, 0x10);
+    // Initialize the BQ interfaces
+    BMS::DEV::BQ76952 bq(i2c, 0x08);
     BMS::BQSettingsStorage bqSettingsStorage(eeprom, bq);
     BMS::BMS bms(bqSettingsStorage, bq);
 
@@ -99,15 +102,14 @@ int main() {
 
     // Initialize the CANopen drivers
     CO_IF_DRV canStackDriver;
-
     CO_IF_CAN_DRV canDriver;
     CO_IF_TIMER_DRV timerDriver;
     CO_IF_NVM_DRV nvmDriver;
-
     IO::getCANopenCANDriver(&can, &canOpenQueue, &canDriver);
     IO::getCANopenTimerDriver(&timer, &timerDriver);
     IO::getCANopenNVMDriver(&nvmDriver);
 
+    // Attach the CANopen drivers
     canStackDriver.Can = &canDriver;
     canStackDriver.Timer = &timerDriver;
     canStackDriver.Nvm = &nvmDriver;
@@ -128,12 +130,18 @@ int main() {
     CO_NODE canNode;
     time::wait(500);
 
+    // Join the CANopen network
     can.connect();
 
+    // Intialize CANopen logic
     CONodeInit(&canNode, &canSpec);
     CONodeStart(&canNode);
     CONmtSetMode(&canNode.Nmt, CO_OPERATIONAL);
 
+    // Main processing loop, contains the following logic
+    // 1. Update CANopen logic and processing incomming messages
+    // 2. Run per-loop BMS state logic
+    // 3. Wait for new data to come in
     while (1) {
         // Process incoming CAN messages
         CONodeProcess(&canNode);
