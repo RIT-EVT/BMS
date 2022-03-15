@@ -213,4 +213,18 @@ BQ76952::Status BQ76952::inConfigMode(bool* result) {
     return Status::OK;
 }
 
+BQ76952::Status BQ76952::communicationStatus() {
+    uint32_t readID;
+    auto result = makeSubcommandRead(0x0001, &readID);
+
+    if (result != BQ76952::Status::OK) {
+        return BQ76952::Status::ERROR;
+    }
+
+    if (readID == BQ_ID) {
+        return BQ76952::Status::OK;
+    }
+    return BQ76952::Status::ERROR;
+}
+
 }// namespace BMS::DEV

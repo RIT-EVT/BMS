@@ -140,6 +140,16 @@ public:
      */
     Status inConfigMode(bool* result);
 
+    /**
+     * Attempt to see if the BQ chip can be communicated with.
+     *
+     * This will read the ID of the BQ chip, and verify it matches the
+     * expected value.
+     *
+     * @return State::OK on success, Status::ERROR otherwise
+     */
+    Status communicationStatus();
+
     // Total voltage read by the BQ chip (measured in millivolts)
     uint32_t totalVoltage;
 
@@ -151,6 +161,9 @@ private:
 
     /** Timeout waiting to read values from the BQ76952 in milliseconds */
     static constexpr uint8_t TIMEOUT = 10;
+
+    /** The name of the BQ chip that should be stored in the BQ chip */
+    static constexpr uint16_t BQ_ID = 0x7695;
 
     /** I2C bus to communicate over */
     EVT::core::IO::I2C& i2c;
