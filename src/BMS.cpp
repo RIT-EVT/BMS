@@ -8,6 +8,8 @@ BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq, DEV::Interlock& 
     bq(bq),
     interlock(interlock),
     alarm(alarm) {
+
+        state = State::START;
 }
 
 CO_OBJ_T* BMS::getObjectDictionary() {
@@ -24,20 +26,27 @@ void BMS::process() {
         startState();
         break;
     case State::INITIALIZATION_ERROR:
+        initializationErrorState();
         break;
     case State::FACTORY_INIT:
+        factoryInitState();
         break;
     case State::TRANSFER_SETTINGS:
+        transferSettingsState();
         break;
     case State::SYSTEM_READY:
+        systemReadyState();
         break;
     case State::DEEP_SLEEP:
         break;
     case State::UNSAFE_CONDITIONS_ERROR:
+        unsafeConditionsError();
         break;
     case State::POWER_DELIVERY:
+        powerDeliveryState();
         break;
     case State::CHARGING:
+        chargingState();
         break;
     }
 }

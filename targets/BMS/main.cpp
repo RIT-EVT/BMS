@@ -89,7 +89,7 @@ int main() {
 
     // Intialize the logger
     BMS::LOGGER.setUART(&uart);
-    BMS::LOGGER.setLogLevel(BMS::BMSLogger::LogLevel::DEBUG);
+    BMS::LOGGER.setLogLevel(BMS::BMSLogger::LogLevel::ERROR);
 
     // Initialize the BQ interfaces
     BMS::DEV::BQ76952 bq(i2c, 0x08);
@@ -159,6 +159,8 @@ int main() {
         COTmrService(&canNode.Tmr);
         // Handle executing timer events that have elapsed
         COTmrProcess(&canNode.Tmr);
+        // Update the state of the BMS
+        bms.process();
         // Wait for new data to come in
         time::wait(10);
     }
