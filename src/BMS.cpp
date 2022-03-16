@@ -3,7 +3,10 @@
 
 namespace BMS {
 
-BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq) : bqSettingsStorage(bqSettingsStorage), bq(bq) {
+BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq, DEV::Interlock& interlock) :
+    bqSettingsStorage(bqSettingsStorage),
+    bq(bq),
+    interlock(interlock) {
 }
 
 CO_OBJ_T* BMS::getObjectDictionary() {
@@ -15,26 +18,26 @@ uint16_t BMS::getObjectDictionarySize() {
 }
 
 void BMS::process() {
-    switch(state) {
-        case State::START:
-            startState();
-            break;
-        case State::INITIALIZATION_ERROR:
-            break;
-        case State::FACTORY_INIT:
-            break;
-        case State::TRANSFER_SETTINGS:
-            break;
-        case State::SYSTEM_READY:
-            break;
-        case State::DEEP_SLEEP:
-            break;
-        case State::UNSAFE_CONDITIONS_ERROR:
-            break;
-        case State::POWER_DELIVERY:
-            break;
-        case State::CHARGING:
-            break;
+    switch (state) {
+    case State::START:
+        startState();
+        break;
+    case State::INITIALIZATION_ERROR:
+        break;
+    case State::FACTORY_INIT:
+        break;
+    case State::TRANSFER_SETTINGS:
+        break;
+    case State::SYSTEM_READY:
+        break;
+    case State::DEEP_SLEEP:
+        break;
+    case State::UNSAFE_CONDITIONS_ERROR:
+        break;
+    case State::POWER_DELIVERY:
+        break;
+    case State::CHARGING:
+        break;
     }
 }
 
@@ -45,19 +48,16 @@ void BMS::startState() {
         // If communication could not be handled, transition to error state
         // TODO: Update error mapping with error information
         state = State::INITIALIZATION_ERROR;
-    }
-    else {
+    } else {
         // Otherwise, move on to transferring settings
         state = State::TRANSFER_SETTINGS;
     }
 }
 
 void BMS::initializationErrorState() {
-
 }
 
 void BMS::factoryInitState() {
-
 }
 
 void BMS::transferSettingsState() {
@@ -68,8 +68,7 @@ void BMS::transferSettingsState() {
         // error state
         // TODO: Update error mapping with error information
         state = State::INITIALIZATION_ERROR;
-    }
-    else {
+    } else {
         // Otherwise, move on to ready state
         state = State::SYSTEM_READY;
     }
@@ -84,15 +83,18 @@ void BMS::systemReadyState() {
 }
 
 void BMS::unsafeConditionsError() {
-
 }
 
 void BMS::powerDeliveryState() {
+    // TODO: Run health checks and potentially update state
 
+    // TODO: Read interlock and potentially update state
 }
 
 void BMS::chargingState() {
+    // TODO: Run health checks and potentually update state
 
+    // TODO: Read interlock and potentially update state
 }
 
 }// namespace BMS

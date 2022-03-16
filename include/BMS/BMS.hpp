@@ -1,6 +1,7 @@
 #pragma once
 
 #include <BMS/BQSettingStorage.hpp>
+#include <BMS/dev/Interlock.hpp>
 #include <Canopen/co_core.h>
 #include <stdint.h>
 
@@ -37,7 +38,7 @@ public:
         CHARGING
     };
 
-    BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq);
+    BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq, DEV::Interlock& interlock);
 
     /**
      * The node ID used to identify the device on the CAN network.
@@ -87,6 +88,11 @@ private:
      * The current state of the BMS
      */
     State state;
+
+    /**
+     * The interlock which is used to detect a cable plugged in
+     */
+    DEV::Interlock& interlock;
 
     /**
      * Handles the start of the state machine logic. This considers the health
