@@ -80,6 +80,11 @@ void BMS::systemReadyState() {
     // TODO: Run health checks and potentially update state
 
     // TODO: Read Interlock and potentially update state
+    // TODO: Determine if the BMS is on the bike or the charger
+    if(interlock.isDetected()) {
+        // Transition to providing power
+        state = State::POWER_DELIVERY;
+    }
 }
 
 void BMS::unsafeConditionsError() {
@@ -88,13 +93,17 @@ void BMS::unsafeConditionsError() {
 void BMS::powerDeliveryState() {
     // TODO: Run health checks and potentially update state
 
-    // TODO: Read interlock and potentially update state
+    if(!interlock.isDetected()) {
+        state = State::SYSTEM_READY
+    }
 }
 
 void BMS::chargingState() {
     // TODO: Run health checks and potentually update state
 
-    // TODO: Read interlock and potentially update state
+    if(!interlock.isDetected()) {
+        state = State::SYSTEM_READY
+    }
 }
 
 }// namespace BMS
