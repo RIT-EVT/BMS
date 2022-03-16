@@ -19,23 +19,23 @@ public:
      */
     enum class State {
         /// When the BMS is powered on
-        START,
+        START = 0,
         /// When the BMS fails startup sequence
-        INITIALIZATION_ERROR,
+        INITIALIZATION_ERROR = 1,
         /// When the system is waiting for settings to be sent to the BMS
-        FACTORY_INIT,
+        FACTORY_INIT = 2,
         /// When the BMS is actively sending settings over to the BQ
-        TRANSFER_SETTINGS,
+        TRANSFER_SETTINGS = 3,
         /// When the BMS is ready for charging / discharging
-        SYSTEM_READY,
+        SYSTEM_READY = 4,
         /// When the system is running in a low power mode
-        DEEP_SLEEP,
+        DEEP_SLEEP = 5,
         /// When a fault is detected during normal operation
-        UNSAFE_CONDITIONS_ERROR,
+        UNSAFE_CONDITIONS_ERROR = 6,
         /// When the BMS is on the bike and delivering power
-        POWER_DELIVERY,
+        POWER_DELIVERY = 7,
         /// When the BMS is handling charging the battery pack
-        CHARGING
+        CHARGING = 8
     };
 
     BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq, DEV::Interlock& interlock, EVT::core::IO::GPIO& alarm);
@@ -344,7 +344,7 @@ private:
         {
             .Key = CO_KEY(0x2102, 0, CO_UNSIGNED32 | CO_OBJ___PRW),
             .Type = 0,
-            .Data = (uintptr_t) state,
+            .Data = (uintptr_t) &state,
         },
 
         // End of dictionary marker
