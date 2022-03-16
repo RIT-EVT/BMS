@@ -17,6 +17,7 @@ uint16_t BMS::getObjectDictionarySize() {
 void BMS::process() {
     switch(state) {
         case State::START:
+            startState();
             break;
         case State::INITIALIZATION_ERROR:
             break;
@@ -39,6 +40,7 @@ void BMS::process() {
 
 void BMS::startState() {
     // Check to see if communication is possible with the BQ chip
+    // TODO: Try this n number of times before failing
     if (bq.communicationStatus() != DEV::BQ76952::Status::OK) {
         // If communication could not be handled, transition to error state
         // TODO: Update error mapping with error information
@@ -59,11 +61,26 @@ void BMS::factoryInitState() {
 }
 
 void BMS::transferSettingsState() {
-
+    // TODO: Attempt n number of times before failing
+    auto result = bqSettingsStorage.transferSettings();
+    if (result != DEV::BQ76952::Status::OK) {
+        // If the settings did not transfer successfully, transiton tp
+        // error state
+        // TODO: Update error mapping with error information
+        state = State::INITIALIZATION_ERROR;
+    }
+    else {
+        // Otherwise, move on to ready state
+        state = State::SYSTEM_READY;
+    }
 }
 
 void BMS::systemReadyState() {
+    // TODO: Check for need to deep sleep and enter deep sleep mode
 
+    // TODO: Run health checks and potentially update state
+
+    // TODO: Read Interlock and potentially update state
 }
 
 void BMS::unsafeConditionsError() {
