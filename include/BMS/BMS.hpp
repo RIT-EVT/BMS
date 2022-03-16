@@ -205,6 +205,15 @@ private:
     void chargingState();
 
     /**
+     * Check to see if the system is healthy. This involves checking the
+     * ALARM pin, other status registers on the BQ, and keeping track of the
+     * rest of the system.
+     *
+     * @return True if the system is healthy, false otherwise
+     */
+    bool isHealthy();
+
+    /**
      * The object dictionary of the BMS. Includes settings that determine
      * how the BMS functions on the CANopen network as well as the data
      * that is exposed on the network.

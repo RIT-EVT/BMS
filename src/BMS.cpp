@@ -78,7 +78,11 @@ void BMS::transferSettingsState() {
 void BMS::systemReadyState() {
     // TODO: Check for need to deep sleep and enter deep sleep mode
 
-    // TODO: Run health checks and potentially update state
+    // TODO: Update error register of BMS
+    if(!isHealthy()) {
+        state = State::UNSAFE_CONDITIONS_ERROR;
+        return;
+    }
 
     // TODO: Determine if the BMS is on the bike or the charger
     if(interlock.isDetected()) {
@@ -91,7 +95,11 @@ void BMS::unsafeConditionsError() {
 }
 
 void BMS::powerDeliveryState() {
-    // TODO: Run health checks and potentially update state
+    // TODO: Update error register of BMS
+    if(!isHealthy()) {
+        state = State::UNSAFE_CONDITIONS_ERROR;
+        return;
+    }
 
     if(!interlock.isDetected()) {
         state = State::SYSTEM_READY;
@@ -99,11 +107,19 @@ void BMS::powerDeliveryState() {
 }
 
 void BMS::chargingState() {
-    // TODO: Run health checks and potentually update state
+    // TODO: Update error register of BMS
+    if(!isHealthy()) {
+        state = State::UNSAFE_CONDITIONS_ERROR;
+        return;
+    }
 
     if(!interlock.isDetected()) {
         state = State::SYSTEM_READY;
     }
+}
+
+bool BMS::isHealthy() {
+    return alarm.readPin() != ALARM_ACTIVE_STATE;
 }
 
 }// namespace BMS
