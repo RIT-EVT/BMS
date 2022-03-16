@@ -114,10 +114,6 @@ private:
      * of the system, and the existance of BQ settings.
      *
      * State: State::START
-     *
-     * Output:
-     *
-     * State Transitions:
      */
     void startState();
 
@@ -125,11 +121,6 @@ private:
      * Handles holding the BMS in the intialization error state.
      *
      * State: State::INITIALIZATION_ERROR
-     *
-     * Output:
-     *
-     * State Transitions:
-     *
      */
     void initializationErrorState();
 
@@ -138,10 +129,6 @@ private:
      * settings having arrived over CANopen.
      *
      * State: State::FACTORY_INIT
-     *
-     * Output:
-     *
-     * State Transitions:
      */
     void factoryInitState();
 
@@ -150,10 +137,6 @@ private:
      * the BMS to the BQ chip.
      *
      * State: State::TRANSFER_SETTINGS
-     *
-     * Output:
-     *
-     * State Transitions:
      */
     void transferSettingsState();
 
@@ -162,10 +145,6 @@ private:
      * poll health data and sensor information while waiting for input.
      *
      * State: State::SYSTEM_READY
-     *
-     * Output:
-     *
-     * State Transitions:
      */
     void systemReadyState();
 
@@ -174,10 +153,6 @@ private:
      * operations.
      *
      * State: State::UNSAFE_CONDITIONS_ERROR
-     *
-     * Output:
-     *
-     * State Transitions:
      */
     void unsafeConditionsError();
 
@@ -186,10 +161,6 @@ private:
      * system.
      *
      * State: State::POWER_DELIVERY
-     *
-     * Output:
-     *
-     * State Transitions:
      */
     void powerDeliveryState();
 
@@ -197,10 +168,6 @@ private:
      * Handles when the BMS is handling taking in charge.
      *
      * State: State::CHARGING
-     *
-     * Output:
-     *
-     * State Transitions:
      */
     void chargingState();
 
