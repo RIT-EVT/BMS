@@ -38,7 +38,7 @@ public:
         CHARGING
     };
 
-    BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq, DEV::Interlock& interlock);
+    BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq, DEV::Interlock& interlock, EVT::core::IO::GPIO& alarm);
 
     /**
      * The node ID used to identify the device on the CAN network.
@@ -75,6 +75,13 @@ private:
     static constexpr uint16_t OBJECT_DIRECTIONARY_SIZE = 17;
 
     /**
+     * The active state of the alarm. When the alarm is in this state,
+     * the BQ has detected some critical error
+     */
+    static constexpr EVT::core::IO::GPIO::State ALARM_ACTIVE_STATE =
+        EVT::core::IO::GPIO::State::HIGH;
+
+    /**
      * The interface for storaging and retrieving BQ Settings.
      */
     BQSettingsStorage& bqSettingsStorage;
@@ -93,6 +100,14 @@ private:
      * The interlock which is used to detect a cable plugged in
      */
     DEV::Interlock& interlock;
+
+    /**
+     * This GPIO is connected to the ALARM pin of the BQ. The BQ can be
+     * configured to toggle the ALARM pin based on certain safety parameters.
+     * If the alarm pin is in it's active state, should assum it is unsafe
+     * to charge/discharge
+     */
+    EVT::core::IO::GPIO& alarm;
 
     /**
      * Handles the start of the state machine logic. This considers the health

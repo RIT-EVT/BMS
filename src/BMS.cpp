@@ -3,10 +3,11 @@
 
 namespace BMS {
 
-BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq, DEV::Interlock& interlock) :
+BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq, DEV::Interlock& interlock, EVT::core::IO::GPIO& alarm) :
     bqSettingsStorage(bqSettingsStorage),
     bq(bq),
-    interlock(interlock) {
+    interlock(interlock),
+    alarm(alarm) {
 }
 
 CO_OBJ_T* BMS::getObjectDictionary() {
@@ -79,7 +80,6 @@ void BMS::systemReadyState() {
 
     // TODO: Run health checks and potentially update state
 
-    // TODO: Read Interlock and potentially update state
     // TODO: Determine if the BMS is on the bike or the charger
     if(interlock.isDetected()) {
         // Transition to providing power
@@ -94,7 +94,7 @@ void BMS::powerDeliveryState() {
     // TODO: Run health checks and potentially update state
 
     if(!interlock.isDetected()) {
-        state = State::SYSTEM_READY
+        state = State::SYSTEM_READY;
     }
 }
 
@@ -102,7 +102,7 @@ void BMS::chargingState() {
     // TODO: Run health checks and potentually update state
 
     if(!interlock.isDetected()) {
-        state = State::SYSTEM_READY
+        state = State::SYSTEM_READY;
     }
 }
 
