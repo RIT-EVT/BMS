@@ -97,11 +97,14 @@ int main() {
 
     // Intialize the Interlock
     // TODO: Determine actual interlock GPIO
-    EVT::core::IO::GPIO& interlockGPIO = IO::getGPIO<IO::Pin::PB_0>();
+    IO::GPIO& interlockGPIO = IO::getGPIO<IO::Pin::PB_0>(IO::GPIO::Direction::INPUT);
     BMS::DEV::Interlock interlock(interlockGPIO);
 
+    // Intialize the alarm pin
+    IO::GPIO& alarm = IO::getGPIO<IO::Pin::PB_1>(IO::GPIO::Direction::INPUT);
+
     // Intialize the BMS itself
-    BMS::BMS bms(bqSettingsStorage, bq, interlock);
+    BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm);
 
     // Reserved memory for CANopen stack usage
     uint8_t sdoBuffer[1][CO_SDO_BUF_BYTE];
