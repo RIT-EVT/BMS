@@ -94,7 +94,14 @@ int main() {
     // Initialize the BQ interfaces
     BMS::DEV::BQ76952 bq(i2c, 0x08);
     BMS::BQSettingsStorage bqSettingsStorage(eeprom, bq);
-    BMS::BMS bms(bqSettingsStorage, bq);
+
+    // Intialize the Interlock
+    // TODO: Determine actual interlock GPIO
+    EVT::core::IO::GPIO& interlockGPIO = IO::getGPIO<IO::Pin::PB_0>();
+    BMS::DEV::Interlock interlock(interlockGPIO);
+
+    // Intialize the BMS itself
+    BMS::BMS bms(bqSettingsStorage, bq, interlock);
 
     // Reserved memory for CANopen stack usage
     uint8_t sdoBuffer[1][CO_SDO_BUF_BYTE];
