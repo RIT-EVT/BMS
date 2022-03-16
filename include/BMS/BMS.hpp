@@ -72,7 +72,7 @@ private:
      * Have to know the size of the object dictionary for initialization
      * process.
      */
-    static constexpr uint16_t OBJECT_DIRECTIONARY_SIZE = 17;
+    static constexpr uint16_t OBJECT_DIRECTIONARY_SIZE = 18;
 
     /**
      * The active state of the alarm. When the alarm is in this state,
@@ -338,6 +338,13 @@ private:
             .Key = CO_KEY(0x2101, 0, CO_UNSIGNED32 | CO_OBJ___PR_),
             .Type = 0,
             .Data = (uintptr_t) bq.totalVoltage,
+        },
+
+        /// The current state the BMS is in. Can be read and written to
+        {
+            .Key = CO_KEY(0x2102, 0, CO_UNSIGNED32 | CO_OBJ___PRW),
+            .Type = 0,
+            .Data = (uintptr_t) state,
         },
 
         // End of dictionary marker
