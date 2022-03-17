@@ -13,6 +13,8 @@ public:
     /**
      * Create an interlock which will detect the presence of a cable via
      * the provided GPIO.
+     *
+     * @pre The GPIO is set as an input
      */
     Interlock(EVT::core::IO::GPIO& gpio);
 

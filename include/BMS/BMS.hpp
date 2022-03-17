@@ -38,6 +38,11 @@ public:
         CHARGING = 8
     };
 
+    /**
+     * Make a new instance of the BMS with the given devices.
+     *
+     * @pre The alarm GPIO is set as an input
+     */
     BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq, DEV::Interlock& interlock, EVT::core::IO::GPIO& alarm);
 
     /**
@@ -104,7 +109,7 @@ private:
     /**
      * This GPIO is connected to the ALARM pin of the BQ. The BQ can be
      * configured to toggle the ALARM pin based on certain safety parameters.
-     * If the alarm pin is in it's active state, should assum it is unsafe
+     * If the alarm pin is in it's active state, should assume it is unsafe
      * to charge/discharge
      */
     EVT::core::IO::GPIO& alarm;
