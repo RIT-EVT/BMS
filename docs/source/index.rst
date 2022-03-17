@@ -36,6 +36,25 @@ generated for the project including requirements and implementation design.
    srs.rst
    BQ/index.rst
 
+State Transition Diagram
+------------------------
+For a look at each stage of the BMS firmware in action. The state diagram
+below can be used.
+
+.. image:: ./_static/images/BMS_state_transition.png
+   :align: center
+
+The functionality of the BMS can be broken down into 4 major components.
+The "Startup" logic which involves getting the settings for the BQ chip
+and transferring those setting from a seperate host via CANopen, to EEPROM,
+and finally to the BQ chip itself. The "Ready" state which is where the BMS
+spends the bulk of its time, checking on the health of the BMS system, and
+waiting for the system to either charge or discharge. The "Charging" state
+where the BMS mediates charging the batteries. Finally the "Power Delivery"
+state where the BMS is handling delivering power. The logic for flowing
+between the different states is detailed in the diagram above.
+
+
 EVT-core
 ========
 
