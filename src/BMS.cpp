@@ -3,13 +3,12 @@
 
 namespace BMS {
 
-BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq, DEV::Interlock& interlock, EVT::core::IO::GPIO& alarm) :
-    bqSettingsStorage(bqSettingsStorage),
-    bq(bq),
-    interlock(interlock),
-    alarm(alarm) {
+BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq, DEV::Interlock& interlock, EVT::core::IO::GPIO& alarm) : bqSettingsStorage(bqSettingsStorage),
+                                                                                                                         bq(bq),
+                                                                                                                         interlock(interlock),
+                                                                                                                         alarm(alarm) {
 
-        state = State::START;
+    state = State::START;
 }
 
 CO_OBJ_T* BMS::getObjectDictionary() {
@@ -88,13 +87,13 @@ void BMS::systemReadyState() {
     // TODO: Check for need to deep sleep and enter deep sleep mode
 
     // TODO: Update error register of BMS
-    if(!isHealthy()) {
+    if (!isHealthy()) {
         state = State::UNSAFE_CONDITIONS_ERROR;
         return;
     }
 
     // TODO: Determine if the BMS is on the bike or the charger
-    if(interlock.isDetected()) {
+    if (interlock.isDetected()) {
         // Transition to providing power
         state = State::POWER_DELIVERY;
     }
@@ -105,24 +104,24 @@ void BMS::unsafeConditionsError() {
 
 void BMS::powerDeliveryState() {
     // TODO: Update error register of BMS
-    if(!isHealthy()) {
+    if (!isHealthy()) {
         state = State::UNSAFE_CONDITIONS_ERROR;
         return;
     }
 
-    if(!interlock.isDetected()) {
+    if (!interlock.isDetected()) {
         state = State::SYSTEM_READY;
     }
 }
 
 void BMS::chargingState() {
     // TODO: Update error register of BMS
-    if(!isHealthy()) {
+    if (!isHealthy()) {
         state = State::UNSAFE_CONDITIONS_ERROR;
         return;
     }
 
-    if(!interlock.isDetected()) {
+    if (!interlock.isDetected()) {
         state = State::SYSTEM_READY;
     }
 }
