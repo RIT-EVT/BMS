@@ -43,7 +43,8 @@ public:
      *
      * @pre The alarm GPIO is set as an input
      */
-    BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq, DEV::Interlock& interlock, EVT::core::IO::GPIO& alarm);
+    BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
+        DEV::Interlock& interlock, EVT::core::IO::GPIO& alarm);
 
     /**
      * The node ID used to identify the device on the CAN network.
