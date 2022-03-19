@@ -98,6 +98,13 @@ public:
      */
     BMS::DEV::BQ76952::Status transferSettings();
 
+    /**
+     * Checks to see if the settings are stored and can be used. This includes
+     * checking to see if there are settings stored, and also checks to make
+     * sure settings are not actively being written to.
+     */
+    bool hasSettings();
+
 private:
     /**
      * The starting address in EEPROM where the BQ settings are stored.
@@ -123,6 +130,12 @@ private:
      * The BQ chip interface
      */
     DEV::BQ76952& bq;
+    /**
+     * This is a count of the number of settings that have been written into
+     * EEPROM. This is used for determining if all the settings have been
+     * written over yet.
+     */
+    uint16_t numSettingsWritten = 0;
 
     friend class BMS;
 };

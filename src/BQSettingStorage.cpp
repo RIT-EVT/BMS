@@ -80,6 +80,7 @@ static CO_ERR COBQSettingRead(CO_OBJ_T* obj, CO_NODE_T* node, void* buf, uint32_
  * @return CO_ERR_NONE on success
  */
 static CO_ERR COBQSettingWrite(CO_OBJ* obj, CO_NODE_T* node, void* buf, uint32_t len, void* priv) {
+
     BMS::LOGGER.log(BMS::BMSLogger::LogLevel::INFO, "WRITE REQUEST MADE");
     BMS::LOGGER.log(BMS::BMSLogger::LogLevel::INFO, "Bytes incoming: %u", len);
 
@@ -200,10 +201,17 @@ void BQSettingsStorage::writeSetting(BQSetting& setting) {
 
     // Increment where to write to next
     addressLocation += BMS::BQSetting::ARRAY_SIZE;
+
+    // Increment the number of setting that have been written
+    numSettingsWritten += 1;
 }
 
 void BQSettingsStorage::writeNumSettings() {
     eeprom.writeHalfWord(startAddress, numSettings);
+
+    // Once the total number of settings have been udpated, assume none
+    // have yet been written.
+    numSettingsWritten = 0;
 }
 
 void BQSettingsStorage::resetEEPROMOffset() {
@@ -233,6 +241,12 @@ BMS::DEV::BQ76952::Status BQSettingsStorage::transferSettings() {
     }
 
     bq.exitConfigUpdateMode();
+}
+
+bool BQSettingsStorage::hasSettings() {
+    // Make sure we have settings, and the total number of settings
+    // written makes the total expected number of settings
+    return numSettings > 0 && numSettingsWritten ==  numSettings;
 }
 
 }// namespace BMS

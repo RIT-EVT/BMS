@@ -57,9 +57,14 @@ void BMS::startState() {
         // If communication could not be handled, transition to error state
         // TODO: Update error mapping with error information
         state = State::INITIALIZATION_ERROR;
-    } else {
-        // Otherwise, move on to transferring settings
+    }
+    // Check to see if we have setting to be transferred
+    else if (bqSettingsStorage.hasSettings()) {
         state = State::TRANSFER_SETTINGS;
+    }
+    // Otherwise, no current settings, wait until setting are received
+    else {
+        state = State::FACTORY_INIT;
     }
 }
 
@@ -67,6 +72,10 @@ void BMS::initializationErrorState() {
 }
 
 void BMS::factoryInitState() {
+    // Check to see if settings have come in, if so, go back to start state
+    if (bqSettingsStorage.hasSettings()) {
+        state = State::START;
+    }
 }
 
 void BMS::transferSettingsState() {
