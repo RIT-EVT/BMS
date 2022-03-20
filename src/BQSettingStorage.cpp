@@ -203,7 +203,7 @@ void BQSettingsStorage::writeSetting(BQSetting& setting) {
     // Increment where to write to next
     addressLocation += BMS::BQSetting::ARRAY_SIZE;
 
-    // Increment the number of setting that have been written
+    // Increment the number of settings that have been written
     numSettingsWritten += 1;
 }
 
@@ -246,8 +246,8 @@ BMS::DEV::BQ76952::Status BQSettingsStorage::transferSettings() {
 
 bool BQSettingsStorage::hasSettings() {
     // Make sure we have settings, and the total number of settings
-    // written makes the total expected number of settings
-    return numSettings > 0 && numSettingsWritten ==  numSettings;
+    // written equals the total expected number of settings
+    return numSettings > 0 && numSettingsWritten == numSettings;
 }
 
 }// namespace BMS
