@@ -1,7 +1,7 @@
 import canopen
 
 network = canopen.Network()
-network.connect(channel='/dev/cu.usbmodem143201', bustype='slcan')
+network.connect(channel='/dev/ttyACM1', bustype='slcan')
 
 node = network.add_node(5, None)
 client = node.sdo

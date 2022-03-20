@@ -135,7 +135,7 @@ private:
      * EEPROM. This is used for determining if all the settings have been
      * written over yet.
      */
-    uint16_t numSettingsWritten = 0;
+    uint16_t numSettingsWritten;
 
     friend class BMS;
 };

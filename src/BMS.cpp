@@ -3,10 +3,11 @@
 
 namespace BMS {
 
-BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq, DEV::Interlock& interlock, EVT::core::IO::GPIO& alarm) : bqSettingsStorage(bqSettingsStorage),
-                                                                                                                         bq(bq),
-                                                                                                                         interlock(interlock),
-                                                                                                                         alarm(alarm) {
+BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
+         DEV::Interlock& interlock, EVT::core::IO::GPIO& alarm) : bqSettingsStorage(bqSettingsStorage),
+                                                                  bq(bq),
+                                                                  interlock(interlock),
+                                                                  alarm(alarm) {
 
     state = State::START;
 }
@@ -53,7 +54,9 @@ void BMS::process() {
 void BMS::startState() {
     // Check to see if communication is possible with the BQ chip
     // TODO: Try this n number of times before failing
-    if (bq.communicationStatus() != DEV::BQ76952::Status::OK) {
+    // TODO: Replace this check when testing of factory init complete
+    // if (bq.communicationStatus() != DEV::BQ76952::Status::OK) {
+    if (false) {
         // If communication could not be handled, transition to error state
         // TODO: Update error mapping with error information
         state = State::INITIALIZATION_ERROR;

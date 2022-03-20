@@ -154,6 +154,7 @@ BQSettingsStorage::BQSettingsStorage(EVT::core::DEV::M24C32& eeprom, DEV::BQ7695
     // TODO: This assumes that the number of settings are already written into
     // the EEPROM. This may or may not be an issue.
     numSettings = eeprom.readHalfWord(startAddress);
+    numSettingsWritten = numSettings;
 }
 
 uint32_t BQSettingsStorage::getNumSettings() {
