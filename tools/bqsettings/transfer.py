@@ -11,9 +11,7 @@ using the SDO file transfer logic of the Vector CAN.
 import argparse
 import os
 import sys
-import serial
 from common import BQSetting
-import time
 import canopen
 import struct
 
