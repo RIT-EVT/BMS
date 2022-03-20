@@ -54,9 +54,7 @@ void BMS::process() {
 void BMS::startState() {
     // Check to see if communication is possible with the BQ chip
     // TODO: Try this n number of times before failing
-    // TODO: Replace this check when testing of factory init complete
-    // if (bq.communicationStatus() != DEV::BQ76952::Status::OK) {
-    if (false) {
+    if (bq.communicationStatus() != DEV::BQ76952::Status::OK) {
         // If communication could not be handled, transition to error state
         // TODO: Update error mapping with error information
         state = State::INITIALIZATION_ERROR;
