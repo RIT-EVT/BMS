@@ -24,13 +24,24 @@ namespace DEV = EVT::core::DEV;
 namespace time = EVT::core::time;
 
 /**
+ * This struct is a catchall for data that is needed by the CAN interrupt
+ * handler. An instance of this struct will be provided as the parameter
+ * to the interrupt handler.
+ */
+struct CANInterruptParams {
+    EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>* queue;
+};
+
+/**
  * Interrupt handler for incoming CAN messages.
  *
  * @param priv[in] The private data (FixedQueue<CANOPEN_QUEUE_SIZE, CANMessage>)
  */
 void canInterruptHandler(IO::CANMessage& message, void* priv) {
+    struct CANInterruptParams* params = (CANInterruptParams*)priv;
+
     EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>* queue =
-        (EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>*) priv;
+        params->queue;
     if (queue == nullptr)
         return;
     if (!message.isCANExtended())
@@ -75,9 +86,14 @@ int main() {
     // Queue that will store CANopen messages
     EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage> canOpenQueue;
 
+    // Create struct that will hold CAN interrupt parameters
+    struct CANInterruptParams canParams = {
+        .queue = &canOpenQueue
+    };
+
     // Initialize IO
     IO::CAN& can = IO::getCAN<IO::Pin::PA_12, IO::Pin::PA_11>();
-    can.addIRQHandler(canInterruptHandler, reinterpret_cast<void*>(&canOpenQueue));
+    can.addIRQHandler(canInterruptHandler, reinterpret_cast<void*>(&canParams));
     IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
     EVT::core::IO::I2C& i2c = EVT::core::IO::getI2C<IO::Pin::PB_8, IO::Pin::PB_9>();
 
