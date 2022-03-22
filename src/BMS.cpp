@@ -4,10 +4,12 @@
 namespace BMS {
 
 BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
-         DEV::Interlock& interlock, EVT::core::IO::GPIO& alarm) : bqSettingsStorage(bqSettingsStorage),
-                                                                  bq(bq),
-                                                                  interlock(interlock),
-                                                                  alarm(alarm) {
+         DEV::Interlock& interlock, EVT::core::IO::GPIO& alarm,
+         DEV::SystemDetect& systemDetect) : bqSettingsStorage(bqSettingsStorage),
+                                            bq(bq),
+                                            interlock(interlock),
+                                            alarm(alarm),
+                                            systemDetect(systemDetect) {
 
     state = State::START;
 }
@@ -102,10 +104,13 @@ void BMS::systemReadyState() {
         return;
     }
 
-    // TODO: Determine if the BMS is on the bike or the charger
     if (interlock.isDetected()) {
-        // Transition to providing power
-        state = State::POWER_DELIVERY;
+        if (systemDetect.getIdentifiedSystem() == DEV::SystemDetect::System::BIKE) {
+            state = State::POWER_DELIVERY;
+        }
+        else if (systemDetect.getIdentifiedSystem() == DEV::SystemDetect::System::CHARGER) {
+            state = State::CHARGING;
+        }
     }
 }
 
