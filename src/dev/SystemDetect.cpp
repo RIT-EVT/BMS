@@ -6,23 +6,21 @@ namespace BMS::DEV {
 
 SystemDetect::SystemDetect(uint32_t bikeHeartBeat, uint32_t chargeHeatBeat,
                            uint32_t timout) {
-    this->bikeHeatBeat = bikeHeatBeat;
-    this->chargeHeatBeat = chargeHeatBeat;
+    this->bikeHeartBeat = bikeHeartBeat;
+    this->chargeHeartBeat = chargeHeartBeat;
     this->timeout = timeout;
     this->lastRead = 0;
     this->identifiedSystem = System::UNKNOWN;
 }
 
-void SystemDetect::processHeatBeat(int heartBeatID) {
-    switch (heartBeatID) {
-    case bikeHeatBeat:
+void SystemDetect::processHeartBeat(uint32_t heartBeatID) {
+    if (heartBeatID ==  bikeHeartBeat) {
         identifiedSystem = System::BIKE;
         lastRead = EVT::core::time::millis();
-        break;
-    case chargeHeatBeat:
+    }
+    else if (heartBeatID == chargeHeartBeat) {
         identifiedSystem = System::CHARGER;
         lastRead = EVT::core::time::millis();
-        break;
     }
 }
 
