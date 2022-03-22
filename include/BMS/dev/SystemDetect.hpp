@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 namespace BMS::DEV {
 
 /**
@@ -54,7 +56,7 @@ public:
      *
      * @param[in] heartBeatID The ID to potentially identify as a system detect
      */
-    void processHeatBeat(uint32_t heartBeatID);
+    void processHeartBeat(uint32_t heartBeatID);
 
     /**
      * Get the currently detected system, could be unknown.
@@ -65,9 +67,9 @@ public:
 
 private:
     /** The CANopen ID associated with the bike */
-    uint32_t bikeHeatBeat;
+    uint32_t bikeHeartBeat;
     /** The CANopen ID associated with the charger */
-    uint32_t chargeHeatBeat;
+    uint32_t chargeHeartBeat;
     /** Timeout when the device does not recongize what it is attached to */
     uint32_t timeout;
     /** Represents the time since last read */
