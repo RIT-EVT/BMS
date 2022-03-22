@@ -18,10 +18,15 @@
 #include <BMS/BMS.hpp>
 #include <BMS/BMSLogger.hpp>
 #include <BMS/dev/BQ76952.hpp>
+#include <BMS/dev/SystemDetect.hpp>
 
 namespace IO = EVT::core::IO;
 namespace DEV = EVT::core::DEV;
 namespace time = EVT::core::time;
+
+#define BIKE_HEART_BEAT 0x715
+#define CHARGER_HEART_BEAT 0x716
+#define DETECT_TIMEOUT 1000
 
 /**
  * This struct is a catchall for data that is needed by the CAN interrupt
@@ -30,6 +35,7 @@ namespace time = EVT::core::time;
  */
 struct CANInterruptParams {
     EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>* queue;
+    BMS::DEV::SystemDetect* systemDetect;
 };
 
 /**
@@ -42,6 +48,10 @@ void canInterruptHandler(IO::CANMessage& message, void* priv) {
 
     EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>* queue =
         params->queue;
+    BMS::DEV::SystemDetect* systemDetect = params->systemDetect;
+
+    systemDetect->processHeartBeat(message.getId());
+
     if (queue == nullptr)
         return;
     if (!message.isCANExtended())
@@ -86,6 +96,11 @@ int main() {
     // Queue that will store CANopen messages
     EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage> canOpenQueue;
 
+    // Intialize the system detect
+    BMS::DEV::SystemDetect systemDetect(BIKE_HEART_BEAT, CHARGER_HEART_BEAT,
+                                        DETECT_TIMEOUT);
+
+
     // Create struct that will hold CAN interrupt parameters
     struct CANInterruptParams canParams = {
         .queue = &canOpenQueue
@@ -120,7 +135,7 @@ int main() {
     IO::GPIO& alarm = IO::getGPIO<IO::Pin::PB_1>(IO::GPIO::Direction::INPUT);
 
     // Intialize the BMS itself
-    BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm);
+    BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect);
 
     // Reserved memory for CANopen stack usage
     uint8_t sdoBuffer[1][CO_SDO_BUF_BYTE];

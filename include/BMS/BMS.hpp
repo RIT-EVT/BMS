@@ -2,6 +2,7 @@
 
 #include <BMS/BQSettingStorage.hpp>
 #include <BMS/dev/Interlock.hpp>
+#include <BMS/dev/SystemDetect.hpp>
 #include <Canopen/co_core.h>
 #include <stdint.h>
 
@@ -44,7 +45,8 @@ public:
      * @pre The alarm GPIO is set as an input
      */
     BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
-        DEV::Interlock& interlock, EVT::core::IO::GPIO& alarm);
+        DEV::Interlock& interlock, EVT::core::IO::GPIO& alarm,
+        DEV::SystemDetect& systemDetect);
 
     /**
      * The node ID used to identify the device on the CAN network.
@@ -114,6 +116,12 @@ private:
      * to charge/discharge
      */
     EVT::core::IO::GPIO& alarm;
+
+    /**
+     * This determines which system the BMS is attached to.
+     */
+    DEV::SystemDetect& systemDetect;
+
 
     /**
      * Handles the start of the state machine logic. This considers the health

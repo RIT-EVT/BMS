@@ -107,7 +107,7 @@ int main() {
     IO::GPIO& alarm = IO::getGPIO<IO::Pin::PB_1>(IO::GPIO::Direction::INPUT);
 
     // Intialize the BMS itself
-    BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm);
+    BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect);
 
 
     // Reserved memory for CANopen stack usage
