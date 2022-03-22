@@ -4,7 +4,7 @@
 
 namespace BMS::DEV {
 
-SystemDetect::SystemDetect(uint32_t bikeHeartBeat, uint32_t chargeHeatBeat,
+SystemDetect::SystemDetect(uint32_t bikeHeartBeat, uint32_t chargeHeartBeat,
                            uint32_t timout) {
     this->bikeHeartBeat = bikeHeartBeat;
     this->chargeHeartBeat = chargeHeartBeat;
