@@ -5,7 +5,7 @@
 namespace BMS::DEV {
 
 SystemDetect::SystemDetect(uint32_t bikeHeartBeat, uint32_t chargeHeartBeat,
-                           uint32_t timout) {
+                           uint32_t timeout) {
     this->bikeHeartBeat = bikeHeartBeat;
     this->chargeHeartBeat = chargeHeartBeat;
     this->timeout = timeout;
