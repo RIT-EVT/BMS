@@ -44,7 +44,7 @@ struct CANInterruptParams {
  * @param priv[in] The private data (FixedQueue<CANOPEN_QUEUE_SIZE, CANMessage>)
  */
 void canInterruptHandler(IO::CANMessage& message, void* priv) {
-    struct CANInterruptParams* params = (CANInterruptParams*)priv;
+    struct CANInterruptParams* params = (CANInterruptParams*) priv;
 
     EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>* queue =
         params->queue;
@@ -100,11 +100,10 @@ int main() {
     BMS::DEV::SystemDetect systemDetect(BIKE_HEART_BEAT, CHARGER_HEART_BEAT,
                                         DETECT_TIMEOUT);
 
-
     // Create struct that will hold CAN interrupt parameters
     struct CANInterruptParams canParams = {
-        .queue = &canOpenQueue
-    };
+        .queue = &canOpenQueue,
+        .systemDetect = &systemDetect};
 
     // Initialize IO
     IO::CAN& can = IO::getCAN<IO::Pin::PA_12, IO::Pin::PA_11>();
