@@ -107,8 +107,7 @@ void BMS::systemReadyState() {
     if (interlock.isDetected()) {
         if (systemDetect.getIdentifiedSystem() == DEV::SystemDetect::System::BIKE) {
             state = State::POWER_DELIVERY;
-        }
-        else if (systemDetect.getIdentifiedSystem() == DEV::SystemDetect::System::CHARGER) {
+        } else if (systemDetect.getIdentifiedSystem() == DEV::SystemDetect::System::CHARGER) {
             state = State::CHARGING;
         }
     }

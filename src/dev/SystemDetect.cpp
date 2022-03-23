@@ -14,11 +14,10 @@ SystemDetect::SystemDetect(uint32_t bikeHeartBeat, uint32_t chargeHeartBeat,
 }
 
 void SystemDetect::processHeartBeat(uint32_t heartBeatID) {
-    if (heartBeatID ==  bikeHeartBeat) {
+    if (heartBeatID == bikeHeartBeat) {
         identifiedSystem = System::BIKE;
         lastRead = EVT::core::time::millis();
-    }
-    else if (heartBeatID == chargeHeartBeat) {
+    } else if (heartBeatID == chargeHeartBeat) {
         identifiedSystem = System::CHARGER;
         lastRead = EVT::core::time::millis();
     }

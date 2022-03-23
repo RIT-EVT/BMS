@@ -20,7 +20,6 @@
 #include <BMS/dev/BQ76952.hpp>
 #include <BMS/dev/SystemDetect.hpp>
 
-
 namespace IO = EVT::core::IO;
 namespace DEV = EVT::core::DEV;
 namespace time = EVT::core::time;
@@ -109,14 +108,12 @@ int main() {
     // Intialize the BMS itself
     BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect);
 
-
     // Reserved memory for CANopen stack usage
     uint8_t sdoBuffer[1][CO_SDO_BUF_BYTE];
     CO_TMR_MEM appTmrMem[4];
 
     // Queue that will store CANopen messages
     EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage> canOpenQueue;
-
 
     // Initialize the CANopen drivers
     CO_IF_DRV canStackDriver;

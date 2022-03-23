@@ -20,7 +20,6 @@ namespace BMS::DEV {
  */
 class SystemDetect {
 public:
-
     /**
      * The different systems that could be detected. If no heart beat
      * has been processed within a given timeout, the system is left as
@@ -76,7 +75,6 @@ private:
     uint32_t lastRead = 0;
     /** The currently identified system */
     System identifiedSystem;
-
 };
 
-}
+}// namespace BMS::DEV
