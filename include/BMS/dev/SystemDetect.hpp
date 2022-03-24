@@ -44,7 +44,7 @@ public:
      *                    the system it is attached to. If the heart beat is
      *                    not received within this timeout, device assumes it
      *                    does not know what the system is attached to. This
-     * heart beat has been detected
+     *                    heart beat has been detected
      *                    is in milliseconds.
      */
     SystemDetect(uint32_t bikeHeatBeat, uint32_t chargeHeatBeat, uint32_t timeout);
