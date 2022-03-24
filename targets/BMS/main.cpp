@@ -103,7 +103,8 @@ int main() {
     // Create struct that will hold CAN interrupt parameters
     struct CANInterruptParams canParams = {
         .queue = &canOpenQueue,
-        .systemDetect = &systemDetect};
+        .systemDetect = &systemDetect,
+    };
 
     // Initialize IO
     IO::CAN& can = IO::getCAN<IO::Pin::PA_12, IO::Pin::PA_11>();
