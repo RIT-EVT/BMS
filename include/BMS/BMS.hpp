@@ -46,7 +46,7 @@ public:
      */
     BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
         DEV::Interlock& interlock, EVT::core::IO::GPIO& alarm,
-        DEV::SystemDetect& systemDetect);
+        DEV::SystemDetect& systemDetect, EVT::core::IO::GPIO& bmsOK);
 
     /**
      * The node ID used to identify the device on the CAN network.
@@ -90,6 +90,19 @@ private:
         EVT::core::IO::GPIO::State::HIGH;
 
     /**
+     * State for representing the BMS is in an OK state to charge/discharge
+     */
+    static constexpr EVT::core::IO::GPIO::State BMS_OK =
+        EVT::core::IO::GPIO::State::HIGH;
+
+    /**
+     * State for representing the BMS is in not in an OK state to charge/discharge
+     */
+    static constexpr EVT::core::IO::GPIO::State BMS_NOT_OK =
+        EVT::core::IO::GPIO::State::LOW;
+
+
+    /**
      * The interface for storaging and retrieving BQ Settings.
      */
     BQSettingsStorage& bqSettingsStorage;
@@ -121,6 +134,21 @@ private:
      * This determines which system the BMS is attached to.
      */
     DEV::SystemDetect& systemDetect;
+
+    /**
+     * This GPIO is used to represent when the system is ok. When this pin
+     * is high, it is represents that the BMS is in a state ready to
+     * charge or discharge,
+     */
+    EVT::core::IO::GPIO& bmsOK;
+
+    /**
+     * Boolean flag that represents a state has just changed, this is useful
+     * for determining when operations should take place that only take place
+     * once per state change.
+     */
+    bool stateChanged = false;
+
 
     /**
      * Handles the start of the state machine logic. This considers the health
