@@ -57,7 +57,7 @@ void BMS::process() {
 }
 
 void BMS::startState() {
-    if(stateChanged) {
+    if (stateChanged) {
         bmsOK.writePin(BMS_NOT_OK);
         stateChanged = false;
     }
@@ -83,14 +83,14 @@ void BMS::startState() {
 }
 
 void BMS::initializationErrorState() {
-    if(stateChanged) {
+    if (stateChanged) {
         bmsOK.writePin(BMS_NOT_OK);
         stateChanged = false;
     }
 }
 
 void BMS::factoryInitState() {
-    if(stateChanged) {
+    if (stateChanged) {
         bmsOK.writePin(BMS_NOT_OK);
         stateChanged = false;
     }
@@ -103,7 +103,7 @@ void BMS::factoryInitState() {
 }
 
 void BMS::transferSettingsState() {
-    if(stateChanged) {
+    if (stateChanged) {
         bmsOK.writePin(BMS_NOT_OK);
         stateChanged = false;
     }
@@ -124,7 +124,7 @@ void BMS::transferSettingsState() {
 }
 
 void BMS::systemReadyState() {
-    if(stateChanged) {
+    if (stateChanged) {
         bmsOK.writePin(BMS_NOT_OK);
         stateChanged = false;
     }
@@ -150,14 +150,14 @@ void BMS::systemReadyState() {
 }
 
 void BMS::unsafeConditionsError() {
-    if(stateChanged) {
+    if (stateChanged) {
         bmsOK.writePin(BMS_NOT_OK);
         stateChanged = false;
     }
 }
 
 void BMS::powerDeliveryState() {
-    if(stateChanged) {
+    if (stateChanged) {
         bmsOK.writePin(BMS_OK);
         stateChanged = false;
     }
@@ -176,7 +176,7 @@ void BMS::powerDeliveryState() {
 }
 
 void BMS::chargingState() {
-    if(stateChanged) {
+    if (stateChanged) {
         bmsOK.writePin(BMS_OK);
         stateChanged = false;
     }

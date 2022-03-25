@@ -101,7 +101,6 @@ private:
     static constexpr EVT::core::IO::GPIO::State BMS_NOT_OK =
         EVT::core::IO::GPIO::State::LOW;
 
-
     /**
      * The interface for storaging and retrieving BQ Settings.
      */
@@ -148,7 +147,6 @@ private:
      * once per state change.
      */
     bool stateChanged = false;
-
 
     /**
      * Handles the start of the state machine logic. This considers the health
