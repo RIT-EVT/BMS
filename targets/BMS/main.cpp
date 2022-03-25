@@ -136,7 +136,7 @@ int main() {
 
     // Initialize the system OK pin
     // TODO: Determine actual system ok pin
-    IO::GPIO& bmsOK = IO::getGPIO<IO::Pin::PC_14>(IO::GPIO::Direction::OUTPUT);
+    IO::GPIO& bmsOK = IO::getGPIO<IO::Pin::PB_3>(IO::GPIO::Direction::OUTPUT);
 
     // Intialize the BMS itself
     BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect, bmsOK);
