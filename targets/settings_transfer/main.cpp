@@ -30,24 +30,29 @@ int main() {
     BMS::DEV::BQ76952 bq(i2c, BQ_I2C_ADDR);
     BMS::BQSettingsStorage settingsStorage(eeprom, bq);
 
-    auto status = settingsStorage.transferSettings();
+    bool isComplete = false;
+    settingsStorage.resetTranfer();
+    uint16_t count = 0;
+    while(!isComplete) {
+        auto status = settingsStorage.transferSetting(isComplete);
 
-    switch (status) {
-    case BMS::DEV::BQ76952::Status::ERROR:
-        uart.printf("FAILED: BQ specific error\r\n");
-        break;
-    case BMS::DEV::BQ76952::Status::I2C_ERROR:
-        uart.printf("FAILED: I2C error\r\n");
-        break;
-    case BMS::DEV::BQ76952::Status::TIMEOUT:
-        uart.printf("FAILED: Timeout waiting for BQ\r\n");
-        break;
-    case BMS::DEV::BQ76952::Status::OK:
-        uart.printf("SUCCESS\r\n");
-        break;
-    default:
-        uart.printf("FAILED: Unknown error\r\n");
-        break;
+        switch (status) {
+        case BMS::DEV::BQ76952::Status::ERROR:
+            uart.printf("FAILED: BQ specific error\r\n");
+            break;
+        case BMS::DEV::BQ76952::Status::I2C_ERROR:
+            uart.printf("FAILED: I2C error\r\n");
+            break;
+        case BMS::DEV::BQ76952::Status::TIMEOUT:
+            uart.printf("FAILED: Timeout waiting for BQ\r\n");
+            break;
+        case BMS::DEV::BQ76952::Status::OK:
+            uart.printf("SUCCESS\r\n");
+            break;
+        default:
+            uart.printf("FAILED: Unknown error\r\n");
+            break;
+        }
     }
 
     EVT::core::time::wait(500);
