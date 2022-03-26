@@ -136,7 +136,7 @@ private:
 
     /**
      * This GPIO is used to represent when the system is ok. When this pin
-     * is high, it is represents that the BMS is in a state ready to
+     * is high, it represents that the BMS is in a state ready to
      * charge or discharge,
      */
     EVT::core::IO::GPIO& bmsOK;
