@@ -32,7 +32,6 @@ int main() {
 
     bool isComplete = false;
     settingsStorage.resetTranfer();
-    uint16_t count = 0;
     while (!isComplete) {
         auto status = settingsStorage.transferSetting(isComplete);
 
