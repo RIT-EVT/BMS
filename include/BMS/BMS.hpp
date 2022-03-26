@@ -102,6 +102,17 @@ private:
         EVT::core::IO::GPIO::State::LOW;
 
     /**
+     * Number of attempts that will be made to communicate with the BQ
+     * before failing
+     */
+    static constexpr uint16_t MAX_BQ_COMM_ATTEMPTS = 3;
+
+    /**
+     * Time in milliseconds between attempting a previously failed operation
+     */
+    static constexpr uint32_t ERROR_TIME_DELAY = 2000;
+
+    /**
      * The interface for storaging and retrieving BQ Settings.
      */
     BQSettingsStorage& bqSettingsStorage;
@@ -147,6 +158,23 @@ private:
      * once per state change.
      */
     bool stateChanged = false;
+
+    /**
+     * Utility variable which can be used to count the number of attempts that
+     * was made to complete a certain actions.
+     *
+     * For example, this is used for trying to communicate with the BQ N
+     * number of times before failing
+     */
+    uint16_t numAttemptsMade;
+
+    /**
+     * Keeps track of the last time an attempt was made. This is used in
+     * combination with BMS::numAttemptsMade to attempt a task a certain
+     * number of times with delay in attempts
+     */
+    uint32_t lastAttemptTime;
+
 
     /**
      * Handles the start of the state machine logic. This considers the health
