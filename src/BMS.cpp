@@ -1,4 +1,7 @@
 #include <BMS/BMS.hpp>
+
+#include <EVT/utils/time.hpp>
+
 #include <stdint.h>
 
 namespace BMS {
@@ -59,16 +62,35 @@ void BMS::process() {
 void BMS::startState() {
     if (stateChanged) {
         bmsOK.writePin(BMS_NOT_OK);
+        numAttemptsMade = 0;
         stateChanged = false;
     }
 
+    // Check if an error has taken place, and if so, check to make sure
+    // a certain delay time has taken place before making another attempt
+    if (numAttemptsMade > 0) {
+        // If there has not been enough time between attempts, skip this run
+        // of the state and try again later
+        if ((EVT::core::time::millis() - lastAttemptTime) < ERROR_TIME_DELAY) {
+            return;
+        }
+    }
+
     // Check to see if communication is possible with the BQ chip
-    // TODO: Try this n number of times before failing
     if (bq.communicationStatus() != DEV::BQ76952::Status::OK) {
-        // If communication could not be handled, transition to error state
-        // TODO: Update error mapping with error information
-        state = State::INITIALIZATION_ERROR;
-        stateChanged = true;
+
+        // Increment the number of errors that have taken place
+        numAttemptsMade++;
+
+        // Record current time
+        lastAttemptTime = EVT::core::time::millis();
+
+        if (numAttemptsMade >= MAX_BQ_COMM_ATTEMPTS) {
+            // If communication could not be handled, transition to error state
+            // TODO: Update error mapping with error information
+            state = State::INITIALIZATION_ERROR;
+            stateChanged = true;
+        }
     }
     // Check to see if we have setting to be transferred
     else if (bqSettingsStorage.hasSettings()) {
@@ -106,20 +128,39 @@ void BMS::transferSettingsState() {
     if (stateChanged) {
         bmsOK.writePin(BMS_NOT_OK);
         bqSettingsStorage.resetTranfer();
+        numAttemptsMade = 0;
         stateChanged = false;
     }
 
-    // TODO: Attempt n number of times before failing
+    // Check if an error has taken place, and if so, check to make sure
+    // a certain delay time has taken place before making another attempt
+    if (numAttemptsMade > 0) {
+        // If there has not been enough time between attempts, skip this run
+        // of the state and try again later
+        if ((EVT::core::time::millis() - lastAttemptTime) < ERROR_TIME_DELAY) {
+            return;
+        }
+    }
+
     bool isComplete = false;
     auto result = bqSettingsStorage.transferSetting(isComplete);
     if (result != DEV::BQ76952::Status::OK) {
-        // If the settings did not transfer successfully, transiton tp
-        // error state
-        // TODO: Update error mapping with error information
-        state = State::INITIALIZATION_ERROR;
-        stateChanged = true;
+        numAttemptsMade++;
+
+        // If the number of errors are over the max
+        if (numAttemptsMade >= MAX_BQ_COMM_ATTEMPTS) {
+            // If the settings did not transfer successfully, transiton tp
+            // error state
+            // TODO: Update error mapping with error information
+            state = State::INITIALIZATION_ERROR;
+            stateChanged = true;
+        }
+
+        lastAttemptTime = EVT::core::time::millis();
+
+        bqSettingsStorage.resetTranfer();
+
     } else if (isComplete) {
-        // Otherwise, move on to ready state if all settings have been transferred
         state = State::SYSTEM_READY;
         stateChanged = true;
     }

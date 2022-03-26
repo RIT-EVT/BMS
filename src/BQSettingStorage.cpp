@@ -224,7 +224,6 @@ void BQSettingsStorage::resetEEPROMOffset() {
 void BQSettingsStorage::resetTranfer() {
     numSettingsTransferred = 0;
     resetEEPROMOffset();
-    bq.enterConfigUpdateMode();
 }
 
 BMS::DEV::BQ76952::Status BQSettingsStorage::transferSetting(bool& isComplete) {
@@ -232,6 +231,10 @@ BMS::DEV::BQ76952::Status BQSettingsStorage::transferSetting(bool& isComplete) {
     if (numSettingsTransferred == numSettings) {
         isComplete = true;
         return BMS::DEV::BQ76952::Status::OK;
+    }
+
+    if (numSettingsTransferred == 0) {
+        bq.enterConfigUpdateMode();
     }
 
     // Otherwise transfer a single setting
