@@ -246,7 +246,7 @@ BMS::DEV::BQ76952::Status BQSettingsStorage::transferSetting(bool& isComplete) {
 
         LOGGER.log(BMSLogger::LogLevel::ERROR,
                    "Failed with address: 0x%04x, data: 0x%04x",
-                    setting.getAddress(), setting.getData());
+                   setting.getAddress(), setting.getData());
 
         bq.exitConfigUpdateMode();
         return status;
