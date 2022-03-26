@@ -93,10 +93,34 @@ public:
     EVT::core::DEV::M24C32& getEEPROM();
 
     /**
-     * Transfer settings from EEPROM to the BQ chip. This will read the
-     * settings one-by-one and pass the setting to the BQ chip for programming.
+     * Reset the transfer setting logic. This will mean that the next call
+     * to BQSettingsStorage::transferSetting will tranfer the first stored
+     * setting.
      */
-    BMS::DEV::BQ76952::Status transferSettings();
+    void resetTranfer();
+
+    /**
+     * Transfer a single setting over to the BQ chip. Will update the given
+     * flag to represent that the setting that was tranferred by the most
+     * recent call represented the last setting that needed to be transferred.
+     *
+     * For example, if there are 3 settings, the flow of the code would be
+     * as follows.
+     *
+     * NOTE: BQSettingsStorage::resetTransfer must be called before the
+     * first call to transferSetting
+     *
+     * \code{.cpp}
+     * bool isComplete;
+     * resetTransfer();
+     * transferSetting(&isComplete); // isComplete -> false
+     * transferSetting(&isComplete); // isComplete -> false
+     * transferSetting(&isComplete); // isComplete -> true
+     * \endcode
+     *
+     * @param[out] isComplete Flag that represents all settings have been transferred
+     */
+    BMS::DEV::BQ76952::Status transferSetting(bool& isComplete);
 
     /**
      * Checks to see if the settings are stored and can be used. This includes
@@ -136,6 +160,11 @@ private:
      * written over yet.
      */
     uint16_t numSettingsWritten;
+    /**
+     * The number of settings that have been transferred from the BMS to the
+     * BQ
+     */
+    uint16_t numSettingsTransferred;
 
     friend class BMS;
 };

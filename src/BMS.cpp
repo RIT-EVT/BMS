@@ -105,19 +105,21 @@ void BMS::factoryInitState() {
 void BMS::transferSettingsState() {
     if (stateChanged) {
         bmsOK.writePin(BMS_NOT_OK);
+        bqSettingsStorage.resetTranfer();
         stateChanged = false;
     }
 
     // TODO: Attempt n number of times before failing
-    auto result = bqSettingsStorage.transferSettings();
+    bool isComplete = false;
+    auto result = bqSettingsStorage.transferSetting(isComplete);
     if (result != DEV::BQ76952::Status::OK) {
         // If the settings did not transfer successfully, transiton tp
         // error state
         // TODO: Update error mapping with error information
         state = State::INITIALIZATION_ERROR;
         stateChanged = true;
-    } else {
-        // Otherwise, move on to ready state
+    } else if (isComplete) {
+        // Otherwise, move on to ready state if all settings have been transferred
         state = State::SYSTEM_READY;
         stateChanged = true;
     }

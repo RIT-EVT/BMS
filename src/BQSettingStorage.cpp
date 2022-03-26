@@ -221,27 +221,46 @@ void BQSettingsStorage::resetEEPROMOffset() {
     addressLocation = startAddress + 2;
 }
 
-BMS::DEV::BQ76952::Status BQSettingsStorage::transferSettings() {
-    BQSetting setting;
-
-    bq.enterConfigUpdateMode();
-
+void BQSettingsStorage::resetTranfer() {
+    numSettingsTransferred = 0;
     resetEEPROMOffset();
-    BMS::DEV::BQ76952::Status status;
-    for (int i = 0; i < numSettings; i++) {
-        readSetting(setting);
-        status = bq.writeSetting(setting);
+    bq.enterConfigUpdateMode();
+}
 
-        // Verify the setting transferred successfully
-        if (status != BMS::DEV::BQ76952::Status::OK) {
-            LOGGER.log(BMSLogger::LogLevel::DEBUG,
-                       "Failed with address: 0x%04x, data: 0x%04x",
-                       setting.getAddress(), setting.getData());
-            return status;
-        }
+BMS::DEV::BQ76952::Status BQSettingsStorage::transferSetting(bool& isComplete) {
+    // If all settings have already been transferred, do nothing
+    if (numSettingsTransferred == numSettings) {
+        isComplete = true;
+        return BMS::DEV::BQ76952::Status::OK;
     }
 
-    bq.exitConfigUpdateMode();
+    // Otherwise transfer a single setting
+    BMS::DEV::BQ76952::Status status;
+    BQSetting setting;
+    readSetting(setting);
+    status = bq.writeSetting(setting);
+
+    // Make sure the status was ok
+    if (status != BMS::DEV::BQ76952::Status::OK) {
+        isComplete = false;
+
+        LOGGER.log(BMSLogger::LogLevel::ERROR,
+                   "Failed with address: 0x%04x, data: 0x%04x",
+                    setting.getAddress(), setting.getData());
+
+        bq.exitConfigUpdateMode();
+        return status;
+    }
+
+    numSettingsTransferred++;
+    // If the status was ok, update complete flag
+    isComplete = numSettingsTransferred == numSettings;
+
+    // Exit the config update mode if need be
+    if (isComplete) {
+        bq.exitConfigUpdateMode();
+    }
+    return BMS::DEV::BQ76952::Status::OK;
 }
 
 bool BQSettingsStorage::hasSettings() {
