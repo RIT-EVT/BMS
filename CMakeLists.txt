@@ -39,9 +39,6 @@ target_sources(${PROJECT_NAME} PRIVATE
 # Handle dependencies
 ###############################################################################
 
-# TODO: This should be set by the user of this library
-add_compile_definitions(STM32F302x8)
-
 target_link_libraries(${PROJECT_NAME}
         PUBLIC EVT
         )
