@@ -17,7 +17,7 @@ BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
 
     state = State::START;
     bmsOK.writePin(EVT::core::IO::GPIO::State::LOW);
-    stateChanged = false;
+    stateChanged = true;
 }
 
 CO_OBJ_T* BMS::getObjectDictionary() {

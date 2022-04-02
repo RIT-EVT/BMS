@@ -110,7 +110,7 @@ private:
     /**
      * Time in milliseconds between attempting a previously failed operation
      */
-    static constexpr uint32_t ERROR_TIME_DELAY = 2000;
+    static constexpr uint32_t ERROR_TIME_DELAY = 5000;
 
     /**
      * The interface for storaging and retrieving BQ Settings.
