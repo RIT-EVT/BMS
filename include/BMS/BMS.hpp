@@ -175,7 +175,6 @@ private:
      */
     uint32_t lastAttemptTime;
 
-
     /**
      * Handles the start of the state machine logic. This considers the health
      * of the system, and the existance of BQ settings.
