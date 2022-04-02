@@ -38,9 +38,22 @@ target_sources(${PROJECT_NAME} PRIVATE
 ###############################################################################
 # Handle dependencies
 ###############################################################################
+# Handle Selection of the target device
+option(TARGET_DEV "Target device" "STM32F302x8")
+if(NOT TARGET_DEV)
+    set(TARGET_DEV "STM32F302x8")
+endif()
 
-# TODO: This should be set by the user of this library
-add_compile_definitions(STM32F302x8)
+
+if(TARGET_DEV STREQUAL "STM32F302x8")
+    add_compile_definitions(STM32F302x8)
+    add_compile_definitions(STM32F3xx)
+elseif(TARGET_DEV STREQUAL "STM32F334x8")
+    add_compile_definitions(STM32F334x8)
+    add_compile_definitions(STM32F3xx)
+else()
+    message(FATAL_ERROR "The target device is not supported")
+endif()
 
 target_link_libraries(${PROJECT_NAME}
         PUBLIC EVT
