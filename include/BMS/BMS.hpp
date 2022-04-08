@@ -80,7 +80,7 @@ private:
      * Have to know the size of the object dictionary for initialization
      * process.
      */
-    static constexpr uint16_t OBJECT_DIRECTIONARY_SIZE = 18;
+    static constexpr uint16_t OBJECT_DIRECTIONARY_SIZE = 30;
 
     /**
      * The active state of the alarm. When the alarm is in this state,
@@ -111,6 +111,11 @@ private:
      * Time in milliseconds between attempting a previously failed operation
      */
     static constexpr uint32_t ERROR_TIME_DELAY = 5000;
+
+    /**
+     * This is the number of cells that the BQ chip is connected to
+     */
+    static constexpr uint8_t NUM_CELLS = 12;
 
     /**
      * The interface for storaging and retrieving BQ Settings.
@@ -174,6 +179,20 @@ private:
      * number of times with delay in attempts
      */
     uint32_t lastAttemptTime;
+
+    /**
+     * Represents the total voltage read by the BQ chip. This value is updated
+     * by reading the voltage from the BQ chip and is then exposed over
+     * CANopen.
+     */
+    uint16_t totalVoltage;
+
+    /**
+     * Stores the per-cell voltage for the battery pack. This value is updated
+     * by reading the voltage from the BQ chip and is then exposed over
+     * CANopen.
+     */
+    uint16_t cellVoltage[NUM_CELLS];
 
     /**
      * Handles the start of the state machine logic. This considers the health
@@ -368,9 +387,69 @@ private:
         // voltages will not be broadcasted via PDO, but will still be
         // accessible over SDO.
         {
-            .Key = CO_KEY(0x2101, 0, CO_UNSIGNED32 | CO_OBJ___PR_),
+            .Key = CO_KEY(0x2101, 0, CO_UNSIGNED16 | CO_OBJ___PR_),
             .Type = 0,
-            .Data = (uintptr_t) bq.totalVoltage,
+            .Data = (uintptr_t) &totalVoltage,
+        },
+        {
+            .Key = CO_KEY(0x2101, 1, CO_UNSIGNED16 | CO_OBJ___PR_),
+            .Type = 0,
+            .Data = (uintptr_t) &cellVoltage[0],
+        },
+        {
+            .Key = CO_KEY(0x2101, 2, CO_UNSIGNED16 | CO_OBJ___PR_),
+            .Type = 0,
+            .Data = (uintptr_t) &cellVoltage[1],
+        },
+        {
+            .Key = CO_KEY(0x2101, 3, CO_UNSIGNED16 | CO_OBJ___PR_),
+            .Type = 0,
+            .Data = (uintptr_t) &cellVoltage[2],
+        },
+        {
+            .Key = CO_KEY(0x2101, 4, CO_UNSIGNED16 | CO_OBJ___PR_),
+            .Type = 0,
+            .Data = (uintptr_t) &cellVoltage[3],
+        },
+        {
+            .Key = CO_KEY(0x2101, 5, CO_UNSIGNED16 | CO_OBJ___PR_),
+            .Type = 0,
+            .Data = (uintptr_t) &cellVoltage[4],
+        },
+        {
+            .Key = CO_KEY(0x2101, 6, CO_UNSIGNED16 | CO_OBJ___PR_),
+            .Type = 0,
+            .Data = (uintptr_t) &cellVoltage[5],
+        },
+        {
+            .Key = CO_KEY(0x2101, 7, CO_UNSIGNED16 | CO_OBJ___PR_),
+            .Type = 0,
+            .Data = (uintptr_t) &cellVoltage[6],
+        },
+        {
+            .Key = CO_KEY(0x2101, 8, CO_UNSIGNED16 | CO_OBJ___PR_),
+            .Type = 0,
+            .Data = (uintptr_t) &cellVoltage[7],
+        },
+        {
+            .Key = CO_KEY(0x2101, 9, CO_UNSIGNED16 | CO_OBJ___PR_),
+            .Type = 0,
+            .Data = (uintptr_t) &cellVoltage[8],
+        },
+        {
+            .Key = CO_KEY(0x2101, 10, CO_UNSIGNED16 | CO_OBJ___PR_),
+            .Type = 0,
+            .Data = (uintptr_t) &cellVoltage[9],
+        },
+        {
+            .Key = CO_KEY(0x2101, 11, CO_UNSIGNED16 | CO_OBJ___PR_),
+            .Type = 0,
+            .Data = (uintptr_t) &cellVoltage[10],
+        },
+        {
+            .Key = CO_KEY(0x2101, 12, CO_UNSIGNED16 | CO_OBJ___PR_),
+            .Type = 0,
+            .Data = (uintptr_t) &cellVoltage[11],
         },
 
         /// The current state the BMS is in. Can be read and written to
