@@ -266,6 +266,27 @@ private:
     bool isHealthy();
 
     /**
+     * Update the local voltage variables with the values from the BQ chip.
+     * This will iterate over all the voltage values of interest and update
+     * each value. These values will then be able to be read over CANopen.
+     *
+     * This should be called when in a state where the BQ is ready and able
+     * to read voltage. In other states, a call to this function should not
+     * be present.
+     */
+    void updateVoltageReadings();
+
+    /**
+     * Will clear the local voltage values (set to 0). This is to represent
+     * that the voltage readings are either not accurate or not current. For
+     * states where the voltage read from the BQ is not expected to be
+     * accurate or stable, this should be called so that the data sent out
+     * over CANopen reflect that.
+     */
+    void clearVoltageReadings();
+
+
+    /**
      * The object dictionary of the BMS. Includes settings that determine
      * how the BMS functions on the CANopen network as well as the data
      * that is exposed on the network.
