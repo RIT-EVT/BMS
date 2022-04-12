@@ -228,4 +228,24 @@ BQ76952::Status BQ76952::communicationStatus() {
     return BQ76952::Status::ERROR;
 }
 
+BQ76952::Status BQ76952::getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32_t *sum) {
+    Status status = Status::OK;
+    uint8_t cellVoltageReg = CELL_VOLTAGE_BASE_REG;
+
+    // Loop over all the cells and update the cooresponding voltage
+    for(uint8_t i = 0; i < NUM_CELLS; i++) {
+        status = makeDirectRead(cellVoltageReg, &cellVoltages[i]);
+        if (status != Status::OK) {
+            return status;
+        }
+
+        *sum += cellVoltages[i];
+
+        // Each cell register is 2 bytes off from each other
+        cellVoltageReg += 2;
+    }
+
+    return BQ76952::Status::OK;
+}
+
 }// namespace BMS::DEV

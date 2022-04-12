@@ -154,21 +154,14 @@ public:
     Status communicationStatus();
 
     /**
-     * Get the total voltage that is measured by the BQ chip.
-     *
-     * @param[out] The voltage value to store in millivols
-     * @return The status of the read attempt
-     */
-    Status getTotalVoltage(uint32_t* totalVoltage);
-
-    /**
      * Fill a buffer with the per cell voltage.
      *
-     * @param[out] The buffer to fill with the cell voltage. Must be
+     * @param[out] cellVoltages The buffer to fill with the cell voltage. Must be
      *            NUM_CELLS in size
+     * @param[out] sum The total voltage across all cells
      * @return The status of the read attempt
      */
-    Status getCellVoltage(uint16_t cellVoltages[NUM_CELLS]);
+    Status getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32_t *sum);
 
     // Total voltage read by the BQ chip (measured in millivolts)
     uint32_t totalVoltage;
@@ -184,6 +177,9 @@ private:
 
     /** The name of the BQ chip that should be stored in the BQ chip */
     static constexpr uint16_t BQ_ID = 0x7695;
+
+    /** Base address where the cell voltages are located */
+    static constexpr uint8_t CELL_VOLTAGE_BASE_REG = 0x14;
 
     /** I2C bus to communicate over */
     EVT::core::IO::I2C& i2c;
