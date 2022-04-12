@@ -189,11 +189,15 @@ void BMS::systemReadyState() {
         if (systemDetect.getIdentifiedSystem() == DEV::SystemDetect::System::BIKE) {
             state = State::POWER_DELIVERY;
             stateChanged = true;
+            return;
         } else if (systemDetect.getIdentifiedSystem() == DEV::SystemDetect::System::CHARGER) {
             state = State::CHARGING;
             stateChanged = true;
+            return;
         }
     }
+
+    updateVoltageReadings();
 }
 
 void BMS::unsafeConditionsError() {
@@ -201,6 +205,8 @@ void BMS::unsafeConditionsError() {
         bmsOK.writePin(BMS_NOT_OK);
         stateChanged = false;
     }
+
+    updateVoltageReadings();
 }
 
 void BMS::powerDeliveryState() {
@@ -219,7 +225,10 @@ void BMS::powerDeliveryState() {
     if (!interlock.isDetected()) {
         state = State::SYSTEM_READY;
         stateChanged = true;
+        return;
     }
+
+    updateVoltageReadings();
 }
 
 void BMS::chargingState() {
@@ -238,7 +247,10 @@ void BMS::chargingState() {
     if (!interlock.isDetected()) {
         state = State::SYSTEM_READY;
         stateChanged = true;
+        return;
     }
+
+    updateVoltageReadings();
 }
 
 bool BMS::isHealthy() {
