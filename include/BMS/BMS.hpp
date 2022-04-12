@@ -378,7 +378,7 @@ private:
         {
             .Key = CO_KEY(0x1A00, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = 0,
-            .Data = CO_LINK(0x2100, 0, 8),// Link to sample data position in dictionary
+            .Data = CO_LINK(0x2101, 0, 8),// Link to sample data position in dictionary
         },
 
         // BQ Settings exposure over CANopen. The number of settings can be

@@ -98,11 +98,10 @@ BQ76952::Status BQ76952::makeRAMRead(uint16_t reg, uint32_t* result) {
 
     // Read back from the memory
     uint8_t resultRaw[4];
-    I2C_RETURN_IF_ERR(i2c.readMemReg(i2cAddress, 0x40, &resultRaw[0], 1, 1));
+    I2C_RETURN_IF_ERR(i2c.readMemReg(i2cAddress, 0x40, &resultRaw[0], 4, 1));
 
     *result = static_cast<uint32_t>(resultRaw[3] & 0xFF) << 24 | static_cast<uint32_t>(resultRaw[2] & 0xFF) << 16 | static_cast<uint32_t>(resultRaw[1] & 0xFF) << 8 | static_cast<uint32_t>(resultRaw[0] & 0xFF);
 
-    *result = resultRaw[0];
     return Status::OK;
 }
 
@@ -232,6 +231,7 @@ BQ76952::Status BQ76952::getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32
     Status status = Status::OK;
     uint8_t cellVoltageReg = CELL_VOLTAGE_BASE_REG;
 
+    uint32_t currentVoltage = 0;
     // Loop over all the cells and update the cooresponding voltage
     for(uint8_t i = 0; i < NUM_CELLS; i++) {
         status = makeDirectRead(cellVoltageReg, &cellVoltages[i]);
@@ -239,11 +239,13 @@ BQ76952::Status BQ76952::getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32
             return status;
         }
 
-        *sum += cellVoltages[i];
+        currentVoltage += cellVoltages[i];
 
         // Each cell register is 2 bytes off from each other
         cellVoltageReg += 2;
     }
+
+    *sum = currentVoltage;
 
     return BQ76952::Status::OK;
 }
