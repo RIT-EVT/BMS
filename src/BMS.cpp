@@ -246,14 +246,16 @@ bool BMS::isHealthy() {
 }
 
 void BMS::updateVoltageReadings() {
-
+    // TODO: Handle when an error has taken place
+    bq.getTotalVoltage(&totalVoltage);
+    bq.getCellVoltage(cellVoltage);
 }
 
 void BMS::clearVoltageReadings() {
     totalVoltage = 0;
 
     // Zero out each cell voltage
-    for(uint8_t i = 0; i < NUM_CELLS; i++) {
+    for(uint8_t i = 0; i < DEV::BQ76952::NUM_CELLS; i++) {
         cellVoltage[i] = 0;
     }
 }

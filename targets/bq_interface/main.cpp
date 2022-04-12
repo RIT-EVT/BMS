@@ -100,7 +100,10 @@ void ramRead(IO::UART& uart, BMS::DEV::BQ76952& bq) {
  *
  * @param[in] uart The UART interface to write in from
  */
-void directWrite(IO::UART& uart) {}
+void directWrite(IO::UART& uart) {
+
+
+}
 
 /**
  * Function for making an indirect write request
@@ -221,7 +224,7 @@ void exitConfigMode(IO::UART& uart, BMS::DEV::BQ76952& bq) {
 }
 
 int main() {
-    IO::I2C& i2c = IO::getI2C<IO::Pin::PB_8, IO::Pin::PB_9>();
+    IO::I2C& i2c = IO::getI2C<IO::Pin::PB_6, IO::Pin::PB_7>();
     BMS::DEV::BQ76952 bq(i2c, 0x08);
 
     IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
@@ -253,6 +256,7 @@ int main() {
             break;
         // Subcommand write
         case 'S':
+            ramWrite(uart, bq);
             break;
         // RAM write
         case 'R':

@@ -113,11 +113,6 @@ private:
     static constexpr uint32_t ERROR_TIME_DELAY = 5000;
 
     /**
-     * This is the number of cells that the BQ chip is connected to
-     */
-    static constexpr uint8_t NUM_CELLS = 12;
-
-    /**
      * The interface for storaging and retrieving BQ Settings.
      */
     BQSettingsStorage& bqSettingsStorage;
@@ -185,14 +180,14 @@ private:
      * by reading the voltage from the BQ chip and is then exposed over
      * CANopen.
      */
-    uint16_t totalVoltage;
+    uint32_t totalVoltage;
 
     /**
      * Stores the per-cell voltage for the battery pack. This value is updated
      * by reading the voltage from the BQ chip and is then exposed over
      * CANopen.
      */
-    uint16_t cellVoltage[NUM_CELLS];
+    uint16_t cellVoltage[DEV::BQ76952::NUM_CELLS];
 
     /**
      * Handles the start of the state machine logic. This considers the health
@@ -408,7 +403,7 @@ private:
         // voltages will not be broadcasted via PDO, but will still be
         // accessible over SDO.
         {
-            .Key = CO_KEY(0x2101, 0, CO_UNSIGNED16 | CO_OBJ___PR_),
+            .Key = CO_KEY(0x2101, 0, CO_UNSIGNED32 | CO_OBJ___PR_),
             .Type = 0,
             .Data = (uintptr_t) &totalVoltage,
         },

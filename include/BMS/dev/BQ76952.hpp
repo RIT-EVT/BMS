@@ -16,6 +16,9 @@ namespace BMS::DEV {
  */
 class BQ76952 {
 public:
+    /// The number of cells connected to the BQ chip
+    static constexpr uint8_t NUM_CELLS = 12;
+
     /**
      * Represent the status reflecting the state of the BQ76952
      *
@@ -149,6 +152,23 @@ public:
      * @return State::OK on success, Status::ERROR otherwise
      */
     Status communicationStatus();
+
+    /**
+     * Get the total voltage that is measured by the BQ chip.
+     *
+     * @param[out] The voltage value to store in millivols
+     * @return The status of the read attempt
+     */
+    Status getTotalVoltage(uint32_t* totalVoltage);
+
+    /**
+     * Fill a buffer with the per cell voltage.
+     *
+     * @param[out] The buffer to fill with the cell voltage. Must be
+     *            NUM_CELLS in size
+     * @return The status of the read attempt
+     */
+    Status getCellVoltage(uint16_t cellVoltages[NUM_CELLS]);
 
     // Total voltage read by the BQ chip (measured in millivolts)
     uint32_t totalVoltage;
