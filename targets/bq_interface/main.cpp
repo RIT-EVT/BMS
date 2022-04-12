@@ -101,8 +101,6 @@ void ramRead(IO::UART& uart, BMS::DEV::BQ76952& bq) {
  * @param[in] uart The UART interface to write in from
  */
 void directWrite(IO::UART& uart) {
-
-
 }
 
 /**

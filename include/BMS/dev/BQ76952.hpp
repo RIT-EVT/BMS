@@ -161,7 +161,7 @@ public:
      * @param[out] sum The total voltage across all cells
      * @return The status of the read attempt
      */
-    Status getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32_t *sum);
+    Status getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32_t* sum);
 
     // Total voltage read by the BQ chip (measured in millivolts)
     uint32_t totalVoltage;

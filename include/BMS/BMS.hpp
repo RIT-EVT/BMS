@@ -280,7 +280,6 @@ private:
      */
     void clearVoltageReadings();
 
-
     /**
      * The object dictionary of the BMS. Includes settings that determine
      * how the BMS functions on the CANopen network as well as the data
