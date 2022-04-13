@@ -110,13 +110,13 @@ int main() {
     IO::CAN& can = IO::getCAN<IO::Pin::PA_12, IO::Pin::PA_11>();
     can.addIRQHandler(canInterruptHandler, reinterpret_cast<void*>(&canParams));
     IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
-    EVT::core::IO::I2C& i2c = EVT::core::IO::getI2C<IO::Pin::PB_8, IO::Pin::PB_9>();
+    EVT::core::IO::I2C& i2c = EVT::core::IO::getI2C<IO::Pin::PB_6, IO::Pin::PB_7>();
 
     // Initialize the timer
     DEV::Timerf302x8 timer(TIM2, 100);
 
     // Initialize the EEPROM
-    EVT::core::DEV::M24C32 eeprom(0x50, i2c);
+    EVT::core::DEV::M24C32 eeprom(0x53, i2c);
 
     // Intialize the logger
     BMS::LOGGER.setUART(&uart);

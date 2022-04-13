@@ -172,6 +172,10 @@ private:
     static constexpr uint8_t RAM_BASE_ADDRESS = 0x3E;
     static constexpr uint8_t RAM_CHECKSUM_ADDRESS = 0x60;
 
+    static constexpr uint8_t CELL_REGS[] = {
+        0x14, 0x16, 0x18, 0x1A, 0x1C, 0x1E, 0x20, 0x24, 0x28, 0x2C, 0x30, 0x32
+    };
+
     /** Timeout waiting to read values from the BQ76952 in milliseconds */
     static constexpr uint8_t TIMEOUT = 10;
 
