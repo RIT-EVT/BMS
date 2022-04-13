@@ -100,7 +100,8 @@ void ramRead(IO::UART& uart, BMS::DEV::BQ76952& bq) {
  *
  * @param[in] uart The UART interface to write in from
  */
-void directWrite(IO::UART& uart) {}
+void directWrite(IO::UART& uart) {
+}
 
 /**
  * Function for making an indirect write request
@@ -253,6 +254,7 @@ int main() {
             break;
         // Subcommand write
         case 'S':
+            ramWrite(uart, bq);
             break;
         // RAM write
         case 'R':

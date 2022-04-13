@@ -64,6 +64,7 @@ void BMS::startState() {
         bmsOK.writePin(BMS_NOT_OK);
         numAttemptsMade = 0;
         stateChanged = false;
+        clearVoltageReadings();
     }
 
     // Check if an error has taken place, and if so, check to make sure
@@ -108,6 +109,7 @@ void BMS::initializationErrorState() {
     if (stateChanged) {
         bmsOK.writePin(BMS_NOT_OK);
         stateChanged = false;
+        clearVoltageReadings();
     }
 }
 
@@ -115,6 +117,7 @@ void BMS::factoryInitState() {
     if (stateChanged) {
         bmsOK.writePin(BMS_NOT_OK);
         stateChanged = false;
+        clearVoltageReadings();
     }
 
     // Check to see if settings have come in, if so, go back to start state
@@ -130,6 +133,7 @@ void BMS::transferSettingsState() {
         bqSettingsStorage.resetTranfer();
         numAttemptsMade = 0;
         stateChanged = false;
+        clearVoltageReadings();
     }
 
     // Check if an error has taken place, and if so, check to make sure
@@ -185,11 +189,15 @@ void BMS::systemReadyState() {
         if (systemDetect.getIdentifiedSystem() == DEV::SystemDetect::System::BIKE) {
             state = State::POWER_DELIVERY;
             stateChanged = true;
+            return;
         } else if (systemDetect.getIdentifiedSystem() == DEV::SystemDetect::System::CHARGER) {
             state = State::CHARGING;
             stateChanged = true;
+            return;
         }
     }
+
+    updateVoltageReadings();
 }
 
 void BMS::unsafeConditionsError() {
@@ -197,6 +205,8 @@ void BMS::unsafeConditionsError() {
         bmsOK.writePin(BMS_NOT_OK);
         stateChanged = false;
     }
+
+    updateVoltageReadings();
 }
 
 void BMS::powerDeliveryState() {
@@ -215,7 +225,10 @@ void BMS::powerDeliveryState() {
     if (!interlock.isDetected()) {
         state = State::SYSTEM_READY;
         stateChanged = true;
+        return;
     }
+
+    updateVoltageReadings();
 }
 
 void BMS::chargingState() {
@@ -234,11 +247,28 @@ void BMS::chargingState() {
     if (!interlock.isDetected()) {
         state = State::SYSTEM_READY;
         stateChanged = true;
+        return;
     }
+
+    updateVoltageReadings();
 }
 
 bool BMS::isHealthy() {
     return alarm.readPin() != ALARM_ACTIVE_STATE;
+}
+
+void BMS::updateVoltageReadings() {
+    // TODO: Handle when an error has taken place
+    bq.getCellVoltage(cellVoltage, &totalVoltage);
+}
+
+void BMS::clearVoltageReadings() {
+    totalVoltage = 0;
+
+    // Zero out each cell voltage
+    for (uint8_t i = 0; i < DEV::BQ76952::NUM_CELLS; i++) {
+        cellVoltage[i] = 0;
+    }
 }
 
 }// namespace BMS
