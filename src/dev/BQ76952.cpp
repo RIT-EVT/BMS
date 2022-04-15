@@ -15,6 +15,55 @@
             return result_;          \
         }                            \
     }
+///////////////////////////////////////////////////////////////////////////////
+// Functions for interacting with the BQ76952 balancing logic through CANopen
+///////////////////////////////////////////////////////////////////////////////
+/**
+ * This function is used to get the size of the balancing data. This will
+ * always be a fixed size 1 byte since the state of balancing is either
+ * enabled (1) or disabled (0)
+ *
+ * @param[in] obj The CANopen stack object dictionary, (not used here)
+ * @param[in] node The CANopen stack node (not used)
+ * @param[in] width The width of the data in bytes as it is stored in the
+ *                  object dictionary (not used)
+ * @param[in] priv Private data, pointer to the BQ76952 instance
+ * @return The number of bytes representing the state of balancing (1)
+ */
+static uint32_t COBQBalancingSize(struct CO_OBJ_T* obj, struct CO_NODE_T* node,
+                                  uint32_t width, void* priv) {
+
+    (void)obj;
+    (void)node;
+    (void)width;
+    (void)priv;
+
+    return 1;
+}
+
+/**
+ * Read in the balance state of the given cell. This will communicate with the
+ * BQ to determine the state.
+ *
+ * @param[in] obj The CANopen stack object dictionary, used to determine
+ *                the cell number.
+ * @param[in] node The CANopen stack node (not used)
+ * @param[out] buf THe buffer to populate with data
+ * @param[in] len The number of bytes to read
+ * @param[in] priv The private data (BQ76952 instance)
+ * @return CO_ERR_NONE on success
+ */
+static CO_ERR COBQBalancingRead(CO_OBJ_T* obj, CO_NODE_T* node, void* buf,
+                                uint32_t len, void* priv) {
+
+    (void)node;
+    (void)len;
+
+    uint8_t targetCell = static_cast<uint8_t>(obj->Data);
+
+    BMS::DEV::BQ76952* bq = (BMS::DEV::BQ76952*)priv;
+}
+
 
 namespace BMS::DEV {
 
@@ -244,6 +293,13 @@ BQ76952::Status BQ76952::getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32
     *sum = currentVoltage;
 
     return BQ76952::Status::OK;
+}
+
+BQ76952::Status BQ76952::isBalancing(uint8_t targetCell, bool* balancing) {
+
+
+
+    return Status::OK;
 }
 
 }// namespace BMS::DEV

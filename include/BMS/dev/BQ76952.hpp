@@ -3,6 +3,8 @@
 #include <BMS/BQSetting.hpp>
 #include <EVT/io/I2C.hpp>
 
+#include <Canopen/co_obj.h>
+
 namespace BMS::DEV {
 
 /**
@@ -163,6 +165,16 @@ public:
      */
     Status getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32_t* sum);
 
+    /**
+     * Determine the state of balancing on a given cell. This will read the
+     * balancing state from the BQ and report back.
+     *
+     * @param[in] targetCell The target cell to check the balancing of
+     * @param[out] balancing Updates to represents if the cell is balancing
+     * @return The state of the read attempt
+     */
+    Status isBalancing(uint8_t targetCell, bool* balancing);
+
     // Total voltage read by the BQ chip (measured in millivolts)
     uint32_t totalVoltage;
 
@@ -184,6 +196,9 @@ private:
 
     /** Base address where the cell voltages are located */
     static constexpr uint8_t CELL_VOLTAGE_BASE_REG = 0x14;
+
+    /** CANopen interface for probing the state of the balancing */
+    CO_OBJ_TYPE balancingCANOpen;
 
     /** I2C bus to communicate over */
     EVT::core::IO::I2C& i2c;
