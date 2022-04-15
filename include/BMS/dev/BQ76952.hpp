@@ -175,6 +175,16 @@ public:
      */
     Status isBalancing(uint8_t targetCell, bool* balancing);
 
+    /**
+     * Write out the balancing state to the target cell. Writing a 1 enables
+     * balancing, writing a 0 disables balancing
+     *
+     * @param[in] targetCell The target cell to change the balance state of
+     * @param[in] enable 1 for enabling balancing 0 otherwise
+     * @return The state of the write attempt
+     */
+    Status setBalancing(uint8_t targetCell, uint8_t enable);
+
     // Total voltage read by the BQ chip (measured in millivolts)
     uint32_t totalVoltage;
 
@@ -186,6 +196,17 @@ private:
 
     static constexpr uint8_t CELL_REGS[] = {
         0x14, 0x16, 0x18, 0x1A, 0x1C, 0x1E, 0x20, 0x24, 0x28, 0x2C, 0x30, 0x32
+    };
+
+    /**
+     * Contains a mapping between the target cell and the cooresponing
+     * location in the `CB_ACTIVE_CELLS` bitmap. The idea that each cell is
+     * an index into this lookup table.
+     * NOTE: Cells are numbered starting at 1, so to get the bit position
+     * for the first cell (cell 1) use index 0 (cell number - 1)
+     */
+    static constexpr uint8_t CELL_BALANCE_MAPPING[] = {
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
     };
 
     /** Timeout waiting to read values from the BQ76952 in milliseconds */

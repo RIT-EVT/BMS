@@ -62,8 +62,46 @@ static CO_ERR COBQBalancingRead(CO_OBJ_T* obj, CO_NODE_T* node, void* buf,
     uint8_t targetCell = static_cast<uint8_t>(obj->Data);
 
     BMS::DEV::BQ76952* bq = (BMS::DEV::BQ76952*)priv;
+
+    bool isBalancing = false;
+    BMS::DEV::BQ76952::Status status = bq->isBalancing(targetCell, &isBalancing);
+
+    if (status != BMS::DEV::BQ76952::Status::OK) {
+        return CO_ERR_OBJ_READ;
+    }
+
+    uint8_t *result = (uint8_t*)buf;
+    *result = isBalancing;
+
+    return CO_ERR_NONE;
 }
 
+/**
+ * Write out the state of the balancing. Can be used to enable balancing by
+ * providing a 1 and disable balancing by providing a 0
+ *
+ * @param[in] obj CANopen stack object dictionary element, used to determine
+ *                the cell number.
+ * @param[in] node The CANopen stack node (not used)
+ * @param[in] bytes Bytes containing the enable/disable state
+ * @param[in] len Number of bytes in the buf (should be 1)
+ * @param[in] priv The private data (BQ76952 instance)
+ * @return CO_ERR_NONE on success
+ */
+static CO_ERR COBQBalancingWrite(CO_OBJ_T* obj, CO_NODE_T* node, void* buf,
+                                 uint32_t len, void* priv) {
+    (void)node;
+    (void)len;
+
+    uint8_t targetCell = static_cast<uint8_t>(obj->Data);
+
+    BMS::DEV::BQ76952* bq = (BMS::DEV::BQ76952*)priv;
+
+    uint8_t balancingState = *(uint8_t*)buf;
+    balancingState = balancingState > 0 ? 1 : 0;
+
+    BMS::DEV::BQ76952::Status status = bq->setBalancing(balancingState);
+}
 
 namespace BMS::DEV {
 
