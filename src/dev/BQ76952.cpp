@@ -100,7 +100,13 @@ static CO_ERR COBQBalancingWrite(CO_OBJ_T* obj, CO_NODE_T* node, void* buf,
     uint8_t balancingState = *(uint8_t*)buf;
     balancingState = balancingState > 0 ? 1 : 0;
 
-    BMS::DEV::BQ76952::Status status = bq->setBalancing(balancingState);
+    BMS::DEV::BQ76952::Status status = bq->setBalancing(targetCell, balancingState);
+
+    if (status != BMS::DEV::BQ76952::Status::OK) {
+        return CO_ERR_OBJ_WRITE;
+    }
+
+    return CO_ERR_NONE;
 }
 
 namespace BMS::DEV {
@@ -335,7 +341,29 @@ BQ76952::Status BQ76952::getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32
 
 BQ76952::Status BQ76952::isBalancing(uint8_t targetCell, bool* balancing) {
 
+    uint32_t reg = 0;
+    RETURN_IF_ERR(makeRAMRead(0x83, &reg));
 
+    uint8_t targetLocation = CELL_BALANCE_MAPPING[targetCell];
+
+    *balancing = reg >> targetLocation & 0x1;
+    return Status::OK;
+}
+
+BQ76952::Status BQ76952::setBalancing(uint8_t targetCell, uint8_t enable) {
+    // Read the current state, update the target cell, and write back out
+    // the data
+    uint32_t reg = 0;
+    RETURN_IF_ERR(makeRAMRead(0x83, &reg));
+
+    // Keep only the bottom half
+    reg &= 0xFFFF;
+
+    if(enable) {
+        reg |= (enable << CELL_BALANCE_MAPPING[targetCell]);
+    } else {
+        reg &= (enable << CELL_BALANCE_MAPPING[targetCell]);
+    }
 
     return Status::OK;
 }

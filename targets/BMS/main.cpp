@@ -128,7 +128,7 @@ int main() {
 
     // Intialize the Interlock
     // TODO: Determine actual interlock GPIO
-    IO::GPIO& interlockGPIO = IO::getGPIO<IO::Pin::PB_0>(IO::GPIO::Direction::INPUT);
+    IO::GPIO& interlockGPIO = IO::getGPIO<IO::Pin::PA_3>(IO::GPIO::Direction::INPUT);
     BMS::DEV::Interlock interlock(interlockGPIO);
 
     // Intialize the alarm pin
@@ -136,6 +136,7 @@ int main() {
 
     // Initialize the system OK pin
     // TODO: Determine actual system ok pin
+    // TODO: Replace with writing out to the BQ
     IO::GPIO& bmsOK = IO::getGPIO<IO::Pin::PB_3>(IO::GPIO::Direction::OUTPUT);
 
     // Intialize the BMS itself
