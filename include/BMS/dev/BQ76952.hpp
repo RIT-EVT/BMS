@@ -188,6 +188,9 @@ public:
     // Total voltage read by the BQ chip (measured in millivolts)
     uint32_t totalVoltage;
 
+    /** CANopen interface for probing the state of the balancing */
+    CO_OBJ_TYPE balancingCANOpen;
+
 private:
     /** Keep track of various states of the BQ chip */
     static constexpr uint8_t BATTERY_STATUS_REG = 0x12;
@@ -206,7 +209,7 @@ private:
      * for the first cell (cell 1) use index 0 (cell number - 1)
      */
     static constexpr uint8_t CELL_BALANCE_MAPPING[] = {
-        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
+        0, 1, 2, 3, 4, 5, 6, 8, 10, 12, 14, 15,
     };
 
     /** Timeout waiting to read values from the BQ76952 in milliseconds */
@@ -217,9 +220,6 @@ private:
 
     /** Base address where the cell voltages are located */
     static constexpr uint8_t CELL_VOLTAGE_BASE_REG = 0x14;
-
-    /** CANopen interface for probing the state of the balancing */
-    CO_OBJ_TYPE balancingCANOpen;
 
     /** I2C bus to communicate over */
     EVT::core::IO::I2C& i2c;

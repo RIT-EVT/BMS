@@ -109,11 +109,30 @@ static CO_ERR COBQBalancingWrite(CO_OBJ_T* obj, CO_NODE_T* node, void* buf,
     return CO_ERR_NONE;
 }
 
+/**
+ * Control logic, for the balancing logic does not need to do anything
+ */
+static CO_ERR COBalancingCtrl(CO_OBJ* obj, CO_NODE_T* node, uint16_t func,
+                              uint32_t para, void* priv) {
+    (void) obj;
+    (void) node;
+    (void) para;
+    (void) func;
+    (void) priv;
+
+    return CO_ERR_NONE;
+}
+
 namespace BMS::DEV {
 
 BQ76952::BQ76952(EVT::core::IO::I2C& i2c, uint8_t i2cAddress)
     : i2c(i2c), i2cAddress(i2cAddress) {
-    // Empty constructor
+
+    balancingCANOpen.Ctrl = COBalancingCtrl;
+    balancingCANOpen.Read = COBQBalancingRead;
+    balancingCANOpen.Write = COBQBalancingWrite;
+    balancingCANOpen.Size = COBQBalancingSize;
+    balancingCANOpen.Private = this;
 }
 
 BQ76952::Status BQ76952::writeSetting(BMS::BQSetting& setting) {
@@ -344,7 +363,7 @@ BQ76952::Status BQ76952::isBalancing(uint8_t targetCell, bool* balancing) {
     uint32_t reg = 0;
     RETURN_IF_ERR(makeRAMRead(0x83, &reg));
 
-    uint8_t targetLocation = CELL_BALANCE_MAPPING[targetCell];
+    uint8_t targetLocation = CELL_BALANCE_MAPPING[targetCell - 1];
 
     *balancing = reg >> targetLocation & 0x1;
     return Status::OK;
@@ -359,11 +378,24 @@ BQ76952::Status BQ76952::setBalancing(uint8_t targetCell, uint8_t enable) {
     // Keep only the bottom half
     reg &= 0xFFFF;
 
+    // Clear or set target bit
     if(enable) {
-        reg |= (enable << CELL_BALANCE_MAPPING[targetCell]);
+        reg |= (enable << CELL_BALANCE_MAPPING[targetCell - 1]);
     } else {
-        reg &= (enable << CELL_BALANCE_MAPPING[targetCell]);
+        reg &= (enable << CELL_BALANCE_MAPPING[targetCell - 1]);
     }
+
+    // Enable host controlled balancing
+    BQSetting hostControlSetting(BQSetting::BQSettingType::RAM, 1,
+                                 0x9335, 0x00);
+    RETURN_IF_ERR(writeRAMSetting(hostControlSetting));
+
+
+    // Write out the setting
+    BQSetting setting(BQSetting::BQSettingType::RAM, 2, 0x0083, reg);
+    RETURN_IF_ERR(writeRAMSetting(setting));
+
+
 
     return Status::OK;
 }

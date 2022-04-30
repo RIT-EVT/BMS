@@ -80,7 +80,7 @@ private:
      * Have to know the size of the object dictionary for initialization
      * process.
      */
-    static constexpr uint16_t OBJECT_DIRECTIONARY_SIZE = 30;
+    static constexpr uint16_t OBJECT_DIRECTIONARY_SIZE = 42;
 
     /**
      * The active state of the alarm. When the alarm is in this state,
@@ -472,6 +472,71 @@ private:
             .Key = CO_KEY(0x2102, 0, CO_UNSIGNED32 | CO_OBJ___PRW),
             .Type = 0,
             .Data = (uintptr_t) &state,
+        },
+
+        /// Expose information on the balancing of the target cells. Per
+        /// cell abilty to poll if the cell is balancing and write out
+        /// balancing control.
+        {
+            .Key = CO_KEY(0x2103, 1, CO_UNSIGNED8 | CO_OBJ___PRW),
+            .Type = ((CO_OBJ_TYPE*) &bq.balancingCANOpen),
+            .Data = (uintptr_t)1,
+        },
+        {
+            .Key = CO_KEY(0x2103, 2, CO_UNSIGNED8 | CO_OBJ___PRW),
+            .Type = ((CO_OBJ_TYPE*) &bq.balancingCANOpen),
+            .Data = (uintptr_t)2,
+        },
+        {
+            .Key = CO_KEY(0x2103, 3, CO_UNSIGNED8 | CO_OBJ___PRW),
+            .Type = ((CO_OBJ_TYPE*) &bq.balancingCANOpen),
+            .Data = (uintptr_t)3,
+        },
+        {
+            .Key = CO_KEY(0x2103, 4, CO_UNSIGNED8 | CO_OBJ___PRW),
+            .Type = ((CO_OBJ_TYPE*) &bq.balancingCANOpen),
+            .Data = (uintptr_t)4,
+        },
+
+        {
+            .Key = CO_KEY(0x2103, 5, CO_UNSIGNED8 | CO_OBJ___PRW),
+            .Type = ((CO_OBJ_TYPE*) &bq.balancingCANOpen),
+            .Data = (uintptr_t)5,
+        },
+        {
+            .Key = CO_KEY(0x2103, 6, CO_UNSIGNED8 | CO_OBJ___PRW),
+            .Type = ((CO_OBJ_TYPE*) &bq.balancingCANOpen),
+            .Data = (uintptr_t)6,
+        },
+        {
+            .Key = CO_KEY(0x2103, 7, CO_UNSIGNED8 | CO_OBJ___PRW),
+            .Type = ((CO_OBJ_TYPE*) &bq.balancingCANOpen),
+            .Data = (uintptr_t)7,
+        },
+        {
+            .Key = CO_KEY(0x2103, 8, CO_UNSIGNED8 | CO_OBJ___PRW),
+            .Type = ((CO_OBJ_TYPE*) &bq.balancingCANOpen),
+            .Data = (uintptr_t)8,
+        },
+        {
+            .Key = CO_KEY(0x2103, 9, CO_UNSIGNED8 | CO_OBJ___PRW),
+            .Type = ((CO_OBJ_TYPE*) &bq.balancingCANOpen),
+            .Data = (uintptr_t)9,
+        },
+        {
+            .Key = CO_KEY(0x2103, 10, CO_UNSIGNED8 | CO_OBJ___PRW),
+            .Type = ((CO_OBJ_TYPE*) &bq.balancingCANOpen),
+            .Data = (uintptr_t)10,
+        },
+        {
+            .Key = CO_KEY(0x2103, 11, CO_UNSIGNED8 | CO_OBJ___PRW),
+            .Type = ((CO_OBJ_TYPE*) &bq.balancingCANOpen),
+            .Data = (uintptr_t)11,
+        },
+        {
+            .Key = CO_KEY(0x2103, 12, CO_UNSIGNED8 | CO_OBJ___PRW),
+            .Type = ((CO_OBJ_TYPE*) &bq.balancingCANOpen),
+            .Data = (uintptr_t)12,
         },
 
         // End of dictionary marker

@@ -15,7 +15,8 @@ BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
                                                                         systemDetect(systemDetect),
                                                                         bmsOK(bmsOK) {
 
-    state = State::START;
+    // TODO: Will be START once hardware testing is done
+    state = State::SYSTEM_READY;
     bmsOK.writePin(EVT::core::IO::GPIO::State::LOW);
     stateChanged = true;
 }
@@ -259,7 +260,7 @@ bool BMS::isHealthy() {
 
 void BMS::updateVoltageReadings() {
     // TODO: Handle when an error has taken place
-    bq.getCellVoltage(cellVoltage, &totalVoltage);
+    // bq.getCellVoltage(cellVoltage, &totalVoltage);
 }
 
 void BMS::clearVoltageReadings() {
