@@ -96,6 +96,51 @@ void ramRead(IO::UART& uart, BMS::DEV::BQ76952& bq) {
 }
 
 /**
+ * Read the balancing state for a specific cell
+ *
+ * @param[in] uart The UART interface to read in from
+ * @param[in] bq The BQ interface to use
+ */
+void readBalancing(IO::UART& uart, BMS::DEV::BQ76952& bq) {
+    uart.printf("Enter the cell to read balancing of: ");
+    uart.gets(inputBuffer, MAX_BUFF);
+    uart.printf("\r\n");
+
+    uint8_t targetCell = strtol(inputBuffer, nullptr, 10);
+
+    bool isBalancing;
+    if (bq.isBalancing(targetCell, &isBalancing) != BMS::DEV::BQ76952::Status::OK) {
+        uart.printf("Failed to read balancing state\r\n");
+    }
+
+    uart.printf("%d balancing state: %d\r\n", targetCell, isBalancing);
+}
+
+/**
+ * Set the balancing state for the specific cell
+ *
+ * @param[in] uart The UART interface to read from
+ * @parampin] bq The BQ interface to use
+ */
+void setBalancing(IO::UART& uart, BMS::DEV::BQ76952& bq) {
+    uart.printf("Enter the cell to set balancing of: ");
+    uart.gets(inputBuffer, MAX_BUFF);
+    uart.printf("\r\n");
+
+    uint8_t targetCell = strtol(inputBuffer, nullptr, 10);
+
+    uart.printf("Enter the target state (0 or 1): ");
+    uart.gets(inputBuffer, MAX_BUFF);
+    uart.printf("\r\n");
+
+    uint8_t targetState = strtol(inputBuffer, nullptr, 10);
+
+    if(bq.setBalancing(targetCell, targetState) != BMS::DEV::BQ76952::Status::OK) {
+        uart.printf("Failed to set the state of balancing\r\n");
+    }
+}
+
+/**
  * Function for making a direct write request
  *
  * @param[in] uart The UART interface to write in from
@@ -222,7 +267,7 @@ void exitConfigMode(IO::UART& uart, BMS::DEV::BQ76952& bq) {
 }
 
 int main() {
-    IO::I2C& i2c = IO::getI2C<IO::Pin::PB_6, IO::Pin::PB_7>();
+    IO::I2C& i2c = IO::getI2C<IO::Pin::PB_8, IO::Pin::PB_9>();
     BMS::DEV::BQ76952 bq(i2c, 0x08);
 
     IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
@@ -267,6 +312,12 @@ int main() {
         // Exist config mode
         case 'x':
             exitConfigMode(uart, bq);
+            break;
+        case 'b':
+            readBalancing(uart, bq);
+            break;
+        case 'B':
+            setBalancing(uart, bq);
             break;
         }
     }
