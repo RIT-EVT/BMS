@@ -390,12 +390,9 @@ BQ76952::Status BQ76952::setBalancing(uint8_t targetCell, uint8_t enable) {
                                  0x9335, 0x00);
     RETURN_IF_ERR(writeRAMSetting(hostControlSetting));
 
-
     // Write out the setting
     BQSetting setting(BQSetting::BQSettingType::RAM, 2, 0x0083, reg);
     RETURN_IF_ERR(writeRAMSetting(setting));
-
-
 
     return Status::OK;
 }
