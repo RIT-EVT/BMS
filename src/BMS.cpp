@@ -15,8 +15,7 @@ BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
                                                                         systemDetect(systemDetect),
                                                                         bmsOK(bmsOK) {
 
-    // TODO: Will be START once hardware testing is done
-    state = State::SYSTEM_READY;
+    state = State::START;
     bmsOK.writePin(EVT::core::IO::GPIO::State::LOW);
     stateChanged = true;
 }
