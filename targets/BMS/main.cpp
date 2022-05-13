@@ -127,7 +127,6 @@ int main() {
     BMS::BQSettingsStorage bqSettingsStorage(eeprom, bq);
 
     // Intialize the Interlock
-    // TODO: Determine actual interlock GPIO
     IO::GPIO& interlockGPIO = IO::getGPIO<IO::Pin::PA_3>(IO::GPIO::Direction::INPUT);
     BMS::DEV::Interlock interlock(interlockGPIO);
 
@@ -135,8 +134,11 @@ int main() {
     IO::GPIO& alarm = IO::getGPIO<IO::Pin::PB_1>(IO::GPIO::Direction::INPUT);
 
     // Initialize the system OK pin
-    // TODO: Determine actual system ok pin
-    // TODO: Replace with writing out to the BQ
+    // TODO: Replace with writing out to the BQ. In reality, the BQ is
+    //       what controls the status OK GPIO not the STM itself directily.
+    //       Instead of using the STM GPIO to represent status ok, this will
+    //       need to be replaced with a call to the BQ to update the ok
+    //       GPIO.
     IO::GPIO& bmsOK = IO::getGPIO<IO::Pin::PB_3>(IO::GPIO::Direction::OUTPUT);
 
     // Intialize the BMS itself
