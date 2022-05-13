@@ -259,6 +259,11 @@ bool BMS::isHealthy() {
 
 void BMS::updateVoltageReadings() {
     // TODO: Handle when an error has taken place
+    // TODO: Limit the number of times this is called, currently this
+    //       `updateVoltageReadings` is called every run of the loop
+    //       which results in a lot of I2C calls. This isn't directly an
+    //       issue, just not necessary. Could be limited to update once a
+    //       second.
     bq.getCellVoltage(cellVoltage, &totalVoltage);
 }
 

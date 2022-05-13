@@ -3,6 +3,8 @@
 #include <BMS/BQSetting.hpp>
 #include <EVT/io/I2C.hpp>
 
+#include <Canopen/co_obj.h>
+
 namespace BMS::DEV {
 
 /**
@@ -163,14 +165,62 @@ public:
      */
     Status getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32_t* sum);
 
+    /**
+     * Determine the state of balancing on a given cell. This will read the
+     * balancing state from the BQ and report back.
+     *
+     * @param[in] targetCell The target cell to check the balancing of
+     * @param[out] balancing Updates to represents if the cell is balancing
+     * @return The state of the read attempt
+     */
+    Status isBalancing(uint8_t targetCell, bool* balancing);
+
+    /**
+     * Write out the balancing state to the target cell. Writing a 1 enables
+     * balancing, writing a 0 disables balancing
+     *
+     * @param[in] targetCell The target cell to change the balance state of
+     * @param[in] enable 1 for enabling balancing 0 otherwise
+     * @return The state of the write attempt
+     */
+    Status setBalancing(uint8_t targetCell, uint8_t enable);
+
     // Total voltage read by the BQ chip (measured in millivolts)
     uint32_t totalVoltage;
+
+    /** CANopen interface for probing the state of the balancing */
+    CO_OBJ_TYPE balancingCANOpen;
 
 private:
     /** Keep track of various states of the BQ chip */
     static constexpr uint8_t BATTERY_STATUS_REG = 0x12;
     static constexpr uint8_t RAM_BASE_ADDRESS = 0x3E;
     static constexpr uint8_t RAM_CHECKSUM_ADDRESS = 0x60;
+
+    static constexpr uint8_t CELL_REGS[] = {
+        0x14, 0x16, 0x18, 0x1A, 0x1C, 0x1E, 0x20, 0x24, 0x28, 0x2C, 0x30, 0x32};
+
+    /**
+     * Contains a mapping between the target cell and the cooresponing
+     * location in the `CB_ACTIVE_CELLS` bitmap. The idea that each cell is
+     * an index into this lookup table.
+     * NOTE: Cells are numbered starting at 1, so to get the bit position
+     * for the first cell (cell 1) use index 0 (cell number - 1)
+     */
+    static constexpr uint8_t CELL_BALANCE_MAPPING[] = {
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        10,
+        12,
+        14,
+        15,
+    };
 
     /** Timeout waiting to read values from the BQ76952 in milliseconds */
     static constexpr uint8_t TIMEOUT = 10;

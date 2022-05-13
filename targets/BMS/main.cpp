@@ -110,13 +110,13 @@ int main() {
     IO::CAN& can = IO::getCAN<IO::Pin::PA_12, IO::Pin::PA_11>();
     can.addIRQHandler(canInterruptHandler, reinterpret_cast<void*>(&canParams));
     IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
-    EVT::core::IO::I2C& i2c = EVT::core::IO::getI2C<IO::Pin::PB_8, IO::Pin::PB_9>();
+    EVT::core::IO::I2C& i2c = EVT::core::IO::getI2C<IO::Pin::PB_6, IO::Pin::PB_7>();
 
     // Initialize the timer
     DEV::Timerf302x8 timer(TIM2, 100);
 
     // Initialize the EEPROM
-    EVT::core::DEV::M24C32 eeprom(0x50, i2c);
+    EVT::core::DEV::M24C32 eeprom(0x53, i2c);
 
     // Intialize the logger
     BMS::LOGGER.setUART(&uart);
@@ -127,15 +127,18 @@ int main() {
     BMS::BQSettingsStorage bqSettingsStorage(eeprom, bq);
 
     // Intialize the Interlock
-    // TODO: Determine actual interlock GPIO
-    IO::GPIO& interlockGPIO = IO::getGPIO<IO::Pin::PB_0>(IO::GPIO::Direction::INPUT);
+    IO::GPIO& interlockGPIO = IO::getGPIO<IO::Pin::PA_3>(IO::GPIO::Direction::INPUT);
     BMS::DEV::Interlock interlock(interlockGPIO);
 
     // Intialize the alarm pin
     IO::GPIO& alarm = IO::getGPIO<IO::Pin::PB_1>(IO::GPIO::Direction::INPUT);
 
     // Initialize the system OK pin
-    // TODO: Determine actual system ok pin
+    // TODO: Replace with writing out to the BQ. In reality, the BQ is
+    //       what controls the status OK GPIO not the STM itself directily.
+    //       Instead of using the STM GPIO to represent status ok, this will
+    //       need to be replaced with a call to the BQ to update the ok
+    //       GPIO.
     IO::GPIO& bmsOK = IO::getGPIO<IO::Pin::PB_3>(IO::GPIO::Direction::OUTPUT);
 
     // Intialize the BMS itself

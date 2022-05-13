@@ -15,12 +15,124 @@
             return result_;          \
         }                            \
     }
+///////////////////////////////////////////////////////////////////////////////
+// Functions for interacting with the BQ76952 balancing logic through CANopen
+///////////////////////////////////////////////////////////////////////////////
+/**
+ * This function is used to get the size of the balancing data. This will
+ * always be a fixed size 1 byte since the state of balancing is either
+ * enabled (1) or disabled (0)
+ *
+ * @param[in] obj The CANopen stack object dictionary, (not used here)
+ * @param[in] node The CANopen stack node (not used)
+ * @param[in] width The width of the data in bytes as it is stored in the
+ *                  object dictionary (not used)
+ * @param[in] priv Private data, pointer to the BQ76952 instance
+ * @return The number of bytes representing the state of balancing (1)
+ */
+static uint32_t COBQBalancingSize(struct CO_OBJ_T* obj, struct CO_NODE_T* node,
+                                  uint32_t width, void* priv) {
+
+    (void) obj;
+    (void) node;
+    (void) width;
+    (void) priv;
+
+    return 1;
+}
+
+/**
+ * Read in the balance state of the given cell. This will communicate with the
+ * BQ to determine the state.
+ *
+ * @param[in] obj The CANopen stack object dictionary, used to determine
+ *                the cell number.
+ * @param[in] node The CANopen stack node (not used)
+ * @param[out] buf THe buffer to populate with data
+ * @param[in] len The number of bytes to read
+ * @param[in] priv The private data (BQ76952 instance)
+ * @return CO_ERR_NONE on success
+ */
+static CO_ERR COBQBalancingRead(CO_OBJ_T* obj, CO_NODE_T* node, void* buf,
+                                uint32_t len, void* priv) {
+
+    (void) node;
+    (void) len;
+
+    uint8_t targetCell = static_cast<uint8_t>(obj->Data);
+
+    BMS::DEV::BQ76952* bq = (BMS::DEV::BQ76952*) priv;
+
+    bool isBalancing = false;
+    BMS::DEV::BQ76952::Status status = bq->isBalancing(targetCell, &isBalancing);
+
+    if (status != BMS::DEV::BQ76952::Status::OK) {
+        return CO_ERR_OBJ_READ;
+    }
+
+    uint8_t* result = (uint8_t*) buf;
+    *result = isBalancing;
+
+    return CO_ERR_NONE;
+}
+
+/**
+ * Write out the state of the balancing. Can be used to enable balancing by
+ * providing a 1 and disable balancing by providing a 0
+ *
+ * @param[in] obj CANopen stack object dictionary element, used to determine
+ *                the cell number.
+ * @param[in] node The CANopen stack node (not used)
+ * @param[in] bytes Bytes containing the enable/disable state
+ * @param[in] len Number of bytes in the buf (should be 1)
+ * @param[in] priv The private data (BQ76952 instance)
+ * @return CO_ERR_NONE on success
+ */
+static CO_ERR COBQBalancingWrite(CO_OBJ_T* obj, CO_NODE_T* node, void* buf,
+                                 uint32_t len, void* priv) {
+    (void) node;
+    (void) len;
+
+    uint8_t targetCell = static_cast<uint8_t>(obj->Data);
+
+    BMS::DEV::BQ76952* bq = (BMS::DEV::BQ76952*) priv;
+
+    uint8_t balancingState = *(uint8_t*) buf;
+    balancingState = balancingState > 0 ? 1 : 0;
+
+    BMS::DEV::BQ76952::Status status = bq->setBalancing(targetCell, balancingState);
+
+    if (status != BMS::DEV::BQ76952::Status::OK) {
+        return CO_ERR_OBJ_WRITE;
+    }
+
+    return CO_ERR_NONE;
+}
+
+/**
+ * Control logic, for the balancing logic does not need to do anything
+ */
+static CO_ERR COBalancingCtrl(CO_OBJ* obj, CO_NODE_T* node, uint16_t func,
+                              uint32_t para, void* priv) {
+    (void) obj;
+    (void) node;
+    (void) para;
+    (void) func;
+    (void) priv;
+
+    return CO_ERR_NONE;
+}
 
 namespace BMS::DEV {
 
 BQ76952::BQ76952(EVT::core::IO::I2C& i2c, uint8_t i2cAddress)
     : i2c(i2c), i2cAddress(i2cAddress) {
-    // Empty constructor
+
+    balancingCANOpen.Ctrl = COBalancingCtrl;
+    balancingCANOpen.Read = COBQBalancingRead;
+    balancingCANOpen.Write = COBQBalancingWrite;
+    balancingCANOpen.Size = COBQBalancingSize;
+    balancingCANOpen.Private = this;
 }
 
 BQ76952::Status BQ76952::writeSetting(BMS::BQSetting& setting) {
@@ -229,25 +341,60 @@ BQ76952::Status BQ76952::communicationStatus() {
 
 BQ76952::Status BQ76952::getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32_t* sum) {
     Status status = Status::OK;
-    uint8_t cellVoltageReg = CELL_VOLTAGE_BASE_REG;
 
     uint32_t currentVoltage = 0;
     // Loop over all the cells and update the cooresponding voltage
     for (uint8_t i = 0; i < NUM_CELLS; i++) {
-        status = makeDirectRead(cellVoltageReg, &cellVoltages[i]);
+        status = makeDirectRead(CELL_REGS[i], &cellVoltages[i]);
         if (status != Status::OK) {
             return status;
         }
 
         currentVoltage += cellVoltages[i];
-
-        // Each cell register is 2 bytes off from each other
-        cellVoltageReg += 2;
     }
 
     *sum = currentVoltage;
 
     return BQ76952::Status::OK;
+}
+
+BQ76952::Status BQ76952::isBalancing(uint8_t targetCell, bool* balancing) {
+
+    uint32_t reg = 0;
+    RETURN_IF_ERR(makeRAMRead(0x83, &reg));
+
+    uint8_t targetLocation = CELL_BALANCE_MAPPING[targetCell - 1];
+
+    *balancing = reg >> targetLocation & 0x1;
+    return Status::OK;
+}
+
+BQ76952::Status BQ76952::setBalancing(uint8_t targetCell, uint8_t enable) {
+    // Read the current state, update the target cell, and write back out
+    // the data
+    uint32_t reg = 0;
+    RETURN_IF_ERR(makeRAMRead(0x83, &reg));
+
+    // Keep only the bottom half
+    reg &= 0xFFFF;
+
+    // Clear or set target bit
+    if (enable) {
+        reg |= (enable << CELL_BALANCE_MAPPING[targetCell - 1]);
+    } else {
+        reg &= (enable << CELL_BALANCE_MAPPING[targetCell - 1]);
+    }
+
+    // Enable host controlled balancing
+    BQSetting hostControlSetting(BQSetting::BQSettingType::RAM, 1,
+                                 0x9335, 0x00);
+    RETURN_IF_ERR(writeRAMSetting(hostControlSetting));
+
+    // Write out the setting
+    BQSetting setting(BQSetting::BQSettingType::RAM, 2, 0x0083, reg);
+    RETURN_IF_ERR(writeRAMSetting(setting));
+
+    return Status::OK;
 }
 
 }// namespace BMS::DEV
