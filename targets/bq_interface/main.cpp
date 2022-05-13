@@ -135,7 +135,7 @@ void setBalancing(IO::UART& uart, BMS::DEV::BQ76952& bq) {
 
     uint8_t targetState = strtol(inputBuffer, nullptr, 10);
 
-    if(bq.setBalancing(targetCell, targetState) != BMS::DEV::BQ76952::Status::OK) {
+    if (bq.setBalancing(targetCell, targetState) != BMS::DEV::BQ76952::Status::OK) {
         uart.printf("Failed to set the state of balancing\r\n");
     }
 }
