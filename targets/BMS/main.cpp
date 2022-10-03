@@ -159,10 +159,36 @@ int main() {
     canStackDriver.Timer = &timerDriver;
     canStackDriver.Nvm = &nvmDriver;
 
-    CO_NODE_SPEC canSpec = {
+    CO_NODE_SPEC canSpecOne = {
         .NodeId = BMS::BMS::NODE_ID,
         .Baudrate = IO::CAN::DEFAULT_BAUD,
         .Dict = bms.getObjectDictionary(0),
+        .DictLen = bms.getObjectDictionarySize(),
+        .EmcyCode = NULL,
+        .TmrMem = appTmrMem,
+        .TmrNum = 16,
+        .TmrFreq = 100,
+        .Drv = &canStackDriver,
+        .SdoBuf = reinterpret_cast<uint8_t*>(&sdoBuffer[0]),
+    };
+
+    CO_NODE_SPEC canSpecTwo = {
+        .NodeId = BMS::BMS::NODE_ID,
+        .Baudrate = IO::CAN::DEFAULT_BAUD,
+        .Dict = bms.getObjectDictionary(1),
+        .DictLen = bms.getObjectDictionarySize(),
+        .EmcyCode = NULL,
+        .TmrMem = appTmrMem,
+        .TmrNum = 16,
+        .TmrFreq = 100,
+        .Drv = &canStackDriver,
+        .SdoBuf = reinterpret_cast<uint8_t*>(&sdoBuffer[0]),
+    };
+
+    CO_NODE_SPEC canSpecThree = {
+        .NodeId = BMS::BMS::NODE_ID,
+        .Baudrate = IO::CAN::DEFAULT_BAUD,
+        .Dict = bms.getObjectDictionary(2),
         .DictLen = bms.getObjectDictionarySize(),
         .EmcyCode = NULL,
         .TmrMem = appTmrMem,
@@ -183,16 +209,16 @@ int main() {
     can.connect();
 
     // Intialize CANopen logic
-    CONodeInit(&canNodeOne, &canSpec);
-    CONodeStart(&canNodeTwo);
-    CONmtSetMode(&canNodeThree.Nmt, CO_OPERATIONAL);
+    CONodeInit(&canNodeOne, &canSpecOne);
+    CONodeStart(&canNodeOne);
+    CONmtSetMode(&canNodeOne.Nmt, CO_OPERATIONAL);
 
-    CONodeInit(&canNodeOne, &canSpec);
+    CONodeInit(&canNodeTwo, &canSpecTwo);
     CONodeStart(&canNodeTwo);
-    CONmtSetMode(&canNodeThree.Nmt, CO_OPERATIONAL);
+    CONmtSetMode(&canNodeTwo.Nmt, CO_OPERATIONAL);
 
-    CONodeInit(&canNodeOne, &canSpec);
-    CONodeStart(&canNodeTwo);
+    CONodeInit(&canNodeThree, &canSpecThree);
+    CONodeStart(&canNodeThree);
     CONmtSetMode(&canNodeThree.Nmt, CO_OPERATIONAL);
 
     // Main processing loop, contains the following logic
