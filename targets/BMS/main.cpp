@@ -184,15 +184,15 @@ int main() {
 
     // Intialize CANopen logic
     CONodeInit(&canNodeOne, &canSpec);
-    CONodeStart(&canNodeOne);
-    CONmtSetMode(&canNodeOne.Nmt, CO_OPERATIONAL);
-
-    CONodeInit(&canNodeTwo, &canSpec);
     CONodeStart(&canNodeTwo);
-    CONmtSetMode(&canNodeTwo.Nmt, CO_OPERATIONAL);
+    CONmtSetMode(&canNodeThree.Nmt, CO_OPERATIONAL);
 
-    CONodeInit(&canNodeThree, &canSpec);
-    CONodeStart(&canNodeThree);
+    CONodeInit(&canNodeOne, &canSpec);
+    CONodeStart(&canNodeTwo);
+    CONmtSetMode(&canNodeThree.Nmt, CO_OPERATIONAL);
+
+    CONodeInit(&canNodeOne, &canSpec);
+    CONodeStart(&canNodeTwo);
     CONmtSetMode(&canNodeThree.Nmt, CO_OPERATIONAL);
 
     // Main processing loop, contains the following logic
