@@ -28,6 +28,8 @@ uint16_t BMS::getObjectDictionarySize() {
     return OBJECT_DIRECTIONARY_SIZE;
 }
 
+
+
 void BMS::process() {
     switch (state) {
     case State::START:
