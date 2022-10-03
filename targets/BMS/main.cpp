@@ -172,16 +172,28 @@ int main() {
         .SdoBuf = reinterpret_cast<uint8_t*>(&sdoBuffer[0]),
     };
 
-    CO_NODE canNode;
+    CO_NODE canNodeOne;
+    CO_NODE canNodeTwo;
+    CO_NODE canNodeThree;
+   
+
     time::wait(500);
 
     // Join the CANopen network
     can.connect();
 
     // Intialize CANopen logic
-    CONodeInit(&canNode, &canSpec);
-    CONodeStart(&canNode);
-    CONmtSetMode(&canNode.Nmt, CO_OPERATIONAL);
+    CONodeInit(&canNodeOne, &canSpec);
+    CONodeStart(&canNodeOne);
+    CONmtSetMode(&canNodeOne.Nmt, CO_OPERATIONAL);
+
+    CONodeInit(&canNodeTwo, &canSpec);
+    CONodeStart(&canNodeTwo);
+    CONmtSetMode(&canNodeTwo.Nmt, CO_OPERATIONAL);
+
+    CONodeInit(&canNodeThree, &canSpec);
+    CONodeStart(&canNodeThree);
+    CONmtSetMode(&canNodeThree.Nmt, CO_OPERATIONAL);
 
     // Main processing loop, contains the following logic
     // 1. Update CANopen logic and processing incomming messages
@@ -189,11 +201,20 @@ int main() {
     // 3. Wait for new data to come in
     while (1) {
         // Process incoming CAN messages
-        CONodeProcess(&canNode);
+        CONodeProcess(&canNodeOne);
+        CONodeProcess(&canNodeTwo);
+        CONodeProcess(&canNodeThree);
+
         // Update the state of timer based events
-        COTmrService(&canNode.Tmr);
+        COTmrService(&canNodeOne.Tmr);
+        COTmrService(&canNodeTwo.Tmr);
+        COTmrService(&canNodeThree.Tmr);
+
         // Handle executing timer events that have elapsed
-        COTmrProcess(&canNode.Tmr);
+        COTmrProcess(&canNodeOne.Tmr);
+        COTmrProcess(&canNodeTwo.Tmr);
+        COTmrProcess(&canNodeThree.Tmr);
+
         // Update the state of the BMS
         bms.process();
         // Wait for new data to come in
