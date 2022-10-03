@@ -21,7 +21,7 @@ BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
 }
 
 CO_OBJ_T* BMS::getObjectDictionary() {
-    return &objectDictionary[0];
+    return &objectDictionaryOne[0];
 }
 
 uint16_t BMS::getObjectDictionarySize() {
