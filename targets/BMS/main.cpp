@@ -162,7 +162,7 @@ int main() {
     CO_NODE_SPEC canSpec = {
         .NodeId = BMS::BMS::NODE_ID,
         .Baudrate = IO::CAN::DEFAULT_BAUD,
-        .Dict = bms.getObjectDictionary(),
+        .Dict = bms.getObjectDictionary(0),
         .DictLen = bms.getObjectDictionarySize(),
         .EmcyCode = NULL,
         .TmrMem = appTmrMem,

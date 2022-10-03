@@ -20,15 +20,22 @@ BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
     stateChanged = true;
 }
 
-CO_OBJ_T* BMS::getObjectDictionary() {
-    return &objectDictionaryOne[0];
+CO_OBJ_T* BMS::getObjectDictionary(int index) {
+    switch (index) {
+    case 0:
+        return objectDictionaryOne;
+    case 1:
+        return objectDictionaryTwo;
+    case 2:
+        return objectDictionaryThree;
+    default:
+        return nullptr;
+    }
 }
 
 uint16_t BMS::getObjectDictionarySize() {
     return OBJECT_DIRECTIONARY_SIZE;
 }
-
-
 
 void BMS::process() {
     switch (state) {
