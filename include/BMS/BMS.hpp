@@ -702,7 +702,7 @@ private:
         {
             .Key = CO_KEY(0x1800, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(0),
+            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(1),
         },
         {
             .Key = CO_KEY(0x1800, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
@@ -818,8 +818,6 @@ private:
         // End of dictionary marker
         CO_OBJ_DIR_ENDMARK,
     };
-
-    CO_OBJ_T objectDictionaries[3] = {objectDictionaryOne, objectDictionaryTwo, objectDictionaryThree};
 
 };
 
