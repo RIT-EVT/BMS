@@ -41,12 +41,10 @@ public:
 
     /**
      * Make a new instance of the BMS with the given devices.
-     *
-     * @pre The alarm GPIO is set as an input
      */
     BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
         DEV::Interlock& interlock, EVT::core::IO::GPIO& alarm,
-        DEV::SystemDetect& systemDetect, EVT::core::IO::GPIO& bmsOK);
+        DEV::SystemDetect& systemDetect);
 
     /**
      * The node ID used to identify the device on the CAN network.
@@ -150,7 +148,7 @@ private:
      * is high, it represents that the BMS is in a state ready to
      * charge or discharge,
      */
-    EVT::core::IO::GPIO& bmsOK;
+//    EVT::core::IO::GPIO& bmsOK;
 
     /**
      * Boolean flag that represents a state has just changed, this is useful

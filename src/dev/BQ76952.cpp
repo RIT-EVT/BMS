@@ -146,14 +146,19 @@ BQ76952::Status BQ76952::writeSetting(BMS::BQSetting& setting) {
 BQ76952::Status BQ76952::enterConfigUpdateMode() {
     // Number of times it will wait to see if the device has entered
     // config update mode
-    // static constexpr uint8_t NUM_ATTEMPTS = 10;
+    static constexpr uint8_t NUM_ATTEMPTS = 10;
 
     uint8_t transfer[] = {0x90, 0x00};
     I2C_RETURN_IF_ERR(i2c.writeMemReg(i2cAddress, 0x3E, transfer, 2, 1, 100));
 
     // Make sure the device actually entered Config Update Mode
-    bool isInConfigMode;
-    RETURN_IF_ERR(inConfigMode(&isInConfigMode));
+    bool isInConfigMode = false;
+    int numAttempts = 0;
+    while(!isInConfigMode && numAttempts < NUM_ATTEMPTS) {
+        RETURN_IF_ERR(inConfigMode(&isInConfigMode));
+        numAttempts++;
+    }
+
     if (!isInConfigMode) {
         return Status::ERROR;
     }
@@ -199,6 +204,15 @@ BQ76952::Status BQ76952::makeSubcommandRead(uint16_t reg, uint32_t* result) {
     I2C_RETURN_IF_ERR(i2c.readMemReg(i2cAddress, 0x40, &resultRaw[0], 4, 1));
 
     *result = ((resultRaw[3] & 0xFF) << 26) | ((resultRaw[2] & 0xFF) << 16) | ((resultRaw[1] & 0xFF) << 8) | (resultRaw[0] & 0xFF);
+
+    return Status::OK;
+}
+
+
+BQ76952::Status BQ76952::commandOnlySubcommand(uint16_t reg) {
+    // Write out the target subcommand
+    uint8_t targetReg[] = {reg & 0xFF, (reg >> 8) & 0XFF};
+    I2C_RETURN_IF_ERR(i2c.writeMemReg(i2cAddress, 0x3E, targetReg, 2, 1, 1));
 
     return Status::OK;
 }

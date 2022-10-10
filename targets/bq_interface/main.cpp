@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "BMS/BMSLogger.hpp"
 #include <BMS/dev/BQ76952.hpp>
 #include <EVT/io/I2C.hpp>
 #include <EVT/io/UART.hpp>
@@ -266,11 +267,56 @@ void exitConfigMode(IO::UART& uart, BMS::DEV::BQ76952& bq) {
     uart.printf("BQ not in config mode\r\n");
 }
 
+
+void commandOnlySub(IO::UART& uart, BMS::DEV::BQ76952& bq) {
+    uart.printf("Enter the command-only subcommand address in hex: 0x");
+    uart.gets(inputBuffer, MAX_BUFF);
+    uart.printf("\r\n");
+
+    // Determine the target subcommand register
+    uint16_t reg = strtol(inputBuffer, nullptr, 16);
+
+    // Run the command
+    uint32_t subcommandValue = 0;
+    auto result = bq.commandOnlySubcommand(reg);
+
+    // Make sure the read was successful
+    if (result != BMS::DEV::BQ76952::Status::OK) {
+        uart.printf("Failed to read register: 0x%x\r\n", reg);
+        return;
+    }
+
+    uart.printf("Register 0x%x run\r\n", reg);
+}
+
+void getVoltages(IO::UART& uart, BMS::DEV::BQ76952& bq) {
+    uint16_t tot = 0;
+    for (uint8_t i = 0; i < 16; i++) {
+        uint8_t reg = 0x14 + 2 * i;
+        uint16_t regValue = 0;
+        auto result = bq.makeDirectRead(reg, &regValue);
+
+        // Make sure the read was successful
+        if (result != BMS::DEV::BQ76952::Status::OK) {
+            uart.printf("Failed to read register: 0x%x\r\n", reg);
+            return;
+        }
+
+        uart.printf("Cell %2d Voltage, Register %#x: %d.%d\r\n", i + 1, reg, regValue / 1000, regValue % 1000);
+
+        tot += regValue;
+    }
+    uart.printf("Total: %d.%d", tot / 1000, tot % 1000);
+}
+
+
 int main() {
-    IO::I2C& i2c = IO::getI2C<IO::Pin::PB_8, IO::Pin::PB_9>();
+    IO::I2C& i2c = IO::getI2C<IO::Pin::PB_6, IO::Pin::PB_7>();
     BMS::DEV::BQ76952 bq(i2c, 0x08);
 
-    IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
+    IO::UART& uart = IO::getUART<IO::Pin::PA_9, IO::Pin::PA_10>(9600);
+    BMS::LOGGER.setUART(&uart);
+    BMS::LOGGER.setLogLevel(BMS::BMSLogger::LogLevel::DEBUG);
 
     time::wait(500);
 
@@ -318,6 +364,12 @@ int main() {
             break;
         case 'B':
             setBalancing(uart, bq);
+            break;
+        case 'f':
+            commandOnlySub(uart, bq);
+            break;
+        case 'v':
+            getVoltages(uart, bq);
             break;
         }
     }

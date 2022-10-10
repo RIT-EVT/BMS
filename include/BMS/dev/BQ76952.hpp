@@ -39,6 +39,8 @@ public:
         ERROR = 3,
     };
 
+    BQ76952::Status commandOnlySubcommand(uint16_t reg);
+
     /**
      * Create a new instance of the BQ76952 which will communicate over the
      * given I2C bus with the given address.

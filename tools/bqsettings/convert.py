@@ -12,6 +12,37 @@ import sys
 from common import BQSetting
 import pathlib
 from typing import List
+import serial
+
+
+def ti_to_uart(file_path: str, port_name: str) -> None :
+    """
+    """
+    settings = []
+    with open(file_path, 'r') as ti_file:
+        for line in ti_file:
+            # Check for, and ignore, comments
+            if line[0] == '*':
+                continue
+            settings.append(BQSetting.from_ti(line))
+
+    stm = serial.Serial(port_name)
+    stm.write(len(settings).to_bytes(2, 'little'))
+
+    for i in range(len(settings)) :
+        val = stm.read()
+        if val != b'\0':
+            print(val)
+            print("STM failure")
+            return
+
+        byteArr = settings[i].to_binary()
+        stm.write(byteArr)
+        for byte in byteArr :
+            print(byte, end=',')
+        print()
+    print("Complete")
+        
 
 
 def load_from_ti(file_path: str) -> List[BQSetting]:
