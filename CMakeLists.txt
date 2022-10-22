@@ -5,6 +5,7 @@ cmake_minimum_required(VERSION 3.15)
 
 set(EVT_CORE_DIR      ${CMAKE_SOURCE_DIR}/libs/EVT-core)
 
+add_compile_definitions(CO_TPDO_N=12)
 # Handle Selection of the target device
 option(TARGET_DEV "Target device" "STM32F302x8")
 if(NOT TARGET_DEV)
@@ -33,6 +34,7 @@ add_subdirectory(libs/EVT-core/)
 ###############################################################################
 # Project Setup
 ###############################################################################
+set(CO_TPDO_N 12)
 set(BOARD_LIB_NAME   BMS)
 if("${BOARD_LIB_NAME}" STREQUAL CHANGE_ME)
     message(FATAL_ERROR

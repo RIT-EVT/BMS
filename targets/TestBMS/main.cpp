@@ -1,7 +1,7 @@
 //
 // Created by trevo on 10/6/2022.
 //
-
+#define CO_TPDO_N 12
 /**
  * This is a basic sample of using the UART module. The program provides a
  * basic echo functionality where the uart will write back whatever the user
@@ -94,10 +94,8 @@ extern "C" void COTmrLock(void) {}
 extern "C" void COTmrUnlock(void) {}
 
 int main(){
-
     // Initialize system
     IO::init();
-
     // Queue that will store CANopen messages
     EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage> canOpenQueue;
 
@@ -116,7 +114,6 @@ int main(){
     can.addIRQHandler(canInterruptHandler, reinterpret_cast<void*>(&canParams));
     IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
     EVT::core::IO::I2C& i2c = EVT::core::IO::getI2C<IO::Pin::PB_8, IO::Pin::PB_9>();
-    uart.printf("Hello");
     // Initialize the timer
     DEV::Timerf302x8 timer(TIM2, 100);
 
@@ -167,7 +164,7 @@ int main(){
     CO_NODE_SPEC canSpecOne = {
         .NodeId = BMS::BMS::NODE_ID,
         .Baudrate = IO::CAN::DEFAULT_BAUD,
-        .Dict = bms.getObjectDictionary(0),
+        .Dict = bms.getObjectDictionary(),
         .DictLen = bms.getObjectDictionarySize(),
         .EmcyCode = NULL,
         .TmrMem = appTmrMem,
@@ -177,42 +174,14 @@ int main(){
         .SdoBuf = reinterpret_cast<uint8_t*>(&sdoBuffer[0]),
     };
 
-    CO_NODE_SPEC canSpecTwo = {
-        .NodeId = BMS::BMS::NODE_ID,
-        .Baudrate = IO::CAN::DEFAULT_BAUD,
-        .Dict = bms.getObjectDictionary(1),
-        .DictLen = bms.getObjectDictionarySize(),
-        .EmcyCode = NULL,
-        .TmrMem = appTmrMem,
-        .TmrNum = 16,
-        .TmrFreq = 100,
-        .Drv = &canStackDriver,
-        .SdoBuf = reinterpret_cast<uint8_t*>(&sdoBuffer[0]),
-    };
 
-    CO_NODE_SPEC canSpecThree = {
-        .NodeId = BMS::BMS::NODE_ID,
-        .Baudrate = IO::CAN::DEFAULT_BAUD,
-        .Dict = bms.getObjectDictionary(2),
-        .DictLen = bms.getObjectDictionarySize(),
-        .EmcyCode = NULL,
-        .TmrMem = appTmrMem,
-        .TmrNum = 16,
-        .TmrFreq = 100,
-        .Drv = &canStackDriver,
-        .SdoBuf = reinterpret_cast<uint8_t*>(&sdoBuffer[0]),
-    };
 
     CO_NODE canNodeOne;
-    CO_NODE canNodeTwo;
-    CO_NODE canNodeThree;
-
 
     time::wait(500);
 
     // Join the CANopen network
     if(can.connect() != IO::CAN::CANStatus::OK){
-        uart.printf("Failed to connect");
     }
 
     // Intialize CANopen logic
@@ -220,39 +189,26 @@ int main(){
     CONodeStart(&canNodeOne);
     CONmtSetMode(&canNodeOne.Nmt, CO_OPERATIONAL);
 
-    CONodeInit(&canNodeTwo, &canSpecTwo);
-    CONodeStart(&canNodeTwo);
-    CONmtSetMode(&canNodeTwo.Nmt, CO_OPERATIONAL);
-
-    CONodeInit(&canNodeThree, &canSpecThree);
-    CONodeStart(&canNodeThree);
-    CONmtSetMode(&canNodeThree.Nmt, CO_OPERATIONAL);
 
     // Main processing loop, contains the following logic
     // 1. Update CANopen logic and processing incomming messages
     // 2. Run per-loop BMS state logic
     // 3. Wait for new data to come in
     while (1) {
-        uart.printf("Test");
+//        uart.printf("Hello Again");
         // Process incoming CAN messages
         CONodeProcess(&canNodeOne);
-        CONodeProcess(&canNodeTwo);
-        CONodeProcess(&canNodeThree);
 
         // Update the state of timer based events
         COTmrService(&canNodeOne.Tmr);
-        COTmrService(&canNodeTwo.Tmr);
-        COTmrService(&canNodeThree.Tmr);
 
         // Handle executing timer events that have elapsed
         COTmrProcess(&canNodeOne.Tmr);
-        COTmrProcess(&canNodeTwo.Tmr);
-        COTmrProcess(&canNodeThree.Tmr);
 
         // Update the state of the BMS
-        //bms.process();
+        bms.process();
+        time::wait(500);
         // Wait for new data to come in
-        time::wait(10);
     }
 }
 
