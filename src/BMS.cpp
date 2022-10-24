@@ -18,7 +18,31 @@ BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
     state = State::START;
     bmsOK.writePin(EVT::core::IO::GPIO::State::LOW);
     stateChanged = true;
+
+    batteryVoltage = 0;
+
+    minCellVoltage = 1;
+
+    minCellVoltageID = 2;
+
+    maxCellVoltage = 3;
+
+    maxCellVoltageID = 4;
+
+    current = 5;
+
+    batteryPackMinTemp = 6;
+
+    batteryPackMaxTemp = 7;
+
+    SOC = 8;
+
+    recapActualAllowed = 10;
+
+    dischargeActualAllowed = 11;
 }
+
+
 
 CO_OBJ_T* BMS::getObjectDictionary() {
 
@@ -260,7 +284,9 @@ bool BMS::isHealthy() {
 
 void BMS::updateVoltageReadings() {
     // TODO: Handle when an error has taken place
+
     bq.getCellVoltage(cellVoltage, &totalVoltage);
+
 }
 
 void BMS::clearVoltageReadings() {
