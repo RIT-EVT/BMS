@@ -21,14 +21,6 @@ BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
 
     batteryVoltage = 0;
 
-    minCellVoltage = 1;
-
-    minCellVoltageID = 2;
-
-    maxCellVoltage = 3;
-
-    maxCellVoltageID = 4;
-
     current = 5;
 
     batteryPackMinTemp = 6;
@@ -40,12 +32,12 @@ BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
     recapActualAllowed = 10;
 
     dischargeActualAllowed = 11;
+    updateVoltageReadings();
 }
 
 
 
 CO_OBJ_T* BMS::getObjectDictionary() {
-
         return objectDictionaryOne;
 }
 
@@ -89,7 +81,7 @@ void BMS::startState() {
         bmsOK.writePin(BMS_NOT_OK);
         numAttemptsMade = 0;
         stateChanged = false;
-        clearVoltageReadings();
+        //clearVoltageReadings();
     }
 
     // Check if an error has taken place, and if so, check to make sure
@@ -134,7 +126,7 @@ void BMS::initializationErrorState() {
     if (stateChanged) {
         bmsOK.writePin(BMS_NOT_OK);
         stateChanged = false;
-        clearVoltageReadings();
+        //clearVoltageReadings();
     }
 }
 
@@ -142,7 +134,7 @@ void BMS::factoryInitState() {
     if (stateChanged) {
         bmsOK.writePin(BMS_NOT_OK);
         stateChanged = false;
-        clearVoltageReadings();
+        //clearVoltageReadings();
     }
 
     // Check to see if settings have come in, if so, go back to start state
@@ -284,9 +276,7 @@ bool BMS::isHealthy() {
 
 void BMS::updateVoltageReadings() {
     // TODO: Handle when an error has taken place
-
-    bq.getCellVoltage(cellVoltage, &totalVoltage);
-
+    bq.getCellVoltage(cellVoltage, &totalVoltage, &minCellVoltage, &minCellVoltageID, &maxCellVoltage, &maxCellVoltageID);
 }
 
 void BMS::clearVoltageReadings() {
