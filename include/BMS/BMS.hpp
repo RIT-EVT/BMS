@@ -4,7 +4,6 @@
 #include <BMS/dev/SystemDetect.hpp>
 #include <Canopen/co_core.h>
 #include <stdint.h>
-#define CO_TPDO_N 12
 namespace BMS {
 
 /**
@@ -182,29 +181,76 @@ private:
      */
     uint32_t totalVoltage;
 
+    /**
+     * Represents the total voltage in the battery. Updating this value is not
+     * yet implemented.
+     */
     int16_t batteryVoltage;
 
+    /**
+     * Represents the voltage value of the cell with the lowest voltage in the pack.
+     * This value is updated by reading in the values from the bq chip and checking
+     * its value against all others.
+     */
     int16_t minCellVoltage;
 
+    /**
+     * Represents the ID of the cell which has the lowest voltage. This id is stored
+     * as the index of the cell in the cellVoltages list +1.
+     */
     uint8_t minCellVoltageID;
 
+    /**
+     * Represents the voltage value of the cell with the highest voltage in the pack.
+     * This value is updated by reading in the values from the bq chip and checking
+     * its value against all others.
+     */
     int16_t maxCellVoltage;
 
+    /**
+     * Represents the ID of the cell which has the highest voltage. This id is stored
+     * as the index of the cell in the cellVoltages list +1.
+     */
     uint8_t maxCellVoltageID;
 
+    /**
+     * Represents the total current through the battery. Updating this value is not
+     * yet implemented.
+     */
     int16_t current;
 
+    /**
+     * Represents the lowest temperature value from any thermistor in the battery pack. Updating this value is not
+     * yet implemented.
+     */
     int8_t batteryPackMinTemp;
 
+    /**
+     * Represents the highest temperature value from any thermistor in the battery pack. Updating this value is not
+     * yet implemented.
+     */
     int8_t batteryPackMaxTemp;
 
+    /**
+     * Represents the state of charge (maybe?) of the battery. Updating this value is not yet implemented.
+     */
     uint8_t SOC;
 
+    /**
+     *I have no clue what this is.
+     */
     uint8_t recapActualAllowed;
 
+    /**
+     *I have no clue what this is.
+     */
     uint8_t dischargeActualAllowed;
 
-    uint16_t cellTemperature[DEV::BQ76952::NUM_CELLS];
+    /**
+     * Stores the per-thermistor temperature for the battery pack. Updating this value is not
+     * yet implemented.
+     */
+    uint16_t thermistorTemperature[DEV::BQ76952::NUM_CELLS];
     /**
      * Stores the per-cell voltage for the battery pack. This value is updated
      * by reading the voltage from the BQ chip and is then exposed over
@@ -307,6 +353,10 @@ private:
      * The object dictionary of the BMS. Includes settings that determine
      * how the BMS functions on the CANopen network as well as the data
      * that is exposed on the network.
+     *
+     * In order to increase the number of TPDOs in an object dictionary
+     * like we have here enter the highest CMakeLists.txt file add this:
+     * add_compile_definitions(CO_TPDO_N=numberOfDesiredTPDOs)
      *
      * Array of CANopen objects. +1 for the special "end-of-array" marker
      */
@@ -615,135 +665,6 @@ private:
             .Type = CO_TEVENT,
             .Data = (uintptr_t) 2000,
         },
-        // TPDO8 settings
-        // 0: The TPDO number, default 0
-        // 1: The COB-ID used by TPDO1, provided as a function of the TPDO number
-        // 2: How the TPO is triggered, default to manual triggering
-        // 3: Inhibit time, defaults to 0
-        // 5: Timer trigger time in 1ms units, 0 will disable the timer based triggering
-
-        {
-            .Key = CO_KEY(0x1808, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
-            .Type = nullptr,
-            .Data = (uintptr_t) 8,
-        },
-        {
-            .Key = CO_KEY(0x1808, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
-            .Type = nullptr,
-            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(2)+NODE_ID+2,
-        },
-        {
-            .Key = CO_KEY(0x1808, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
-            .Type = nullptr,
-            .Data = (uintptr_t) 0xFE,
-        },
-        {
-            .Key = CO_KEY(0x1808, 3, CO_UNSIGNED16 | CO_OBJ_D__R_),
-            .Type = nullptr,
-            .Data = (uintptr_t) 0,
-        },
-        {
-            .Key = CO_KEY(0x1808, 5, CO_UNSIGNED16 | CO_OBJ_D__R_),
-            .Type = CO_TEVENT,
-            .Data = (uintptr_t) 2000,
-        },
-        // TPDO9 settings
-        // 0: The TPDO number, default 0
-        // 1: The COB-ID used by TPDO1, provided as a function of the TPDO number
-        // 2: How the TPO is triggered, default to manual triggering
-        // 3: Inhibit time, defaults to 0
-        // 5: Timer trigger time in 1ms units, 0 will disable the timer based triggering
-
-        {
-            .Key = CO_KEY(0x1809, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
-            .Type = nullptr,
-            .Data = (uintptr_t) 9,
-        },
-        {
-            .Key = CO_KEY(0x1809, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
-            .Type = nullptr,
-            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(3)+NODE_ID,
-        },
-        {
-            .Key = CO_KEY(0x1809, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
-            .Type = nullptr,
-            .Data = (uintptr_t) 0xFE,
-        },
-        {
-            .Key = CO_KEY(0x1809, 3, CO_UNSIGNED16 | CO_OBJ_D__R_),
-            .Type = nullptr,
-            .Data = (uintptr_t) 0,
-        },
-        {
-            .Key = CO_KEY(0x1809, 5, CO_UNSIGNED16 | CO_OBJ_D__R_),
-            .Type = CO_TEVENT,
-            .Data = (uintptr_t) 2000,
-        },
-        // TPDO10 settings
-        // 0: The TPDO number, default 0
-        // 1: The COB-ID used by TPDO1, provided as a function of the TPDO number
-        // 2: How the TPO is triggered, default to manual triggering
-        // 3: Inhibit time, defaults to 0
-        // 5: Timer trigger time in 1ms units, 0 will disable the timer based triggering
-
-        {
-            .Key = CO_KEY(0x180A, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
-            .Type = nullptr,
-            .Data = (uintptr_t) 10,
-        },
-        {
-            .Key = CO_KEY(0x180A, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
-            .Type = nullptr,
-            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(3)+NODE_ID+1,
-        },
-        {
-            .Key = CO_KEY(0x180A, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
-            .Type = nullptr,
-            .Data = (uintptr_t) 0xFE,
-        },
-        {
-            .Key = CO_KEY(0x180A, 3, CO_UNSIGNED16 | CO_OBJ_D__R_),
-            .Type = nullptr,
-            .Data = (uintptr_t) 0,
-        },
-        {
-            .Key = CO_KEY(0x180A, 5, CO_UNSIGNED16 | CO_OBJ_D__R_),
-            .Type = CO_TEVENT,
-            .Data = (uintptr_t) 2000,
-        },
-        // TPDO11 settings
-        // 0: The TPDO number, default 0
-        // 1: The COB-ID used by TPDO1, provided as a function of the TPDO number
-        // 2: How the TPO is triggered, default to manual triggering
-        // 3: Inhibit time, defaults to 0
-        // 5: Timer trigger time in 1ms units, 0 will disable the timer based triggering
-
-        {
-            .Key = CO_KEY(0x180B, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
-            .Type = nullptr,
-            .Data = (uintptr_t) 11,
-        },
-        {
-            .Key = CO_KEY(0x180B, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
-            .Type = nullptr,
-            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(3)+NODE_ID+2,
-        },
-        {
-            .Key = CO_KEY(0x180B, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
-            .Type = nullptr,
-            .Data = (uintptr_t) 0xFE,
-        },
-        {
-            .Key = CO_KEY(0x180B, 3, CO_UNSIGNED16 | CO_OBJ_D__R_),
-            .Type = nullptr,
-            .Data = (uintptr_t) 0,
-        },
-        {
-            .Key = CO_KEY(0x180B, 5, CO_UNSIGNED16 | CO_OBJ_D__R_),
-            .Type = CO_TEVENT,
-            .Data = (uintptr_t) 2000,
-        },
-
         // TPDO0 mapping, determines the PDO messages to send when TPDO1 is triggered
         // 0: The number of PDO messages associated with the TPDO
         // 1: Link to the first PDO message
@@ -915,7 +836,7 @@ private:
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 24, 16),
         },
-        // TPDO5 mapping, determines the PDO messages to send when TPDO4 is triggered
+        // TPDO5 mapping, determines the PDO messages to send when TPDO5 is triggered
         // 0: The number of PDO messages associated with the TPDO
         // 1: Link to the first PDO message
         // n: Link to the nth PDO message
@@ -945,7 +866,7 @@ private:
             .Data = CO_LINK(0x2100, 28, 16),
         },
 
-        // TPDO6 mapping, determines the PDO messages to send when TPDO4 is triggered
+        // TPDO6 mapping, determines the PDO messages to send when TPDO6 is triggered
         // 0: The number of PDO messages associated with the TPDO
         // 1: Link to the first PDO message
         // n: Link to the nth PDO message
@@ -974,7 +895,7 @@ private:
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 32, 16),
         },
-        // TPDO7 mapping, determines the PDO messages to send when TPDO4 is triggered
+        // TPDO7 mapping, determines the PDO messages to send when TPDO7 is triggered
         // 0: The number of PDO messages associated with the TPDO
         // 1: Link to the first PDO message
         // n: Link to the nth PDO message
@@ -1002,44 +923,6 @@ private:
             .Key = CO_KEY(0x1A07, 4, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 36, 16),
-        },
-        // TPDO8 mapping, determines the PDO messages to send when TPDO4 is triggered
-        // 0: The number of PDO messages associated with the TPDO
-        // 1: Link to the first PDO message
-        // n: Link to the nth PDO message
-        {
-            .Key = CO_KEY(0x1A08, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
-            .Type = nullptr,
-            .Data = (uintptr_t) 3,
-        },
-
-        // TPDO9 mapping, determines the PDO messages to send when TPDO4 is triggered
-        // 0: The number of PDO messages associated with the TPDO
-        // 1: Link to the first PDO message
-        // n: Link to the nth PDO message
-        {
-            .Key = CO_KEY(0x1A09, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
-            .Type = nullptr,
-            .Data = (uintptr_t) 2,
-        },
-        // TPDO10 mapping, determines the PDO messages to send when TPDO4 is triggered
-        // 0: The number of PDO messages associated with the TPDO
-        // 1: Link to the first PDO message
-        // n: Link to the nth PDO message
-        {
-            .Key = CO_KEY(0x1A0A, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
-            .Type = nullptr,
-            .Data = (uintptr_t) 2,
-        },
-
-        // TPDO11 mapping, determines the PDO messages to send when TPDO4 is triggered
-        // 0: The number of PDO messages associated with the TPDO
-        // 1: Link to the first PDO message
-        // n: Link to the nth PDO message
-        {
-            .Key = CO_KEY(0x1A0B, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
-            .Type = nullptr,
-            .Data = (uintptr_t) 2,
         },
 
 
@@ -1168,62 +1051,62 @@ private:
         {
             .Key = CO_KEY(0x2100, 25, CO_UNSIGNED16 | CO_OBJ___PR_),
             .Type = nullptr,
-            .Data = (uintptr_t) &cellTemperature[0],
+            .Data = (uintptr_t) &thermistorTemperature[0],
         },
         {
             .Key = CO_KEY(0x2100, 26, CO_UNSIGNED16 | CO_OBJ___PR_),
             .Type = nullptr,
-            .Data = (uintptr_t) &cellTemperature[1],
+            .Data = (uintptr_t) &thermistorTemperature[1],
         },
         {
             .Key = CO_KEY(0x2100, 27, CO_UNSIGNED16 | CO_OBJ___PR_),
             .Type = nullptr,
-            .Data = (uintptr_t) &cellTemperature[2],
+            .Data = (uintptr_t) &thermistorTemperature[2],
         },
         {
             .Key = CO_KEY(0x2100, 28, CO_UNSIGNED16 | CO_OBJ___PR_),
             .Type = nullptr,
-            .Data = (uintptr_t) &cellTemperature[3],
+            .Data = (uintptr_t) &thermistorTemperature[3],
         },
         {
             .Key = CO_KEY(0x2100, 29, CO_UNSIGNED16 | CO_OBJ___PR_),
             .Type = nullptr,
-            .Data = (uintptr_t) &cellTemperature[4],
+            .Data = (uintptr_t) &thermistorTemperature[4],
         },
         {
             .Key = CO_KEY(0x2100, 30, CO_UNSIGNED16 | CO_OBJ___PR_),
             .Type = nullptr,
-            .Data = (uintptr_t) &cellTemperature[5],
+            .Data = (uintptr_t) &thermistorTemperature[5],
         },
         {
             .Key = CO_KEY(0x2100, 31, CO_UNSIGNED16 | CO_OBJ___PR_),
             .Type = nullptr,
-            .Data = (uintptr_t) &cellTemperature[6],
+            .Data = (uintptr_t) &thermistorTemperature[6],
         },
         {
             .Key = CO_KEY(0x2100, 32, CO_UNSIGNED16 | CO_OBJ___PR_),
             .Type = nullptr,
-            .Data = (uintptr_t) &cellTemperature[7],
+            .Data = (uintptr_t) &thermistorTemperature[7],
         },
         {
             .Key = CO_KEY(0x2100, 33, CO_UNSIGNED16 | CO_OBJ___PR_),
             .Type = nullptr,
-            .Data = (uintptr_t) &cellTemperature[8],
+            .Data = (uintptr_t) &thermistorTemperature[8],
         },
         {
             .Key = CO_KEY(0x2100, 34, CO_UNSIGNED16 | CO_OBJ___PR_),
             .Type = nullptr,
-            .Data = (uintptr_t) &cellTemperature[9],
+            .Data = (uintptr_t) &thermistorTemperature[9],
         },
         {
             .Key = CO_KEY(0x2100, 35, CO_UNSIGNED16 | CO_OBJ___PR_),
             .Type = nullptr,
-            .Data = (uintptr_t) &cellTemperature[10],
+            .Data = (uintptr_t) &thermistorTemperature[10],
         },
         {
             .Key = CO_KEY(0x2100, 36, CO_UNSIGNED16 | CO_OBJ___PR_),
             .Type = nullptr,
-            .Data = (uintptr_t) &cellTemperature[11],
+            .Data = (uintptr_t) &thermistorTemperature[11],
         },
 
 

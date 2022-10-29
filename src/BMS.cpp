@@ -19,19 +19,6 @@ BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
     bmsOK.writePin(EVT::core::IO::GPIO::State::LOW);
     stateChanged = true;
 
-    batteryVoltage = 0;
-
-    current = 5;
-
-    batteryPackMinTemp = 6;
-
-    batteryPackMaxTemp = 7;
-
-    SOC = 8;
-
-    recapActualAllowed = 10;
-
-    dischargeActualAllowed = 11;
     updateVoltageReadings();
 }
 
@@ -81,7 +68,7 @@ void BMS::startState() {
         bmsOK.writePin(BMS_NOT_OK);
         numAttemptsMade = 0;
         stateChanged = false;
-        //clearVoltageReadings();
+        clearVoltageReadings();
     }
 
     // Check if an error has taken place, and if so, check to make sure
