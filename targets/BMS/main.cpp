@@ -206,8 +206,8 @@ int main(){
 
         // Update the state of the BMS
         bms.process();
-        time::wait(500);
         // Wait for new data to come in
+        time::wait(10);
     }
 }
 
