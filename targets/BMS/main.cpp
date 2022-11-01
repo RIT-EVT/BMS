@@ -92,7 +92,7 @@ extern "C" void COTmrLock(void) {}
 
 extern "C" void COTmrUnlock(void) {}
 
-int main(){
+int main() {
     // Initialize system
     IO::init();
     // Queue that will store CANopen messages
@@ -173,14 +173,12 @@ int main(){
         .SdoBuf = reinterpret_cast<uint8_t*>(&sdoBuffer[0]),
     };
 
-
-
     CO_NODE canNodeOne;
 
     time::wait(500);
 
     // Join the CANopen network
-    if(can.connect() != IO::CAN::CANStatus::OK){
+    if (can.connect() != IO::CAN::CANStatus::OK) {
     }
 
     // Intialize CANopen logic
@@ -188,13 +186,12 @@ int main(){
     CONodeStart(&canNodeOne);
     CONmtSetMode(&canNodeOne.Nmt, CO_OPERATIONAL);
 
-
     // Main processing loop, contains the following logic
     // 1. Update CANopen logic and processing incomming messages
     // 2. Run per-loop BMS state logic
     // 3. Wait for new data to come in
     while (1) {
-//        uart.printf("Hello Again");
+        //        uart.printf("Hello Again");
         // Process incoming CAN messages
         CONodeProcess(&canNodeOne);
 
@@ -210,4 +207,3 @@ int main(){
         time::wait(10);
     }
 }
-

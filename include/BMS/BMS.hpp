@@ -420,7 +420,7 @@ private:
         {
             .Key = CO_KEY(0x1800, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(0)+NODE_ID,
+            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(0) + NODE_ID,
         },
         {
             .Key = CO_KEY(0x1800, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
@@ -452,7 +452,7 @@ private:
         {
             .Key = CO_KEY(0x1801, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(0)+NODE_ID+1,
+            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(0) + NODE_ID + 1,
         },
         {
             .Key = CO_KEY(0x1801, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
@@ -484,7 +484,7 @@ private:
         {
             .Key = CO_KEY(0x1802, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(0)+NODE_ID+2,
+            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(0) + NODE_ID + 2,
         },
         {
             .Key = CO_KEY(0x1802, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
@@ -502,7 +502,6 @@ private:
             .Data = (uintptr_t) 2000,
         },
 
-
         // TPDO3 settings
         // 0: The TPDO number, default 0
         // 1: The COB-ID used by TPDO1, provided as a function of the TPDO number
@@ -518,7 +517,7 @@ private:
         {
             .Key = CO_KEY(0x1803, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(1)+NODE_ID,
+            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(1) + NODE_ID,
         },
         {
             .Key = CO_KEY(0x1803, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
@@ -551,7 +550,7 @@ private:
         {
             .Key = CO_KEY(0x1804, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(1)+NODE_ID+1,
+            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(1) + NODE_ID + 1,
         },
         {
             .Key = CO_KEY(0x1804, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
@@ -584,7 +583,7 @@ private:
         {
             .Key = CO_KEY(0x1805, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(1)+NODE_ID+2,
+            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(1) + NODE_ID + 2,
         },
         {
             .Key = CO_KEY(0x1805, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
@@ -616,7 +615,7 @@ private:
         {
             .Key = CO_KEY(0x1806, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(2)+NODE_ID,
+            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(2) + NODE_ID,
         },
         {
             .Key = CO_KEY(0x1806, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
@@ -648,7 +647,7 @@ private:
         {
             .Key = CO_KEY(0x1807, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(2)+NODE_ID+1,
+            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(2) + NODE_ID + 1,
         },
         {
             .Key = CO_KEY(0x1807, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
@@ -695,11 +694,10 @@ private:
             .Data = CO_LINK(0x2100, 4, 16),
         },
         {
-            .Key = CO_KEY(0x1A00, 5, CO_UNSIGNED32| CO_OBJ_D__R_),
+            .Key = CO_KEY(0x1A00, 5, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 5, 8),
         },
-
 
         // TPDO1 mapping, determines the PDO messages to send when TPDO1 is triggered
         // 0: The number of PDO messages associated with the TPDO
@@ -925,7 +923,6 @@ private:
             .Data = CO_LINK(0x2100, 36, 16),
         },
 
-
         // User defined data, this will be where we put elements that can be
         // accessed via SDO and depending on configuration PDO
         {
@@ -1109,11 +1106,9 @@ private:
             .Data = (uintptr_t) &thermistorTemperature[11],
         },
 
-
         // End of dictionary marker
         CO_OBJ_DIR_ENDMARK,
     };
-
 };
 
 }// namespace BMS
