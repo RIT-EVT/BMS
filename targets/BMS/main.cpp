@@ -193,6 +193,7 @@ int main(){
     // 1. Update CANopen logic and processing incomming messages
     // 2. Run per-loop BMS state logic
     // 3. Wait for new data to come in
+
     while (1) {
 //        uart.printf("Hello Again");
         // Process incoming CAN messages
