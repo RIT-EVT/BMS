@@ -267,7 +267,6 @@ void exitConfigMode(IO::UART& uart, BMS::DEV::BQ76952& bq) {
     uart.printf("BQ not in config mode\r\n");
 }
 
-
 void commandOnlySub(IO::UART& uart, BMS::DEV::BQ76952& bq) {
     uart.printf("Enter the command-only subcommand address in hex: 0x");
     uart.gets(inputBuffer, MAX_BUFF);
@@ -308,7 +307,6 @@ void getVoltages(IO::UART& uart, BMS::DEV::BQ76952& bq) {
     }
     uart.printf("Total: %d.%d", tot / 1000, tot % 1000);
 }
-
 
 int main() {
     IO::I2C& i2c = IO::getI2C<IO::Pin::PB_6, IO::Pin::PB_7>();

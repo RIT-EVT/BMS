@@ -148,7 +148,7 @@ private:
      * is high, it represents that the BMS is in a state ready to
      * charge or discharge,
      */
-//    EVT::core::IO::GPIO& bmsOK;
+    //    EVT::core::IO::GPIO& bmsOK;
 
     /**
      * Boolean flag that represents a state has just changed, this is useful

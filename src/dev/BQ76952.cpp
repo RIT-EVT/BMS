@@ -154,7 +154,7 @@ BQ76952::Status BQ76952::enterConfigUpdateMode() {
     // Make sure the device actually entered Config Update Mode
     bool isInConfigMode = false;
     int numAttempts = 0;
-    while(!isInConfigMode && numAttempts < NUM_ATTEMPTS) {
+    while (!isInConfigMode && numAttempts < NUM_ATTEMPTS) {
         RETURN_IF_ERR(inConfigMode(&isInConfigMode));
         numAttempts++;
     }
@@ -207,7 +207,6 @@ BQ76952::Status BQ76952::makeSubcommandRead(uint16_t reg, uint32_t* result) {
 
     return Status::OK;
 }
-
 
 BQ76952::Status BQ76952::commandOnlySubcommand(uint16_t reg) {
     // Write out the target subcommand
