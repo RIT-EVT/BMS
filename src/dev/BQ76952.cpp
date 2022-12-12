@@ -1,13 +1,13 @@
 #include <BMS/dev/BQ76952.hpp>
 #include <EVT/utils/time.hpp>
 
-// 0 is added to the end of each macro to force users to follow the macro with a ';'
+// (void)0 is added to the end of each macro to force users to follow the macro with a ';'
 /// Macro to make an I2C transfer and return an error on failure
 #define BQ_I2C_RETURN_IF_ERR(func)                   \
     if (func != EVT::core::IO::I2C::I2CStatus::OK) { \
         return Status::I2C_ERROR;                    \
     }                                                \
-    0
+    (void)0
 
 /// Macro to pass along errors that may have been generated
 #define RETURN_IF_ERR(func)          \
@@ -17,7 +17,7 @@
             return result_;          \
         }                            \
     }                                \
-    0
+    (void)0
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Functions for interacting with the BQ76952 balancing logic through CANopen
