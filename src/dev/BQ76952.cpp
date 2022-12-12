@@ -7,7 +7,7 @@
     if (func != EVT::core::IO::I2C::I2CStatus::OK) { \
         return Status::I2C_ERROR;                    \
     }                                                \
-    (void)0
+    (void) 0
 
 /// Macro to pass along errors that may have been generated
 #define RETURN_IF_ERR(func)          \
@@ -17,7 +17,7 @@
             return result_;          \
         }                            \
     }                                \
-    (void)0
+    (void) 0
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Functions for interacting with the BQ76952 balancing logic through CANopen
