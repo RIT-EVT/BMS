@@ -17,6 +17,13 @@ import serial
 
 def ti_to_uart(file_path: str, port_name: str) -> None :
     """
+    Load a list of the BQSettings from a TI file, and write the settings
+    to the BMS over the given serial port.
+
+    NOTE: May not work consistently, needs further testing
+
+    :param file_path: Path to the TI file to parse.
+    :param port_name: Port that the BMS is connected to.
     """
     settings = []
     with open(file_path, 'r') as ti_file:

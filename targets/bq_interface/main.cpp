@@ -1,13 +1,11 @@
-#include <stdlib.h>
-#include <string.h>
-
-#include "BMS/BMSLogger.hpp"
+#include <BMS/BMSLogger.hpp>
 #include <BMS/dev/BQ76952.hpp>
 #include <EVT/io/I2C.hpp>
 #include <EVT/io/UART.hpp>
 #include <EVT/io/manager.hpp>
 #include <EVT/io/pin.hpp>
 #include <EVT/utils/time.hpp>
+#include <cstdlib>
 
 namespace IO = EVT::core::IO;
 namespace time = EVT::core::time;
@@ -121,7 +119,7 @@ void readBalancing(IO::UART& uart, BMS::DEV::BQ76952& bq) {
  * Set the balancing state for the specific cell
  *
  * @param[in] uart The UART interface to read from
- * @parampin] bq The BQ interface to use
+ * @param[in] bq The BQ interface to use
  */
 void setBalancing(IO::UART& uart, BMS::DEV::BQ76952& bq) {
     uart.printf("Enter the cell to set balancing of: ");
@@ -146,8 +144,7 @@ void setBalancing(IO::UART& uart, BMS::DEV::BQ76952& bq) {
  *
  * @param[in] uart The UART interface to write in from
  */
-void directWrite(IO::UART& uart) {
-}
+void directWrite(IO::UART& uart) {}
 
 /**
  * Function for making an indirect write request
@@ -276,7 +273,6 @@ void commandOnlySub(IO::UART& uart, BMS::DEV::BQ76952& bq) {
     uint16_t reg = strtol(inputBuffer, nullptr, 16);
 
     // Run the command
-    uint32_t subcommandValue = 0;
     auto result = bq.commandOnlySubcommand(reg);
 
     // Make sure the read was successful

@@ -3,7 +3,7 @@
 #include <EVT/utils/time.hpp>
 
 #include "BMS/BMSLogger.hpp"
-#include <stdint.h>
+#include <cstdint>
 
 namespace BMS {
 
@@ -16,7 +16,7 @@ BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
                                             systemDetect(systemDetect) {
 
     state = State::START;
-    //    bmsOK.writePin(EVT::core::IO::GPIO::State::LOW);
+    //bmsOK.writePin(EVT::core::IO::GPIO::State::LOW);
     stateChanged = true;
 }
 
@@ -61,11 +61,11 @@ void BMS::process() {
 
 void BMS::startState() {
     if (stateChanged) {
-        //        bmsOK.writePin(BMS_NOT_OK);
+        //bmsOK.writePin(BMS_NOT_OK);
         numAttemptsMade = 0;
         stateChanged = false;
         clearVoltageReadings();
-        //LOGGER.log(BMSLogger::LogLevel::INFO, "Entering start state");
+        LOGGER.log(BMSLogger::LogLevel::INFO, "Entering start state");
     }
 
     // Check if an error has taken place, and if so, check to make sure
@@ -108,7 +108,7 @@ void BMS::startState() {
 
 void BMS::initializationErrorState() {
     if (stateChanged) {
-        //        bmsOK.writePin(BMS_NOT_OK);
+        //bmsOK.writePin(BMS_NOT_OK);
         stateChanged = false;
         clearVoltageReadings();
         LOGGER.log(BMSLogger::LogLevel::INFO, "Entering initialization error state");
@@ -117,15 +117,13 @@ void BMS::initializationErrorState() {
 
 void BMS::factoryInitState() {
     if (stateChanged) {
-        //        bmsOK.writePin(BMS_NOT_OK);
+        //bmsOK.writePin(BMS_NOT_OK);
         stateChanged = false;
         clearVoltageReadings();
         LOGGER.log(BMSLogger::LogLevel::INFO, "Entering factory init state");
     }
 
     // Check to see if settings have come in, if so, go back to start state
-    // TODO: Figure out how to prevent this from getting stuck infinitely
-    // Possibly CAN-related?
     if (bqSettingsStorage.hasSettings()) {
         state = State::START;
         stateChanged = true;
@@ -134,12 +132,12 @@ void BMS::factoryInitState() {
 
 void BMS::transferSettingsState() {
     if (stateChanged) {
-        //        bmsOK.writePin(BMS_NOT_OK);
+        //bmsOK.writePin(BMS_NOT_OK);
         bqSettingsStorage.resetTranfer();
         numAttemptsMade = 0;
         stateChanged = false;
         clearVoltageReadings();
-        //        LOGGER.log(BMSLogger::LogLevel::INFO, "Entering transfer settings state");
+        LOGGER.log(BMSLogger::LogLevel::INFO, "Entering transfer settings state");
     }
 
     // Check if an error has taken place, and if so, check to make sure
@@ -178,7 +176,7 @@ void BMS::transferSettingsState() {
 
 void BMS::systemReadyState() {
     if (stateChanged) {
-        //        bmsOK.writePin(BMS_NOT_OK);
+        //bmsOK.writePin(BMS_NOT_OK);
         stateChanged = false;
         LOGGER.log(BMSLogger::LogLevel::INFO, "Entering system ready state");
     }
@@ -209,7 +207,7 @@ void BMS::systemReadyState() {
 
 void BMS::unsafeConditionsError() {
     if (stateChanged) {
-        //        bmsOK.writePin(BMS_NOT_OK);
+        //bmsOK.writePin(BMS_NOT_OK);
         stateChanged = false;
         LOGGER.log(BMSLogger::LogLevel::INFO, "Entering unsafe conditions state");
     }
@@ -219,7 +217,7 @@ void BMS::unsafeConditionsError() {
 
 void BMS::powerDeliveryState() {
     if (stateChanged) {
-        //        bmsOK.writePin(BMS_OK);
+        //bmsOK.writePin(BMS_OK);
         stateChanged = false;
         LOGGER.log(BMSLogger::LogLevel::INFO, "Entering power delivery state");
     }
@@ -242,7 +240,7 @@ void BMS::powerDeliveryState() {
 
 void BMS::chargingState() {
     if (stateChanged) {
-        //        bmsOK.writePin(BMS_OK);
+        //bmsOK.writePin(BMS_OK);
         stateChanged = false;
         LOGGER.log(BMSLogger::LogLevel::INFO, "Entering charging state");
     }
