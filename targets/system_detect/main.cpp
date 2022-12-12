@@ -107,10 +107,10 @@ int main() {
 
     // Initialize the system OK pin
     // TODO: Determine actual system ok pin
-    IO::GPIO& bmsOK = IO::getGPIO<IO::Pin::PC_14>(IO::GPIO::Direction::OUTPUT);
+    //IO::GPIO& bmsOK = IO::getGPIO<IO::Pin::PC_14>(IO::GPIO::Direction::OUTPUT);
 
     // Intialize the BMS itself
-    BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect, bmsOK);
+    BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect/*, bmsOK*/);
 
     // Reserved memory for CANopen stack usage
     uint8_t sdoBuffer[1][CO_SDO_BUF_BYTE];
