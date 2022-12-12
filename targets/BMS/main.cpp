@@ -1,7 +1,5 @@
 /**
- * This is a basic sample of using the UART module. The program provides a
- * basic echo functionality where the uart will write back whatever the user
- * enters.
+ * This is the main target to be used for the BMS in the DEV1 battery packs
  */
 #include <EVT/io/CANopen.hpp>
 #include <EVT/io/UART.hpp>
