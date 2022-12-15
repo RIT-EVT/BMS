@@ -25,8 +25,8 @@ include(${EVT_CORE_DIR}/cmake/evt-core_install.cmake)
 ###############################################################################
 # Project Setup
 ###############################################################################
-set(BOARD_LIB_NAME   CHANGE_ME)
-if("${BOARD_LIB_NAME}" STREQUAL CHANGE_ME)
+set(BOARD_LIB_NAME BOARD_NAME)
+if("${BOARD_LIB_NAME}" STREQUAL BOARD_NAME)
     message(FATAL_ERROR
             "You must set the template project name in the top-level CMakeLists.txt")
 endif()
