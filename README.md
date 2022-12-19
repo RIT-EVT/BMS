@@ -37,8 +37,8 @@ all EVT board repositories.  It contains the following capabilities:
 [this wiki page](https://wiki.rit.edu/display/EVT/Documentation+and+Organization+Standards)
 5) Update all instances of BOARD_NAME to match your project name
    1) `CMakeLists.txt:28`
-   2) Directory `./targets/BOARD_NAMEmain`
-   3) `targets/BOARD_NAMEmain/CMakeLists.txt:3`
+   2) Directory `./targets/BIKE_NAME-BOARD_NAME`
+   3) `targets/BIKE_NAME-BOARD_NAME/CMakeLists.txt:3`
    4) `src/BOARD_NAME.cpp`
    5) `include/BOARD_NAME.hpp`
    6) `docs/Doxyfile:35`
