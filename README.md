@@ -26,16 +26,35 @@ all EVT board repositories.  It contains the following capabilities:
 
 1) Create a new repo based on the project-template
    1) From [project-template](https://github.com/RIT-EVT/project-template) click `Use this template`
-   2) Choose a repo name and make sure it's public for auto-documentation to work
-   3) If the owner is not set to RIT-EVT then you need to update the .gitmodules file URL
-2) Clone the new repo
+   2) Set the owner of the repository to RIT-EVT
+   3) Name the repo with the new board's acronym
+   4) Set the privacy to Public
+   5) Don't include all branches
+2) Clone the new repo and create a setup branch
    1) `git clone <URL>`
-3) Update the EVT submodule
-   1) `git submodule update --init --recusive && git pull`
-   2) The above command can be used at any point to update the submodule from remote
-4) Import the project into Read the Docs, following the steps on 
-[this wiki page](https://wiki.rit.edu/display/EVT/Documentation+and+Organization+Standards)
-5) Update all instances of BOARD_NAME to match your project name
+   2) `git checkout -b feature/<github-username>/inital-setup`
+3) Set the project template up as an upstream repository
+   1) `git remote add upstream https://github.com/RIT-EVT/project-template`
+   2) `git remote set-url --push upstream no-push`
+      1) Confirm that this worked by running `git remote -v`
+      2) This should produce output similar to this:
+            ```
+            origin  https://github.com/RIT-EVT/ABC.git (fetch)
+            origin  https://github.com/RIT-EVT/ABC.git (push)
+            upstream        https://github.com/RIT-EVT/project-template (fetch)
+            upstream        no-push (push)
+            ```
+   3) `git fetch upstream`
+   4) `git merge upstream/main --allow-unrelated-histories`
+
+4) Update the EVT submodule
+   1) `git submodule update --init --recursive && git pull`
+   2) `cd ./libs/EVT-core`
+   3) `git merge origin/main`
+   4) `cd ../..`
+5) Import the project into Read the Docs, following the steps on 
+[the wiki](https://wiki.rit.edu/display/EVT/Documentation+and+Organization+Standards)
+6) Update all instances of BOARD_NAME to match your project name
    1) `CMakeLists.txt:28`
    2) Directory `./targets/BIKE_NAME-BOARD_NAME`
    3) `targets/BIKE_NAME-BOARD_NAME/CMakeLists.txt:3`
@@ -45,10 +64,12 @@ all EVT board repositories.  It contains the following capabilities:
    7) `docs/source/index.rst:6`
    8) `docs/source/api/index.rst:4,12,15`
    9) `README.md:56`
-6) Sample files are included in `./src` and `./include`. Once proper functionality has been 
+7) Sample files are included in `./src` and `./include`. Once proper functionality has been 
 confirmed, these files should be deleted.  There are placeholders to demonstrate the board library 
 building functionality.
-7) Everything in this README from this line up should be deleted, leaving only the content below:
+8) Everything in this README from this final step up should be deleted, leaving only the content 
+below. When finished, all the changes should be committed and pushed to the setup branch, and a PR
+should be created to merge into main.
 
 # BIKE_NAME-BOARD_NAME
 
