@@ -40,8 +40,6 @@ public:
         ERROR = 3,
     };
 
-    BQ76952::Status commandOnlySubcommand(uint16_t reg);
-
     /**
      * Create a new instance of the BQ76952 which will communicate over the
      * given I2C bus with the given address.
@@ -94,10 +92,18 @@ public:
      * Will make a subcommand read request to the BQ chip.
      *
      * @param[in] reg The subcommand register address
-     * @param[out] The result of the read request
+     * @param[out] result The result of the read request
      * @return The status of the read request attempt
      */
     Status makeSubcommandRead(uint16_t reg, uint32_t* result);
+
+    /**
+     * Runs a subcommand that has no result
+     *
+     * @param reg The subcommand register address
+     * @return The status of the subcommand attempt
+     */
+    BQ76952::Status commandOnlySubcommand(uint16_t reg);
 
     /**
      * Execute RAM read request.
