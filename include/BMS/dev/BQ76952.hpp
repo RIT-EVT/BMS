@@ -5,6 +5,8 @@
 
 #include <Canopen/co_obj.h>
 
+#define CELL_REG(i) CELL_BALANCE_MAPPING[i] * 2 + 0x14
+
 namespace BMS::DEV {
 
 /**
@@ -14,7 +16,7 @@ namespace BMS::DEV {
  *
  * Part of the logic contained is the ability to write out BQ settings to the
  * BQ chip itself. This will be able to handle taking in settings and making
- * the cooresponding I2C commands to write out the settings.
+ * the corresponding I2C commands to write out the settings.
  */
 class BQ76952 {
 public:
@@ -197,19 +199,26 @@ private:
     static constexpr uint8_t RAM_BASE_ADDRESS = 0x3E;
     static constexpr uint8_t RAM_CHECKSUM_ADDRESS = 0x60;
 
-    static constexpr uint8_t CELL_REGS[] = {
-        0x14, 0x16, 0x18, 0x1A, 0x1C, 0x1E, 0x20, 0x24, 0x28, 0x2C, 0x30, 0x32
-    };
-
     /**
-     * Contains a mapping between the target cell and the cooresponing
+     * Contains a mapping between the target cell and the corresponding
      * location in the `CB_ACTIVE_CELLS` bitmap. The idea that each cell is
      * an index into this lookup table.
      * NOTE: Cells are numbered starting at 1, so to get the bit position
      * for the first cell (cell 1) use index 0 (cell number - 1)
      */
     static constexpr uint8_t CELL_BALANCE_MAPPING[] = {
-        0, 1, 2, 3, 4, 5, 6, 8, 10, 12, 14, 15,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        10,
+        12,
+        14,
+        15,
     };
 
     /** Timeout waiting to read values from the BQ76952 in milliseconds */

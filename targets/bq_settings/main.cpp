@@ -1,145 +1,69 @@
 /**
- * For this test, BQSettings will be serialized and deserialized to ensure
- * the data is properly formatter and verify that the data is parsed
- * correctly.
- */
-#include <BMS/BQSetting.hpp>
+* Example of CAN communication between two devices. The two devices need
+* to be on a CAN network. The other device can be running this sample code
+* as well.
+*
+* @author Collin Bolles
+*/
+#include <EVT/io/CAN.hpp>
 #include <EVT/io/manager.hpp>
+#include <EVT/utils/time.hpp>
 
 namespace IO = EVT::core::IO;
+namespace time = EVT::core::time;
 
-/** Print the content of the array in a user friendly manner */
-void printArray(IO::UART& uart, uint8_t* buffer, uint8_t size) {
-    uart.printf("{ ");
-    for (uint8_t i = 0; i < size; i++)
-        uart.printf("0x%2x ", buffer[i]);
-    uart.printf("}");
-}
+void canIRQHandler(IO::CANMessage& message, void* priv) {
+    IO::UART* uart = (IO::UART*) priv;
+    uart->printf("Message received\r\n");
+    uart->printf("Message id: %d \r\n", message.getId());
+    uart->printf("Message length: %d\r\n", message.getDataLength());
+    uart->printf("Message contents: ");
 
-/** Check the contents of one array is the same as the other */
-bool arraysEqual(uint8_t* first, uint8_t* second, uint8_t size) {
-    for (uint8_t i = 0; i < size; i++)
-        if (first[i] != second[i])
-            return false;
-    return true;
-}
-
-/**
- * First test, ensure data can be serialized properly. Will provide an
- * array with known contents to the BQSettings and ensure the parsed results
- * match expectation.
- */
-void deserializeTest(IO::UART& uart) {
-    /**
-     * Command Byte: Direct command with 1 byte of data
-     * Address: 0x0001
-     * Data: 0xAA
-     */
-    uint8_t knownValues[] = {0x04, 0x01, 0x00, 0xAA, 0x00, 0x00, 0x00};
-    BMS::BQSetting setting;
-    setting.fromArray(knownValues);
-
-    // Check setting type
-    if (setting.getSettingType() != BMS::BQSetting::BQSettingType::DIRECT) {
-        uart.printf("Deserialization FAILED, invalid setting type, got %u, expected, %u\r\n",
-                    setting.getSettingType(), BMS::BQSetting::BQSettingType::DIRECT);
-        return;
+    uint8_t* message_payload = message.getPayload();
+    for (int i = 0; i < message.getDataLength(); i++) {
+        uart->printf("0x%02X ", message_payload[i]);
     }
-
-    // Check address
-    if (setting.getAddress() != 0x0001) {
-        uart.printf("Deserialization FAILED, invalid address, got 0x%04x, expected, 0x%04x\r\n",
-                    setting.getAddress(), 0x0001);
-        return;
-    }
-
-    // Check number of bytes
-    if (setting.getNumBytes() != 1) {
-        uart.printf("Deserialization FAILED, invalid number of bytes, got %u, expected, %u\r\n",
-                    setting.getNumBytes(), 1);
-        return;
-    }
-
-    // Check the data itself
-    if (setting.getData() != 0xAA) {
-        uart.printf("Deserialization FAILED, invalid data, got 0x%2x, expected 0x%2x\r\n",
-                    setting.getData(), 0xAA);
-        return;
-    }
-
-    uart.printf("Successful Deserialization\r\n");
-}
-
-/**
- * Second test, ensure that the data can be correctly turned into an array.
- * Will make a settings value, convert it into an array, and compare it against
- * the expected output.
- */
-void serializeTest(IO::UART& uart) {
-    BMS::BQSetting setting(BMS::BQSetting::BQSettingType::RAM, 4, 0x1122, 0x12345678);
-    uint8_t expectedArray[] = {0x12, 0x22, 0x11, 0x78, 0x56, 0x34, 0x12};
-
-    uint8_t actualArray[BMS::BQSetting::ARRAY_SIZE];
-    setting.toArray(actualArray);
-
-    if (!arraysEqual(expectedArray, actualArray, BMS::BQSetting::ARRAY_SIZE)) {
-        uart.printf("Serialization FAILED, expected ");
-        printArray(uart, expectedArray, BMS::BQSetting::ARRAY_SIZE);
-        uart.printf(" got ");
-        printArray(uart, actualArray, BMS::BQSetting::ARRAY_SIZE);
-        uart.printf("\r\n");
-        return;
-    }
-    uart.printf("Successful Serialization\r\n");
-}
-
-/**
- * Third test, ensure the settings can be serialized and deserialized back
- * and forth.
- */
-void serializeDeserializeTest(IO::UART& uart) {
-    BMS::BQSetting original(BMS::BQSetting::BQSettingType::SUBCOMMAND, 4, 0x2345, 0x45678901);
-
-    uint8_t serializedArray[BMS::BQSetting::ARRAY_SIZE];
-    original.toArray(serializedArray);
-
-    BMS::BQSetting output;
-    output.fromArray(serializedArray);
-
-    // Ensure all the values are identical
-    if (original.getSettingType() != output.getSettingType()) {
-        uart.printf("Ser/Des FAILED, expected setting type %u, got %u\n",
-                    original.getSettingType(), output.getSettingType());
-        return;
-    }
-
-    if (original.getAddress() != output.getAddress()) {
-        uart.printf("Ser/Des FAILED, expected address 0x%04x, got 0x%04x\r\n",
-                    original.getAddress(), output.getAddress());
-        return;
-    }
-
-    if (original.getNumBytes() != output.getNumBytes()) {
-        uart.printf("Ser/Des FAILED, expected number of bytes %u, got %u\r\n",
-                    original.getNumBytes(), output.getNumBytes());
-        return;
-    }
-
-    if (original.getData() != output.getData()) {
-        uart.printf("Ser/Des FAILED, expected data 0x%08x, got 0x%08x\r\n",
-                    original.getData(), output.getData());
-        return;
-    }
-
-    uart.printf("Successful Serialization and Deserialization\r\n");
+    uart->printf("\r\n\r\n");
 }
 
 int main() {
-    IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
+    // Initialize system
+    IO::init();
 
-    uart.printf("\r\n\r\nBQ SETTING TEST\r\n");
+    // Get CAN instance with loopback enabled
+    IO::CAN& can = IO::getCAN<IO::Pin::PA_12, IO::Pin::PA_11>();
+    //   IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
+    //   IO::UART& uart = IO::getUART<IO::Pin::PB_6, IO::Pin::PB_7>(9600);
+    IO::UART& uart = IO::getUART<IO::Pin::PA_9, IO::Pin::PA_10>(9600);
+    can.addIRQHandler(canIRQHandler, &uart);
 
-    deserializeTest(uart);
-    serializeTest(uart);
-    serializeDeserializeTest(uart);
+    // CAN message that will be sent
+    uint8_t payload[] = {0xDE, 0xAD, 0xBE, 0xBE, 0xEF, 0x00, 0x01, 0x02};
+    IO::CANMessage transmit_message(1, 8, &payload[0], true);
+    IO::CANMessage received_message;
+
+    uart.printf("Starting CAN testing\r\n");
+
+    IO::CAN::CANStatus result;
+
+    // Attempt to join the CAN network
+    result = can.connect();
+
+    if (result != IO::CAN::CANStatus::OK) {
+        uart.printf("Failed to connect to the CAN network\r\n");
+        return 1;
+    }
+
+    while (true) {
+        // Transmit every second
+        result = can.transmit(transmit_message);
+        if (result != IO::CAN::CANStatus::OK) {
+            uart.printf("Failed to transmit message\r\n");
+            return 1;
+        }
+
+        time::wait(1000);
+    }
+
+    return 0;
 }

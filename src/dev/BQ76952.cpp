@@ -33,10 +33,10 @@
 static uint32_t COBQBalancingSize(struct CO_OBJ_T* obj, struct CO_NODE_T* node,
                                   uint32_t width, void* priv) {
 
-    (void)obj;
-    (void)node;
-    (void)width;
-    (void)priv;
+    (void) obj;
+    (void) node;
+    (void) width;
+    (void) priv;
 
     return 1;
 }
@@ -56,12 +56,12 @@ static uint32_t COBQBalancingSize(struct CO_OBJ_T* obj, struct CO_NODE_T* node,
 static CO_ERR COBQBalancingRead(CO_OBJ_T* obj, CO_NODE_T* node, void* buf,
                                 uint32_t len, void* priv) {
 
-    (void)node;
-    (void)len;
+    (void) node;
+    (void) len;
 
     uint8_t targetCell = static_cast<uint8_t>(obj->Data);
 
-    BMS::DEV::BQ76952* bq = (BMS::DEV::BQ76952*)priv;
+    BMS::DEV::BQ76952* bq = (BMS::DEV::BQ76952*) priv;
 
     bool isBalancing = false;
     BMS::DEV::BQ76952::Status status = bq->isBalancing(targetCell, &isBalancing);
@@ -70,7 +70,7 @@ static CO_ERR COBQBalancingRead(CO_OBJ_T* obj, CO_NODE_T* node, void* buf,
         return CO_ERR_OBJ_READ;
     }
 
-    uint8_t *result = (uint8_t*)buf;
+    uint8_t* result = (uint8_t*) buf;
     *result = isBalancing;
 
     return CO_ERR_NONE;
@@ -90,14 +90,14 @@ static CO_ERR COBQBalancingRead(CO_OBJ_T* obj, CO_NODE_T* node, void* buf,
  */
 static CO_ERR COBQBalancingWrite(CO_OBJ_T* obj, CO_NODE_T* node, void* buf,
                                  uint32_t len, void* priv) {
-    (void)node;
-    (void)len;
+    (void) node;
+    (void) len;
 
     uint8_t targetCell = static_cast<uint8_t>(obj->Data);
 
-    BMS::DEV::BQ76952* bq = (BMS::DEV::BQ76952*)priv;
+    BMS::DEV::BQ76952* bq = (BMS::DEV::BQ76952*) priv;
 
-    uint8_t balancingState = *(uint8_t*)buf;
+    uint8_t balancingState = *(uint8_t*) buf;
     balancingState = balancingState > 0 ? 1 : 0;
 
     BMS::DEV::BQ76952::Status status = bq->setBalancing(targetCell, balancingState);
@@ -343,9 +343,9 @@ BQ76952::Status BQ76952::getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32
     Status status = Status::OK;
 
     uint32_t currentVoltage = 0;
-    // Loop over all the cells and update the cooresponding voltage
+    // Loop over all the cells and update the corresponding voltage
     for (uint8_t i = 0; i < NUM_CELLS; i++) {
-        status = makeDirectRead(CELL_REGS[i], &cellVoltages[i]);
+        status = makeDirectRead(CELL_REG(i), &cellVoltages[i]);
         if (status != Status::OK) {
             return status;
         }
@@ -379,7 +379,7 @@ BQ76952::Status BQ76952::setBalancing(uint8_t targetCell, uint8_t enable) {
     reg &= 0xFFFF;
 
     // Clear or set target bit
-    if(enable) {
+    if (enable) {
         reg |= (enable << CELL_BALANCE_MAPPING[targetCell - 1]);
     } else {
         reg &= (enable << CELL_BALANCE_MAPPING[targetCell - 1]);

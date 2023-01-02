@@ -480,63 +480,63 @@ private:
         {
             .Key = CO_KEY(0x2103, 1, CO_UNSIGNED8 | CO_OBJ___PRW),
             .Type = ((CO_OBJ_TYPE*) &bq.balancingCANOpen),
-            .Data = (uintptr_t)1,
+            .Data = (uintptr_t) 1,
         },
         {
             .Key = CO_KEY(0x2103, 2, CO_UNSIGNED8 | CO_OBJ___PRW),
             .Type = ((CO_OBJ_TYPE*) &bq.balancingCANOpen),
-            .Data = (uintptr_t)2,
+            .Data = (uintptr_t) 2,
         },
         {
             .Key = CO_KEY(0x2103, 3, CO_UNSIGNED8 | CO_OBJ___PRW),
             .Type = ((CO_OBJ_TYPE*) &bq.balancingCANOpen),
-            .Data = (uintptr_t)3,
+            .Data = (uintptr_t) 3,
         },
         {
             .Key = CO_KEY(0x2103, 4, CO_UNSIGNED8 | CO_OBJ___PRW),
             .Type = ((CO_OBJ_TYPE*) &bq.balancingCANOpen),
-            .Data = (uintptr_t)4,
+            .Data = (uintptr_t) 4,
         },
 
         {
             .Key = CO_KEY(0x2103, 5, CO_UNSIGNED8 | CO_OBJ___PRW),
             .Type = ((CO_OBJ_TYPE*) &bq.balancingCANOpen),
-            .Data = (uintptr_t)5,
+            .Data = (uintptr_t) 5,
         },
         {
             .Key = CO_KEY(0x2103, 6, CO_UNSIGNED8 | CO_OBJ___PRW),
             .Type = ((CO_OBJ_TYPE*) &bq.balancingCANOpen),
-            .Data = (uintptr_t)6,
+            .Data = (uintptr_t) 6,
         },
         {
             .Key = CO_KEY(0x2103, 7, CO_UNSIGNED8 | CO_OBJ___PRW),
             .Type = ((CO_OBJ_TYPE*) &bq.balancingCANOpen),
-            .Data = (uintptr_t)7,
+            .Data = (uintptr_t) 7,
         },
         {
             .Key = CO_KEY(0x2103, 8, CO_UNSIGNED8 | CO_OBJ___PRW),
             .Type = ((CO_OBJ_TYPE*) &bq.balancingCANOpen),
-            .Data = (uintptr_t)8,
+            .Data = (uintptr_t) 8,
         },
         {
             .Key = CO_KEY(0x2103, 9, CO_UNSIGNED8 | CO_OBJ___PRW),
             .Type = ((CO_OBJ_TYPE*) &bq.balancingCANOpen),
-            .Data = (uintptr_t)9,
+            .Data = (uintptr_t) 9,
         },
         {
             .Key = CO_KEY(0x2103, 10, CO_UNSIGNED8 | CO_OBJ___PRW),
             .Type = ((CO_OBJ_TYPE*) &bq.balancingCANOpen),
-            .Data = (uintptr_t)10,
+            .Data = (uintptr_t) 10,
         },
         {
             .Key = CO_KEY(0x2103, 11, CO_UNSIGNED8 | CO_OBJ___PRW),
             .Type = ((CO_OBJ_TYPE*) &bq.balancingCANOpen),
-            .Data = (uintptr_t)11,
+            .Data = (uintptr_t) 11,
         },
         {
             .Key = CO_KEY(0x2103, 12, CO_UNSIGNED8 | CO_OBJ___PRW),
             .Type = ((CO_OBJ_TYPE*) &bq.balancingCANOpen),
-            .Data = (uintptr_t)12,
+            .Data = (uintptr_t) 12,
         },
 
         // End of dictionary marker

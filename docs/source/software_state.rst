@@ -21,10 +21,10 @@ details of the software. Documentation for the BQ76952 can be found
 `on TI's website <https://www.ti.com/product/BQ76952>`_.
 
 Additionally, the BMS system from a software perspective is made up of a
-STM32f334 for the microcontroller, an EEPROM module for non-volitile memory,
-and a CAN transciever for network communication. These are the main components
+STM32f334 for the microcontroller, an EEPROM module for non-volatile memory,
+and a CAN transceiver for network communication. These are the main components
 that the software interacts with and the usage of each element is discussed
-in details futher on.
+in details further on.
 
 Currently, the software is in a state where the basic requirements for the
 system are met. Essential communication with the BQ has been implemented,
@@ -32,7 +32,7 @@ an ability to store and transfer settings is enabled, and communication on the
 CAN network is possible. Additional validation is still required before the
 software is considered validated for continuous use on the motorcycle system.
 The currently supported features, summary of currently validated software,
-and the features still needed to be added are deatiled below.
+and the features still needed to be added are detailed below.
 
 High Level Features
 ===================
@@ -66,7 +66,7 @@ BQ Settings Overview
 The BQ supports two main ways of getting the settings into the BQ's memory.
 The first approach is through a method called OTP (one time programming)
 where the BQ is placed in a special state and the settings are written into
-non-volitile memory. The issue which this approach, as the name suggests,
+non-volatile memory. The issue which this approach, as the name suggests,
 this can only be done once. As the documentation states "once a bit is set to
 a 1, it cannot be set back to a 0". As we have a need to tweak settings as we
 learn more and make changed to the system we cannot rely on OTP.
@@ -77,8 +77,8 @@ so when the system starts up, the STM writes each setting to the BQ. The
 benefit of this approach is that we can change the settings as need be, but the
 downside is the need to store all the settings and transfer the settings to the
 BQ each time the system starts up. This means that the settings have to be
-stored in some non-volitile memory, and that the BMS system needs some method
-to allow for the settings to be transfered from some host system to the
+stored in some non-volatile memory, and that the BMS system needs some method
+to allow for the settings to be transferred from some host system to the
 STM.
 
 Transfer of Settings to BMS System
@@ -93,12 +93,12 @@ The ``BQSettingStorage`` class handles the logic of exposing the setting
 transfer and storage logic. It has two main responsibilities. First, the
 class contains the logic of exposing a means to transfer the settings from the
 host to the BMS system over CANopen. Second, the class handles reading and
-writing those settings between non-volitle memory (EEPROM) to the BQ chip
+writing those settings between non-volatle memory (EEPROM) to the BQ chip
 itself. The transfer of the settings take place across two steps. First
 the external host writes the new number of settings to the BMS system over
 CANopen. Second, the external host then writes out each setting over
 CANopen. The ``BQSettingStorage`` handles the whole process of updating the
-number of settings and the settings themselved into EEPROM. Below is a
+number of settings and getting the settings themselves into EEPROM. Below is a
 small sequence diagram showing what takes place to allow the settings to be
 transferred.
 
@@ -187,7 +187,7 @@ Additional details regarding implementation will follow.
 
 
 The first part of the state machine from "Transfer Successful" and above
-reflects the settings tranfer logic. The "Factory Init" state represents
+reflects the settings transfer logic. The "Factory Init" state represents
 when the BMS system is waiting for settings from a host and the
 "Transfer Settings" state represents when the STM is actively reading settings
 from EEPROM and sending those settings over to the BQ.
@@ -255,7 +255,7 @@ used heavily by the ``BQ76952`` class and the ``BQSettingStorage`` class.
 BQSettingStorage
 ----------------
 
-The ``BQSettingStorage`` handles the tranfer and storage of BQ settings. This
+The ``BQSettingStorage`` handles the transfer and storage of BQ settings. This
 class handles the transfer of settings from a host to the BMS system via
 CANopen, handles saving the settings into EEPROM, and handles sending settings
 from EEPROM to the BQ itself.
@@ -277,7 +277,7 @@ thin wrapper around a GPIO which adds some semantics in the interlock usage.
 dev/SystemDetect
 ----------------
 
-The system detect handes the logic of determining what the BMS is connected to.
+The system detect handles the logic of determining what the BMS is connected to.
 This differentiates between the CANopen heart beat of the pre-charge vs.
 charge controller.
 
@@ -365,12 +365,12 @@ to two main aspects.
 
 First, the ability to poll arbitrary settings over CANopen. This would involve
 allowing a host to poll BQ settings using CANopen requesting a set number of
-bytes from a address in the BQ. The second aspect would be a cooresponding
+bytes from a address in the BQ. The second aspect would be a corresponding
 python script which would be capable of reading back all of the BQ settings
-cooresponding to the BQStudio produced CSV to verify that the settings match
+corresponding to the BQStudio produced CSV to verify that the settings match
 what was expected.
 
-This is no small undertaking, but the infastructure exists with the ability
+This is no small undertaking, but the infrastructure exists with the ability
 to represent setting using the ``BQSetting`` class and the ability access
 certain pieces of data over CANopen already implemented.
 
@@ -378,7 +378,7 @@ BMS OK Status
 -------------
 
 The general logic to represent that the BMS is in state ready to
-charge/dischage is in place, but needs to be updated to have the control be
+charge/discharge is in place, but needs to be updated to have the control be
 on the BQ side rather then the STM side. Currently, the STM controls this
 functionality via a GPIO on the STM itself, however this needs to be changed
 to instead interact through the BQ chip. Additional details would be
@@ -387,16 +387,16 @@ available from the electrical team.
 Exposure of Data
 ----------------
 
-The basic ability to poll voltage data is availabile, but additional data
+The basic ability to poll voltage data is available, but additional data
 should be exposed as well. First would be temperature data. The BMS system has
 the same ADC MUX implementation as the TMS and as such can use similar firmware
 to poll the temperature data and expose that data over CANopen.
 
 Additional status data should also be exposed. For example, a "status" register
-is alluded to in the code documentation which referes to the idea that a value
+is alluded to in the code documentation which refers to the idea that a value
 should be exposed over CANopen which has a bitmap representing the state of
 the system. The goal of this "status register" would be that it stores
-information on system health and can also be proped by an external system
+information on system health and can also be checked by an external system
 when something goes wrong for easier debugging.
 
 Deep Sleep
