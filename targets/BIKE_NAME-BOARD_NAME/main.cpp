@@ -3,6 +3,7 @@
  * basic echo functionality where the uart will write back whatever the user
  * enters.
  */
+
 #include <EVT/io/UART.hpp>
 #include <EVT/io/manager.hpp>
 #include <EVT/io/pin.hpp>
