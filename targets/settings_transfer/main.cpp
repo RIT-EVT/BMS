@@ -16,9 +16,11 @@ namespace IO = EVT::core::IO;
 constexpr uint8_t BQ_I2C_ADDR = 0x08;
 
 int main() {
-    IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
-    IO::I2C& i2c = IO::getI2C<IO::Pin::PB_8, IO::Pin::PB_9>();
-    EVT::core::DEV::M24C32 eeprom(0x50, i2c);
+    IO::init();
+
+    IO::UART& uart = IO::getUART<IO::Pin::PA_9, IO::Pin::PA_10>(9600);
+    IO::I2C& i2c = IO::getI2C<IO::Pin::PB_6, IO::Pin::PB_7>();
+    EVT::core::DEV::M24C32 eeprom(0x57, i2c);
 
     uart.printf("\r\n\r\nBQ Setting Transfer Test\r\n");
 

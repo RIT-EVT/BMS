@@ -14,12 +14,12 @@
 namespace IO = EVT::core::IO;
 
 int main() {
-    IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
+    IO::UART& uart = IO::getUART<IO::Pin::PA_9, IO::Pin::PA_10>(9600);
 
     uart.printf("\r\n\r\nEEPROM Dump\r\n");
 
-    EVT::core::IO::I2C& i2c = EVT::core::IO::getI2C<IO::Pin::PB_8, IO::Pin::PB_9>();
-    EVT::core::DEV::M24C32 eeprom(0x50, i2c);
+    IO::I2C& i2c = IO::getI2C<IO::Pin::PB_6, IO::Pin::PB_7>();
+    EVT::core::DEV::M24C32 eeprom(0x57, i2c);
 
     BMS::LOGGER.setUART(&uart);
     BMS::LOGGER.setLogLevel(BMS::BMSLogger::LogLevel::DEBUG);

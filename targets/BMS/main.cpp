@@ -1,7 +1,5 @@
 /**
- * This is a basic sample of using the UART module. The program provides a
- * basic echo functionality where the uart will write back whatever the user
- * enters.
+ * This is the main target to be used for the BMS in the DEV1 battery packs
  */
 #include <EVT/io/CANopen.hpp>
 #include <EVT/io/UART.hpp>
@@ -109,37 +107,40 @@ int main() {
     // Initialize IO
     IO::CAN& can = IO::getCAN<IO::Pin::PA_12, IO::Pin::PA_11>();
     can.addIRQHandler(canInterruptHandler, reinterpret_cast<void*>(&canParams));
-    IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
-    EVT::core::IO::I2C& i2c = EVT::core::IO::getI2C<IO::Pin::PB_8, IO::Pin::PB_9>();
+    IO::UART& uart = IO::getUART<IO::Pin::PA_9, IO::Pin::PA_10>(9600);
+    IO::I2C& i2c = IO::getI2C<IO::Pin::PB_6, IO::Pin::PB_7>();
 
     // Initialize the timer
     DEV::Timerf302x8 timer(TIM2, 100);
 
     // Initialize the EEPROM
-    EVT::core::DEV::M24C32 eeprom(0x50, i2c);
+    EVT::core::DEV::M24C32 eeprom(0x57, i2c);
 
     // Intialize the logger
     BMS::LOGGER.setUART(&uart);
-    BMS::LOGGER.setLogLevel(BMS::BMSLogger::LogLevel::ERROR);
+    BMS::LOGGER.setLogLevel(BMS::BMSLogger::LogLevel::DEBUG);
 
     // Initialize the BQ interfaces
     BMS::DEV::BQ76952 bq(i2c, 0x08);
     BMS::BQSettingsStorage bqSettingsStorage(eeprom, bq);
 
     // Intialize the Interlock
-    // TODO: Determine actual interlock GPIO
-    IO::GPIO& interlockGPIO = IO::getGPIO<IO::Pin::PB_0>(IO::GPIO::Direction::INPUT);
+    IO::GPIO& interlockGPIO = IO::getGPIO<IO::Pin::PA_3>(IO::GPIO::Direction::INPUT);
     BMS::DEV::Interlock interlock(interlockGPIO);
 
     // Intialize the alarm pin
-    IO::GPIO& alarm = IO::getGPIO<IO::Pin::PB_1>(IO::GPIO::Direction::INPUT);
+    IO::GPIO& alarm = IO::getGPIO<IO::Pin::PB_0>(IO::GPIO::Direction::INPUT);
 
     // Initialize the system OK pin
-    // TODO: Determine actual system ok pin
-    IO::GPIO& bmsOK = IO::getGPIO<IO::Pin::PB_3>(IO::GPIO::Direction::OUTPUT);
+    // TODO: Replace with writing out to the BQ. In reality, the BQ is
+    //       what controls the status OK GPIO not the STM itself directily.
+    //       Instead of using the STM GPIO to represent status ok, this will
+    //       need to be replaced with a call to the BQ to update the ok
+    //       GPIO.
+    //IO::GPIO& bmsOK = IO::getGPIO<IO::Pin::PB_3>(IO::GPIO::Direction::OUTPUT);
 
     // Intialize the BMS itself
-    BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect, bmsOK);
+    BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect);
 
     // Reserved memory for CANopen stack usage
     uint8_t sdoBuffer[1][CO_SDO_BUF_BYTE];
