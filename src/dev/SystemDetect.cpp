@@ -2,6 +2,8 @@
 
 #include <EVT/utils/time.hpp>
 
+namespace time = EVT::core::time;
+
 namespace BMS::DEV {
 
 SystemDetect::SystemDetect(uint32_t bikeHeartBeat, uint32_t chargeHeartBeat,
@@ -16,16 +18,16 @@ SystemDetect::SystemDetect(uint32_t bikeHeartBeat, uint32_t chargeHeartBeat,
 void SystemDetect::processHeartBeat(uint32_t heartBeatID) {
     if (heartBeatID == bikeHeartBeat) {
         identifiedSystem = System::BIKE;
-        lastRead = EVT::core::time::millis();
+        lastRead = time::millis();
     } else if (heartBeatID == chargeHeartBeat) {
         identifiedSystem = System::CHARGER;
-        lastRead = EVT::core::time::millis();
+        lastRead = time::millis();
     }
 }
 
 SystemDetect::System SystemDetect::getIdentifiedSystem() {
     // Check for timeout
-    if ((EVT::core::time::millis() - lastRead) > timeout) {
+    if ((time::millis() - lastRead) > timeout) {
         return System::UNKNOWN;
     }
     return identifiedSystem;

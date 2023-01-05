@@ -1,10 +1,9 @@
 #include <BMS/BMS.hpp>
 
-#include <EVT/utils/time.hpp>
 #include <EVT/utils/log.hpp>
+#include <EVT/utils/time.hpp>
 
-#include <cstdint>
-
+namespace time = EVT::core::time;
 namespace log = EVT::core::log;
 
 namespace BMS {
@@ -75,7 +74,7 @@ void BMS::startState() {
     if (numAttemptsMade > 0) {
         // If there has not been enough time between attempts, skip this run
         // of the state and try again later
-        if ((EVT::core::time::millis() - lastAttemptTime) < ERROR_TIME_DELAY) {
+        if ((time::millis() - lastAttemptTime) < ERROR_TIME_DELAY) {
             return;
         }
     }
@@ -87,7 +86,7 @@ void BMS::startState() {
         numAttemptsMade++;
 
         // Record current time
-        lastAttemptTime = EVT::core::time::millis();
+        lastAttemptTime = time::millis();
 
         if (numAttemptsMade >= MAX_BQ_COMM_ATTEMPTS) {
             // If communication could not be handled, transition to error state
@@ -147,7 +146,7 @@ void BMS::transferSettingsState() {
     if (numAttemptsMade > 0) {
         // If there has not been enough time between attempts, skip this run
         // of the state and try again later
-        if ((EVT::core::time::millis() - lastAttemptTime) < ERROR_TIME_DELAY) {
+        if ((time::millis() - lastAttemptTime) < ERROR_TIME_DELAY) {
             return;
         }
     }
@@ -166,7 +165,7 @@ void BMS::transferSettingsState() {
             stateChanged = true;
         }
 
-        lastAttemptTime = EVT::core::time::millis();
+        lastAttemptTime = time::millis();
 
         bqSettingsStorage.resetTranfer();
 

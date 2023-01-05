@@ -1,11 +1,17 @@
-#include "EVT/utils/log.hpp"
-#include <BMS/dev/BQ76952.hpp>
+/**
+ * This target is used for testing the functionality of the BQ chip
+ */
+
+#include <cstdlib>
+
 #include <EVT/io/I2C.hpp>
 #include <EVT/io/UART.hpp>
 #include <EVT/io/manager.hpp>
 #include <EVT/io/pin.hpp>
+#include <EVT/utils/log.hpp>
 #include <EVT/utils/time.hpp>
-#include <cstdlib>
+
+#include <BMS/dev/BQ76952.hpp>
 
 namespace IO = EVT::core::IO;
 namespace time = EVT::core::time;

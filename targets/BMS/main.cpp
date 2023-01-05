@@ -1,6 +1,7 @@
 /**
  * This is the main target to be used for the BMS in the DEV1 battery packs
  */
+
 #include <EVT/io/CANopen.hpp>
 #include <EVT/io/UART.hpp>
 #include <EVT/io/manager.hpp>
@@ -11,8 +12,8 @@
 #include <EVT/dev/storage/EEPROM.hpp>
 #include <EVT/dev/storage/M24C32.hpp>
 
-#include <EVT/utils/types/FixedQueue.hpp>
 #include <EVT/utils/log.hpp>
+#include <EVT/utils/types/FixedQueue.hpp>
 
 #include <BMS/BMS.hpp>
 #include <BMS/dev/BQ76952.hpp>

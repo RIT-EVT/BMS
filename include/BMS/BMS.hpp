@@ -1,10 +1,12 @@
 #pragma once
 
+#include <cstdint>
+
+#include <Canopen/co_core.h>
+
 #include <BMS/BQSettingStorage.hpp>
 #include <BMS/dev/Interlock.hpp>
 #include <BMS/dev/SystemDetect.hpp>
-#include <Canopen/co_core.h>
-#include <stdint.h>
 
 namespace BMS {
 

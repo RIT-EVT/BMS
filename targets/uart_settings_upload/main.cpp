@@ -1,7 +1,8 @@
 /**
- * This utility is used to upload settings to the BMS EEPROM, so they can then be transferred to the
- * BQ
+ * This utility target is used to upload settings to the BMS EEPROM via UART, so they can then be
+ * transferred to the BQ chip
 */
+
 #include <EVT/dev/storage/M24C32.hpp>
 #include <EVT/io/manager.hpp>
 

@@ -2,10 +2,11 @@
  * This test is to explore the ability to transfer settings from EEPROM to the
  * BQ chip.
  */
+
 #include <EVT/dev/storage/M24C32.hpp>
 #include <EVT/io/manager.hpp>
-#include <EVT/utils/time.hpp>
 #include <EVT/utils/log.hpp>
+#include <EVT/utils/time.hpp>
 
 #include <BMS/BQSetting.hpp>
 #include <BMS/BQSettingStorage.hpp>

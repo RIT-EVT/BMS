@@ -1,13 +1,13 @@
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
 
 #include <EVT/dev/storage/M24C32.hpp>
 
+#include <Canopen/co_obj.h>
+
 #include <BMS/BQSetting.hpp>
 #include <BMS/dev/BQ76952.hpp>
-
-#include <Canopen/co_obj.h>
 
 namespace BMS {
 

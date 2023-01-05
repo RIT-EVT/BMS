@@ -1,9 +1,10 @@
 #pragma once
 
-#include <BMS/BQSetting.hpp>
 #include <EVT/io/I2C.hpp>
 
 #include <Canopen/co_obj.h>
+
+#include <BMS/BQSetting.hpp>
 
 namespace BMS::DEV {
 

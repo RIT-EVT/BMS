@@ -1,7 +1,6 @@
-#include <EVT/utils/log.hpp>
-
 #include <BMS/BQSettingStorage.hpp>
-#include <cstdint>
+
+#include <EVT/utils/log.hpp>
 
 namespace log = EVT::core::log;
 
@@ -173,11 +172,11 @@ void BQSettingsStorage::readSetting(BQSetting& setting) {
                      buffer, BMS::BQSetting::ARRAY_SIZE);
 
     log::LOGGER.log(log::Logger::LogLevel::DEBUG,
-               "Address Location: %u", addressLocation);
+                    "Address Location: %u", addressLocation);
     log::LOGGER.log(log::Logger::LogLevel::DEBUG,
-               "{ 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x }",
-               buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5],
-               buffer[6]);
+                    "{ 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x }",
+                    buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5],
+                    buffer[6]);
 
     setting.fromArray(buffer);
 
@@ -191,12 +190,12 @@ void BQSettingsStorage::writeSetting(BQSetting& setting) {
     setting.toArray(buffer);
 
     log::LOGGER.log(log::Logger::LogLevel::DEBUG,
-               "{ 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x }",
-               buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5],
-               buffer[6]);
+                    "{ 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x }",
+                    buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5],
+                    buffer[6]);
 
     log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Writting to address: 0x%02x",
-               addressLocation);
+                    addressLocation);
     // Write the array of data into the EEPROM
     eeprom.writeBytes(addressLocation,
                       buffer, BMS::BQSetting::ARRAY_SIZE);
@@ -249,8 +248,8 @@ BMS::DEV::BQ76952::Status BQSettingsStorage::transferSetting(bool& isComplete) {
         isComplete = false;
 
         log::LOGGER.log(log::Logger::LogLevel::ERROR,
-                   "Failed with address: 0x%04x, data: 0x%04x",
-                   setting.getAddress(), setting.getData());
+                        "Failed with address: 0x%04x, data: 0x%04x",
+                        setting.getAddress(), setting.getData());
 
         bq.exitConfigUpdateMode();
         return status;

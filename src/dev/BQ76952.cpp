@@ -1,4 +1,5 @@
 #include <BMS/dev/BQ76952.hpp>
+
 #include <EVT/utils/time.hpp>
 
 // (void)0 is added to the end of each macro to force users to follow the macro with a ';'

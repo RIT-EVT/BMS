@@ -1,5 +1,6 @@
-#include <EVT/utils/log.hpp>
 #include <BMS/BQSetting.hpp>
+
+#include <EVT/utils/log.hpp>
 
 namespace log = EVT::core::log;
 
@@ -23,8 +24,8 @@ void BQSetting::fromArray(uint8_t buffer[ARRAY_SIZE]) {
         | static_cast<uint32_t>(buffer[3]);
 
     log::LOGGER.log(log::Logger::LogLevel::DEBUG,
-               "Command Type: %u, Address: 0x%04X, Num Bytes: %u, DataL 0x%08X",
-               settingType, address, numBytes, data);
+                    "Command Type: %u, Address: 0x%04X, Num Bytes: %u, DataL 0x%08X",
+                    settingType, address, numBytes, data);
 }
 
 void BQSetting::toArray(uint8_t buffer[ARRAY_SIZE]) {
