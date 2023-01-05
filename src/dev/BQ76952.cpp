@@ -1,4 +1,4 @@
-#include <BMS/dev/BQ76952.hpp>
+#include <dev/BQ76952.hpp>
 
 #include <EVT/utils/time.hpp>
 

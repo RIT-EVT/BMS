@@ -1,4 +1,4 @@
-#include <BMS/BQSetting.hpp>
+#include <BQSetting.hpp>
 
 #include <EVT/utils/log.hpp>
 

@@ -1,4 +1,4 @@
-#include <BMS/BQSettingStorage.hpp>
+#include <BQSettingStorage.hpp>
 
 #include <EVT/utils/log.hpp>
 
@@ -141,12 +141,12 @@ static CO_ERR COBQSettingCtrl(CO_OBJ* obj, CO_NODE_T* node, uint16_t func, uint3
 namespace BMS {
 
 BQSettingsStorage::BQSettingsStorage(EVT::core::DEV::M24C32& eeprom, DEV::BQ76952& bq) : canOpenInterface{
-                                                                                                     COBQSettingSize,
-                                                                                                     COBQSettingCtrl,
-                                                                                                     COBQSettingRead,
-                                                                                                     COBQSettingWrite,
-                                                                                                     this,
-                                                                                                 },
+    COBQSettingSize,
+    COBQSettingCtrl,
+    COBQSettingRead,
+    COBQSettingWrite,
+    this,
+},
                                                                                          eeprom(eeprom), bq(bq) {
     startAddress = 0;
     addressLocation = startAddress + 2;

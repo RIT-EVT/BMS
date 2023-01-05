@@ -1,4 +1,4 @@
-#include <BMS/dev/Interlock.hpp>
+#include <dev/Interlock.hpp>
 
 namespace BMS::DEV {
 

@@ -11,7 +11,7 @@
 #include <EVT/utils/log.hpp>
 #include <EVT/utils/time.hpp>
 
-#include <BMS/dev/BQ76952.hpp>
+#include <dev/BQ76952.hpp>
 
 namespace IO = EVT::core::IO;
 namespace time = EVT::core::time;
@@ -315,7 +315,7 @@ int main() {
     IO::I2C& i2c = IO::getI2C<IO::Pin::PB_6, IO::Pin::PB_7>();
     BMS::DEV::BQ76952 bq(i2c, 0x08);
 
-    IO::UART& uart = IO::getUART<IO::Pin::PA_9, IO::Pin::PA_10>(9600);
+    IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
     log::LOGGER.setUART(&uart);
     log::LOGGER.setLogLevel(log::Logger::LogLevel::DEBUG);
 

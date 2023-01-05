@@ -15,9 +15,9 @@
 #include <EVT/utils/log.hpp>
 #include <EVT/utils/types/FixedQueue.hpp>
 
-#include <BMS/BMS.hpp>
-#include <BMS/dev/BQ76952.hpp>
-#include <BMS/dev/SystemDetect.hpp>
+#include <BMS.hpp>
+#include <dev/BQ76952.hpp>
+#include <dev/SystemDetect.hpp>
 
 namespace IO = EVT::core::IO;
 namespace DEV = EVT::core::DEV;
@@ -96,7 +96,7 @@ int main() {
     // Queue that will store CANopen messages
     EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage> canOpenQueue;
 
-    // Intialize the system detect
+    // Initialize the system detect
     BMS::DEV::SystemDetect systemDetect(BIKE_HEART_BEAT, CHARGER_HEART_BEAT,
                                         DETECT_TIMEOUT);
 
@@ -109,7 +109,7 @@ int main() {
     // Initialize IO
     IO::CAN& can = IO::getCAN<IO::Pin::PA_12, IO::Pin::PA_11>();
     can.addIRQHandler(canInterruptHandler, reinterpret_cast<void*>(&canParams));
-    IO::UART& uart = IO::getUART<IO::Pin::PA_9, IO::Pin::PA_10>(9600);
+    IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
     IO::I2C& i2c = IO::getI2C<IO::Pin::PB_6, IO::Pin::PB_7>();
 
     // Initialize the timer
@@ -118,7 +118,7 @@ int main() {
     // Initialize the EEPROM
     EVT::core::DEV::M24C32 eeprom(0x57, i2c);
 
-    // Intialize the logger
+    // Initialize the logger
     log::LOGGER.setUART(&uart);
     log::LOGGER.setLogLevel(log::Logger::LogLevel::DEBUG);
 
@@ -126,22 +126,22 @@ int main() {
     BMS::DEV::BQ76952 bq(i2c, 0x08);
     BMS::BQSettingsStorage bqSettingsStorage(eeprom, bq);
 
-    // Intialize the Interlock
+    // Initialize the Interlock
     IO::GPIO& interlockGPIO = IO::getGPIO<IO::Pin::PA_3>(IO::GPIO::Direction::INPUT);
     BMS::DEV::Interlock interlock(interlockGPIO);
 
-    // Intialize the alarm pin
+    // Initialize the alarm pin
     IO::GPIO& alarm = IO::getGPIO<IO::Pin::PB_0>(IO::GPIO::Direction::INPUT);
 
     // Initialize the system OK pin
     // TODO: Replace with writing out to the BQ. In reality, the BQ is
-    //       what controls the status OK GPIO not the STM itself directily.
+    //       what controls the status OK GPIO not the STM itself directly.
     //       Instead of using the STM GPIO to represent status ok, this will
     //       need to be replaced with a call to the BQ to update the ok
     //       GPIO.
     //IO::GPIO& bmsOK = IO::getGPIO<IO::Pin::PB_3>(IO::GPIO::Direction::OUTPUT);
 
-    // Intialize the BMS itself
+    // Initialize the BMS itself
     BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect);
 
     // Reserved memory for CANopen stack usage
@@ -167,7 +167,7 @@ int main() {
         .Baudrate = IO::CAN::DEFAULT_BAUD,
         .Dict = bms.getObjectDictionary(),
         .DictLen = bms.getObjectDictionarySize(),
-        .EmcyCode = NULL,
+        .EmcyCode = nullptr,
         .TmrMem = appTmrMem,
         .TmrNum = 16,
         .TmrFreq = 100,
@@ -181,13 +181,13 @@ int main() {
     // Join the CANopen network
     can.connect();
 
-    // Intialize CANopen logic
+    // Initialize CANopen logic
     CONodeInit(&canNode, &canSpec);
     CONodeStart(&canNode);
     CONmtSetMode(&canNode.Nmt, CO_OPERATIONAL);
 
     // Main processing loop, contains the following logic
-    // 1. Update CANopen logic and processing incomming messages
+    // 1. Update CANopen logic and processing incoming messages
     // 2. Run per-loop BMS state logic
     // 3. Wait for new data to come in
     while (1) {

@@ -6,7 +6,7 @@
 
 #include <EVT/io/manager.hpp>
 
-#include <BMS/BQSetting.hpp>
+#include "BQSetting.hpp"
 
 namespace IO = EVT::core::IO;
 

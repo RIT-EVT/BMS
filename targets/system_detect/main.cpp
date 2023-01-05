@@ -17,7 +17,7 @@
 #include <EVT/utils/log.hpp>
 #include <EVT/utils/types/FixedQueue.hpp>
 
-#include <BMS/BMS.hpp>
+#include "BMS.hpp"
 #include <BMS/dev/BQ76952.hpp>
 #include <BMS/dev/SystemDetect.hpp>
 

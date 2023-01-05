@@ -1,6 +1,6 @@
 include(${EVT_CORE_DIR}/cmake/evt-core_build.cmake)
 
-project(BMSmain)
+project(DEV1-BMS)
 cmake_minimum_required(VERSION 3.15)
 
 make_exe(${PROJECT_NAME} main.cpp)

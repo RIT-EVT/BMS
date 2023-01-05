@@ -2,11 +2,11 @@
 
 #include <cstdint>
 
-#include <Canopen/co_core.h>
+#include "Canopen/co_core.h"
 
-#include <BMS/BQSettingStorage.hpp>
-#include <BMS/dev/Interlock.hpp>
-#include <BMS/dev/SystemDetect.hpp>
+#include "BQSettingStorage.hpp"
+#include <dev/Interlock.hpp>
+#include <dev/SystemDetect.hpp>
 
 namespace BMS {
 
