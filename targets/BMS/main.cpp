@@ -12,15 +12,16 @@
 #include <EVT/dev/storage/M24C32.hpp>
 
 #include <EVT/utils/types/FixedQueue.hpp>
+#include <EVT/utils/log.hpp>
 
 #include <BMS/BMS.hpp>
-#include <BMS/BMSLogger.hpp>
 #include <BMS/dev/BQ76952.hpp>
 #include <BMS/dev/SystemDetect.hpp>
 
 namespace IO = EVT::core::IO;
 namespace DEV = EVT::core::DEV;
 namespace time = EVT::core::time;
+namespace log = EVT::core::log;
 
 #define BIKE_HEART_BEAT 0x715
 #define CHARGER_HEART_BEAT 0x716
@@ -60,7 +61,7 @@ void canInterruptHandler(IO::CANMessage& message, void* priv) {
 // CANopen specific Callbacks. Need to be defined in some location
 ///////////////////////////////////////////////////////////////////////////////
 extern "C" void CONodeFatalError(void) {
-    BMS::LOGGER.log(BMS::BMSLogger::LogLevel::ERROR, "Fatal CANopen error");
+    log::LOGGER.log(log::Logger::LogLevel::ERROR, "Fatal CANopen error");
 }
 
 extern "C" void COIfCanReceive(CO_IF_FRM* frm) {}
@@ -117,8 +118,8 @@ int main() {
     EVT::core::DEV::M24C32 eeprom(0x57, i2c);
 
     // Intialize the logger
-    BMS::LOGGER.setUART(&uart);
-    BMS::LOGGER.setLogLevel(BMS::BMSLogger::LogLevel::DEBUG);
+    log::LOGGER.setUART(&uart);
+    log::LOGGER.setLogLevel(log::Logger::LogLevel::DEBUG);
 
     // Initialize the BQ interfaces
     BMS::DEV::BQ76952 bq(i2c, 0x08);

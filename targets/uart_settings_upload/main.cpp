@@ -5,7 +5,6 @@
 #include <EVT/dev/storage/M24C32.hpp>
 #include <EVT/io/manager.hpp>
 
-#include <BMS/BMSLogger.hpp>
 #include <BMS/BQSetting.hpp>
 
 namespace IO = EVT::core::IO;

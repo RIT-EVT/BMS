@@ -5,13 +5,14 @@
 #include <EVT/dev/storage/M24C32.hpp>
 #include <EVT/io/manager.hpp>
 #include <EVT/utils/time.hpp>
+#include <EVT/utils/log.hpp>
 
-#include <BMS/BMSLogger.hpp>
 #include <BMS/BQSetting.hpp>
 #include <BMS/BQSettingStorage.hpp>
 #include <BMS/dev/BQ76952.hpp>
 
 namespace IO = EVT::core::IO;
+namespace log = EVT::core::log;
 
 constexpr uint8_t BQ_I2C_ADDR = 0x08;
 
@@ -24,8 +25,8 @@ int main() {
 
     uart.printf("\r\n\r\nBQ Setting Transfer Test\r\n");
 
-    BMS::LOGGER.setUART(&uart);
-    BMS::LOGGER.setLogLevel(BMS::BMSLogger::LogLevel::DEBUG);
+    log::LOGGER.setUART(&uart);
+    log::LOGGER.setLogLevel(log::Logger::LogLevel::DEBUG);
 
     EVT::core::time::wait(500);
 

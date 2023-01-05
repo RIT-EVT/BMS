@@ -1,9 +1,11 @@
 #include <BMS/BMS.hpp>
 
 #include <EVT/utils/time.hpp>
+#include <EVT/utils/log.hpp>
 
-#include "BMS/BMSLogger.hpp"
 #include <cstdint>
+
+namespace log = EVT::core::log;
 
 namespace BMS {
 
@@ -65,7 +67,7 @@ void BMS::startState() {
         numAttemptsMade = 0;
         stateChanged = false;
         clearVoltageReadings();
-        LOGGER.log(BMSLogger::LogLevel::INFO, "Entering start state");
+        log::LOGGER.log(log::Logger::LogLevel::INFO, "Entering start state");
     }
 
     // Check if an error has taken place, and if so, check to make sure
@@ -111,7 +113,7 @@ void BMS::initializationErrorState() {
         //bmsOK.writePin(BMS_NOT_OK);
         stateChanged = false;
         clearVoltageReadings();
-        LOGGER.log(BMSLogger::LogLevel::INFO, "Entering initialization error state");
+        log::LOGGER.log(log::Logger::LogLevel::INFO, "Entering initialization error state");
     }
 }
 
@@ -120,7 +122,7 @@ void BMS::factoryInitState() {
         //bmsOK.writePin(BMS_NOT_OK);
         stateChanged = false;
         clearVoltageReadings();
-        LOGGER.log(BMSLogger::LogLevel::INFO, "Entering factory init state");
+        log::LOGGER.log(log::Logger::LogLevel::INFO, "Entering factory init state");
     }
 
     // Check to see if settings have come in, if so, go back to start state
@@ -137,7 +139,7 @@ void BMS::transferSettingsState() {
         numAttemptsMade = 0;
         stateChanged = false;
         clearVoltageReadings();
-        LOGGER.log(BMSLogger::LogLevel::INFO, "Entering transfer settings state");
+        log::LOGGER.log(log::Logger::LogLevel::INFO, "Entering transfer settings state");
     }
 
     // Check if an error has taken place, and if so, check to make sure
@@ -178,7 +180,7 @@ void BMS::systemReadyState() {
     if (stateChanged) {
         //bmsOK.writePin(BMS_NOT_OK);
         stateChanged = false;
-        LOGGER.log(BMSLogger::LogLevel::INFO, "Entering system ready state");
+        log::LOGGER.log(log::Logger::LogLevel::INFO, "Entering system ready state");
     }
 
     // TODO: Check for need to deep sleep and enter deep sleep mode
@@ -209,7 +211,7 @@ void BMS::unsafeConditionsError() {
     if (stateChanged) {
         //bmsOK.writePin(BMS_NOT_OK);
         stateChanged = false;
-        LOGGER.log(BMSLogger::LogLevel::INFO, "Entering unsafe conditions state");
+        log::LOGGER.log(log::Logger::LogLevel::INFO, "Entering unsafe conditions state");
     }
 
     updateVoltageReadings();
@@ -219,7 +221,7 @@ void BMS::powerDeliveryState() {
     if (stateChanged) {
         //bmsOK.writePin(BMS_OK);
         stateChanged = false;
-        LOGGER.log(BMSLogger::LogLevel::INFO, "Entering power delivery state");
+        log::LOGGER.log(log::Logger::LogLevel::INFO, "Entering power delivery state");
     }
 
     // TODO: Update error register of BMS
@@ -242,7 +244,7 @@ void BMS::chargingState() {
     if (stateChanged) {
         //bmsOK.writePin(BMS_OK);
         stateChanged = false;
-        LOGGER.log(BMSLogger::LogLevel::INFO, "Entering charging state");
+        log::LOGGER.log(log::Logger::LogLevel::INFO, "Entering charging state");
     }
 
     // TODO: Update error register of BMS

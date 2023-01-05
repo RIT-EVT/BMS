@@ -14,15 +14,16 @@
 #include <EVT/dev/storage/M24C32.hpp>
 
 #include <EVT/utils/types/FixedQueue.hpp>
+#include <EVT/utils/log.hpp>
 
 #include <BMS/BMS.hpp>
-#include <BMS/BMSLogger.hpp>
 #include <BMS/dev/BQ76952.hpp>
 #include <BMS/dev/SystemDetect.hpp>
 
 namespace IO = EVT::core::IO;
 namespace DEV = EVT::core::DEV;
 namespace time = EVT::core::time;
+namespace log = EVT::core::log;
 
 #define BIKE_HEART_BEAT 0x715
 #define CHARGER_HEART_BEAT 0x716
@@ -90,8 +91,8 @@ int main() {
     EVT::core::DEV::M24C32 eeprom(0x50, i2c);
 
     // Intialize the logger
-    BMS::LOGGER.setUART(&uart);
-    BMS::LOGGER.setLogLevel(BMS::BMSLogger::LogLevel::ERROR);
+    log::LOGGER.setUART(&uart);
+    log::LOGGER.setLogLevel(log::Logger::LogLevel::ERROR);
 
     // Initialize the BQ interfaces
     BMS::DEV::BQ76952 bq(i2c, 0x08);

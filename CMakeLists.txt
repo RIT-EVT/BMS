@@ -53,7 +53,6 @@ add_library(${PROJECT_NAME} STATIC)
 # Add sources
 target_sources(${PROJECT_NAME} PRIVATE
     src/BMS.cpp
-    src/BMSLogger.cpp
     src/BQSettingStorage.cpp
     src/BQSetting.cpp
     src/dev/BQ76952.cpp

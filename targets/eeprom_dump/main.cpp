@@ -5,13 +5,14 @@
  */
 #include <EVT/dev/storage/M24C32.hpp>
 #include <EVT/io/manager.hpp>
+#include <EVT/utils/log.hpp>
 
-#include <BMS/BMSLogger.hpp>
 #include <BMS/BQSetting.hpp>
 #include <BMS/BQSettingStorage.hpp>
 #include <BMS/dev/BQ76952.hpp>
 
 namespace IO = EVT::core::IO;
+namespace log = EVT::core::log;
 
 int main() {
     IO::UART& uart = IO::getUART<IO::Pin::PA_9, IO::Pin::PA_10>(9600);
@@ -21,8 +22,8 @@ int main() {
     IO::I2C& i2c = IO::getI2C<IO::Pin::PB_6, IO::Pin::PB_7>();
     EVT::core::DEV::M24C32 eeprom(0x57, i2c);
 
-    BMS::LOGGER.setUART(&uart);
-    BMS::LOGGER.setLogLevel(BMS::BMSLogger::LogLevel::DEBUG);
+    log::LOGGER.setUART(&uart);
+    log::LOGGER.setLogLevel(log::Logger::LogLevel::DEBUG);
 
     BMS::DEV::BQ76952 bq(i2c, 0x04);
     BMS::BQSettingsStorage bqSettingsStorage(eeprom, bq);

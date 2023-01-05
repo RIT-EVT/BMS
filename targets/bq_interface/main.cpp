@@ -1,4 +1,4 @@
-#include <BMS/BMSLogger.hpp>
+#include "EVT/utils/log.hpp"
 #include <BMS/dev/BQ76952.hpp>
 #include <EVT/io/I2C.hpp>
 #include <EVT/io/UART.hpp>
@@ -9,6 +9,7 @@
 
 namespace IO = EVT::core::IO;
 namespace time = EVT::core::time;
+namespace log = EVT::core::log;
 
 constexpr size_t MAX_BUFF = 100;
 
@@ -309,8 +310,8 @@ int main() {
     BMS::DEV::BQ76952 bq(i2c, 0x08);
 
     IO::UART& uart = IO::getUART<IO::Pin::PA_9, IO::Pin::PA_10>(9600);
-    BMS::LOGGER.setUART(&uart);
-    BMS::LOGGER.setLogLevel(BMS::BMSLogger::LogLevel::DEBUG);
+    log::LOGGER.setUART(&uart);
+    log::LOGGER.setLogLevel(log::Logger::LogLevel::DEBUG);
 
     time::wait(500);
 
