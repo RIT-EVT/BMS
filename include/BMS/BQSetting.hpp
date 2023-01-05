@@ -6,7 +6,7 @@ namespace BMS {
 
 /**
  * Represents the settings that are sent out to the BQ chip. Settings are
- * made to three potential areas of the BQ chup.
+ * made to three potential areas of the BQ chip.
  *
  * 1. Direct: Settings applied directly via an I2C address.
  *      ex) Register 0xC4 is given to 0x56
@@ -28,7 +28,8 @@ public:
     enum class BQSettingType {
         DIRECT = 0u,
         SUBCOMMAND = 1u,
-        RAM = 2u
+        RAM = 2u,
+        UNINITIALIZED = 3u,
     };
 
     /**
@@ -62,10 +63,10 @@ public:
      *
      * @param buffer[in] The array to pull data from
      */
-    void fromArray(uint8_t buffer[ARRAY_SIZE]);
+    void fromArray(const uint8_t buffer[ARRAY_SIZE]);
 
     /**
-     * Popuate an array with the bit representation of the BQSettings.
+     * Populate an array with the bit representation of the BQSettings.
      * This follows the form shown on BQSetting::fromArray.
      *
      * @param buffer[out] The array to populate with parsed data
@@ -115,7 +116,7 @@ private:
      */
     uint32_t data;
     /**
-     * Number of bytes of data associated with the settingm can be 0
+     * Number of bytes of data associated with the setting, can be 0
      */
     uint32_t numBytes;
 };

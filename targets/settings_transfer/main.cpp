@@ -35,7 +35,7 @@ int main() {
     BMS::BQSettingsStorage settingsStorage(eeprom, bq);
 
     bool isComplete = false;
-    settingsStorage.resetTranfer();
+    settingsStorage.resetTransfer();
     while (!isComplete) {
         auto status = settingsStorage.transferSetting(isComplete);
 

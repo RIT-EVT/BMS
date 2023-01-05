@@ -20,7 +20,7 @@ namespace log = EVT::core::log;
  */
 static uint32_t COBQSettingSize(struct CO_OBJ_T* obj, struct CO_NODE_T* node,
                                 uint32_t width, void* priv) {
-    BMS::BQSettingsStorage* storage = (BMS::BQSettingsStorage*) priv;
+    auto* storage = (BMS::BQSettingsStorage*) priv;
 
     (void) obj;
     (void) node;
@@ -48,7 +48,7 @@ static uint32_t COBQSettingSize(struct CO_OBJ_T* obj, struct CO_NODE_T* node,
  *
  * NOT YET SUPPORTED.
  *
- * @param obj[in] CANopen stack object dictionary eleement (not used)
+ * @param obj[in] CANopen stack object dictionary element (not used)
  * @param node[in] CANopen stack node (not used)
  * @param buf[out] The buffer to populate with data
  * @param len[in] The amount of data to read
@@ -84,12 +84,12 @@ static CO_ERR COBQSettingWrite(CO_OBJ* obj, CO_NODE_T* node, void* buf, uint32_t
     log::LOGGER.log(log::Logger::LogLevel::INFO, "WRITE REQUEST MADE");
     log::LOGGER.log(log::Logger::LogLevel::INFO, "Bytes incoming: %u", len);
 
-    uint8_t* buffer = (uint8_t*) buf;
+    auto* buffer = (uint8_t*) buf;
 
     if (len == 0)
         return CO_ERR_NONE;
 
-    BMS::BQSettingsStorage* storage = (BMS::BQSettingsStorage*) priv;
+    auto* storage = (BMS::BQSettingsStorage*) priv;
     if (!storage) {
         log::LOGGER.log(log::Logger::LogLevel::ERROR, "Storage not provided");
         return CO_ERR_BAD_ARG;
@@ -122,7 +122,7 @@ static CO_ERR COBQSettingCtrl(CO_OBJ* obj, CO_NODE_T* node, uint16_t func, uint3
         return CO_ERR_NONE;
     }
 
-    BMS::BQSettingsStorage* settingsStorage = (BMS::BQSettingsStorage*) priv;
+    auto* settingsStorage = (BMS::BQSettingsStorage*) priv;
 
     // Reset the offset
     if (func == CO_CTRL_SET_OFF) {
@@ -140,14 +140,14 @@ static CO_ERR COBQSettingCtrl(CO_OBJ* obj, CO_NODE_T* node, uint16_t func, uint3
 
 namespace BMS {
 
-BQSettingsStorage::BQSettingsStorage(EVT::core::DEV::M24C32& eeprom, DEV::BQ76952& bq) : eeprom(eeprom),
-                                                                                         bq(bq) {
-    canOpenInterface.Ctrl = COBQSettingCtrl;
-    canOpenInterface.Read = COBQSettingRead;
-    canOpenInterface.Write = COBQSettingWrite;
-    canOpenInterface.Size = COBQSettingSize;
-    canOpenInterface.Private = this;
-
+BQSettingsStorage::BQSettingsStorage(EVT::core::DEV::M24C32& eeprom, DEV::BQ76952& bq) : canOpenInterface{
+                                                                                                     COBQSettingSize,
+                                                                                                     COBQSettingCtrl,
+                                                                                                     COBQSettingRead,
+                                                                                                     COBQSettingWrite,
+                                                                                                     this,
+                                                                                                 },
+                                                                                         eeprom(eeprom), bq(bq) {
     startAddress = 0;
     addressLocation = startAddress + 2;
 
@@ -194,7 +194,7 @@ void BQSettingsStorage::writeSetting(BQSetting& setting) {
                     buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5],
                     buffer[6]);
 
-    log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Writting to address: 0x%02x",
+    log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Writing to address: 0x%02x",
                     addressLocation);
     // Write the array of data into the EEPROM
     eeprom.writeBytes(addressLocation,
@@ -210,7 +210,7 @@ void BQSettingsStorage::writeSetting(BQSetting& setting) {
 void BQSettingsStorage::writeNumSettings() {
     eeprom.writeHalfWord(startAddress, numSettings);
 
-    // Once the total number of settings have been udpated, assume none
+    // Once the total number of settings have been updated, assume none
     // have yet been written.
     numSettingsWritten = 0;
 }
@@ -221,7 +221,7 @@ void BQSettingsStorage::resetEEPROMOffset() {
     addressLocation = startAddress + 2;
 }
 
-void BQSettingsStorage::resetTranfer() {
+void BQSettingsStorage::resetTransfer() {
     numSettingsTransferred = 0;
     resetEEPROMOffset();
 }

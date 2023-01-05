@@ -85,7 +85,7 @@ public:
     void resetEEPROMOffset();
 
     /**
-     * Get the EEPROM instance, used for CANopen reading and writting into
+     * Get the EEPROM instance, used for CANopen reading and writing into
      * memory.
      *
      * @return The EEPROM instance
@@ -94,14 +94,14 @@ public:
 
     /**
      * Reset the transfer setting logic. This will mean that the next call
-     * to BQSettingsStorage::transferSetting will tranfer the first stored
+     * to BQSettingsStorage::transferSetting will transfer the first stored
      * setting.
      */
-    void resetTranfer();
+    void resetTransfer();
 
     /**
      * Transfer a single setting over to the BQ chip. Will update the given
-     * flag to represent that the setting that was tranferred by the most
+     * flag to represent that the setting that was transferred by the most
      * recent call represented the last setting that needed to be transferred.
      *
      * For example, if there are 3 settings, the flow of the code would be
@@ -164,7 +164,7 @@ private:
      * The number of settings that have been transferred from the BMS to the
      * BQ
      */
-    uint16_t numSettingsTransferred;
+    uint16_t numSettingsTransferred = 0;
 
     friend class BMS;
 };

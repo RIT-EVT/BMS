@@ -6,13 +6,12 @@ namespace log = EVT::core::log;
 
 namespace BMS {
 
-BQSetting::BQSetting(BQSettingType settingType, uint8_t numBytes, uint16_t address, uint32_t data) : settingType(settingType), address(address), data(data), numBytes(numBytes) {
-}
+BQSetting::BQSetting(BQSettingType settingType, uint8_t numBytes, uint16_t address, uint32_t data)
+    : settingType(settingType), address(address), data(data), numBytes(numBytes) {}
 
-BQSetting::BQSetting() {
-}
+BQSetting::BQSetting() : settingType(BQSettingType::UNINITIALIZED), address(0), data(0), numBytes(0) {}
 
-void BQSetting::fromArray(uint8_t buffer[ARRAY_SIZE]) {
+void BQSetting::fromArray(const uint8_t buffer[ARRAY_SIZE]) {
     settingType = static_cast<BQSettingType>(buffer[0] & 0x3);
     numBytes = (buffer[0] >> 2) & 0x7;
 

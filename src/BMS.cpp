@@ -12,13 +12,12 @@ BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
          DEV::Interlock& interlock, EVT::core::IO::GPIO& alarm,
          DEV::SystemDetect& systemDetect) : bqSettingsStorage(bqSettingsStorage),
                                             bq(bq),
+                                            state(State::START),
                                             interlock(interlock),
                                             alarm(alarm),
-                                            systemDetect(systemDetect) {
-
-    state = State::START;
+                                            systemDetect(systemDetect),
+                                            stateChanged(true) {
     //bmsOK.writePin(EVT::core::IO::GPIO::State::LOW);
-    stateChanged = true;
 }
 
 CO_OBJ_T* BMS::getObjectDictionary() {
@@ -26,7 +25,7 @@ CO_OBJ_T* BMS::getObjectDictionary() {
 }
 
 uint16_t BMS::getObjectDictionarySize() {
-    return OBJECT_DIRECTIONARY_SIZE;
+    return OBJECT_DICTIONARY_SIZE;
 }
 
 void BMS::process() {
@@ -134,7 +133,7 @@ void BMS::factoryInitState() {
 void BMS::transferSettingsState() {
     if (stateChanged) {
         //bmsOK.writePin(BMS_NOT_OK);
-        bqSettingsStorage.resetTranfer();
+        bqSettingsStorage.resetTransfer();
         numAttemptsMade = 0;
         stateChanged = false;
         clearVoltageReadings();
@@ -158,7 +157,7 @@ void BMS::transferSettingsState() {
 
         // If the number of errors are over the max
         if (numAttemptsMade >= MAX_BQ_COMM_ATTEMPTS) {
-            // If the settings did not transfer successfully, transiton tp
+            // If the settings did not transfer successfully, transition tp
             // error state
             // TODO: Update error mapping with error information
             state = State::INITIALIZATION_ERROR;
@@ -167,7 +166,7 @@ void BMS::transferSettingsState() {
 
         lastAttemptTime = time::millis();
 
-        bqSettingsStorage.resetTranfer();
+        bqSettingsStorage.resetTransfer();
 
     } else if (isComplete) {
         state = State::SYSTEM_READY;
@@ -280,8 +279,8 @@ void BMS::clearVoltageReadings() {
     totalVoltage = 0;
 
     // Zero out each cell voltage
-    for (uint8_t i = 0; i < DEV::BQ76952::NUM_CELLS; i++) {
-        cellVoltage[i] = 0;
+    for (uint16_t& v : cellVoltage) {
+        v = 0;
     }
 }
 

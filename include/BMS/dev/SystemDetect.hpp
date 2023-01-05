@@ -32,7 +32,7 @@ public:
     };
 
     /**
-     * Create the system detect device which will work to indetify the
+     * Create the system detect device which will work to indentify the
      * provided heart beat CANopen IDs.
      *
      * @param[in] bikeHeartBeat The heart beat CANopen ID associated with the
@@ -69,7 +69,7 @@ private:
     uint32_t bikeHeartBeat;
     /** The CANopen ID associated with the charger */
     uint32_t chargeHeartBeat;
-    /** Timeout when the device does not recongize what it is attached to */
+    /** Timeout when the device does not recognize what it is attached to */
     uint32_t timeout;
     /** Represents the time since last read */
     uint32_t lastRead = 0;
