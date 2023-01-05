@@ -26,10 +26,10 @@ public:
      * Represents the different options where the settings can be applied.
      */
     enum class BQSettingType {
-        DIRECT = 0u,
-        SUBCOMMAND = 1u,
-        RAM = 2u,
-        UNINITIALIZED = 3u,
+        UNINITIALIZED = 0u,
+        DIRECT = 1u,
+        SUBCOMMAND = 2u,
+        RAM = 3u,
     };
 
     /**
