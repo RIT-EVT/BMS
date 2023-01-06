@@ -2,9 +2,9 @@
 
 #include <cstdint>
 
-#include "Canopen/co_core.h"
+#include <Canopen/co_core.h>
 
-#include "BQSettingStorage.hpp"
+#include <BQSettingStorage.hpp>
 #include <dev/Interlock.hpp>
 #include <dev/SystemDetect.hpp>
 

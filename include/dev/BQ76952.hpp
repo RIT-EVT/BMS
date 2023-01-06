@@ -1,10 +1,10 @@
 #pragma once
 
-#include "EVT/io/I2C.hpp"
+#include <EVT/io/I2C.hpp>
 
-#include "Canopen/co_obj.h"
+#include <Canopen/co_obj.h>
 
-#include "BQSetting.hpp"
+#include <BQSetting.hpp>
 
 namespace BMS::DEV {
 

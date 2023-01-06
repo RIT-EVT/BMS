@@ -6,8 +6,6 @@
 #include <EVT/dev/storage/M24C32.hpp>
 #include <EVT/io/manager.hpp>
 
-#include "BQSetting.hpp"
-
 namespace IO = EVT::core::IO;
 
 int main() {

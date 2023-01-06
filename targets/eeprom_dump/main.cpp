@@ -8,8 +8,8 @@
 #include <EVT/io/manager.hpp>
 #include <EVT/utils/log.hpp>
 
-#include "BQSetting.hpp"
-#include "BQSettingStorage.hpp"
+#include <BQSetting.hpp>
+#include <BQSettingStorage.hpp>
 #include <dev/BQ76952.hpp>
 
 namespace IO = EVT::core::IO;

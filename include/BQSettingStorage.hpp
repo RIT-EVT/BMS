@@ -2,11 +2,11 @@
 
 #include <cstdint>
 
-#include "EVT/dev/storage/M24C32.hpp"
+#include <EVT/dev/storage/M24C32.hpp>
 
-#include "Canopen/co_obj.h"
+#include <Canopen/co_obj.h>
 
-#include "BQSetting.hpp"
+#include <BQSetting.hpp>
 #include <dev/BQ76952.hpp>
 
 namespace BMS {

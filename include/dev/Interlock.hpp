@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EVT/io/GPIO.hpp"
+#include <EVT/io/GPIO.hpp>
 
 namespace BMS::DEV {
 
