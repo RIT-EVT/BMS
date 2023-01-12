@@ -24,7 +24,7 @@ int main() {
     BMS::LOGGER.setUART(&uart);
     BMS::LOGGER.setLogLevel(BMS::BMSLogger::LogLevel::DEBUG);
 
-    BMS::DEV::BQ76952 bq(i2c, 0x04);
+    BMS::DEV::BQ76952 bq(i2c, 0x08);
     BMS::BQSettingsStorage bqSettingsStorage(eeprom, bq);
     bqSettingsStorage.resetEEPROMOffset();
 
