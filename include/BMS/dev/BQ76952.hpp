@@ -169,7 +169,7 @@ public:
      * @param[out] maxCellVoltageId The ID of the cell with the highest voltage.
      * @return The status of the read attempt
      */
-    Status getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32_t *sum, cellVoltageInfo& voltageInfo);
+    Status getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32_t& sum, cellVoltageInfo& voltageInfo);
 
     // Total voltage read by the BQ chip (measured in millivolts)
 
