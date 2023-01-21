@@ -138,10 +138,8 @@ int main(){
     // Initialize the system OK pin
     // TODO: Determine actual system ok pin
     IO::GPIO& bmsOK = IO::getGPIO<IO::Pin::PB_3>(IO::GPIO::Direction::OUTPUT);
-
     // Intialize the BMS itself
     BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect, bmsOK);
-
     // Reserved memory for CANopen stack usage
     uint8_t sdoBuffer[1][CO_SDO_BUF_BYTE];
     CO_TMR_MEM appTmrMem[4];
@@ -174,7 +172,6 @@ int main(){
     };
 
 
-
     CO_NODE canNodeOne;
 
     time::wait(500);
@@ -182,7 +179,6 @@ int main(){
     // Join the CANopen network
     if(can.connect() != IO::CAN::CANStatus::OK){
     }
-
     // Intialize CANopen logic
     CONodeInit(&canNodeOne, &canSpecOne);
     CONodeStart(&canNodeOne);
@@ -194,7 +190,6 @@ int main(){
     // 2. Run per-loop BMS state logic
     // 3. Wait for new data to come in
     while (1) {
-//        uart.printf("Hello Again");
         // Process incoming CAN messages
         CONodeProcess(&canNodeOne);
 

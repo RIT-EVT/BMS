@@ -68,7 +68,7 @@ void BMS::startState() {
         bmsOK.writePin(BMS_NOT_OK);
         numAttemptsMade = 0;
         stateChanged = false;
-        clearVoltageReadings();
+        //clearVoltageReadings();
     }
 
     // Check if an error has taken place, and if so, check to make sure
@@ -137,7 +137,7 @@ void BMS::transferSettingsState() {
         bqSettingsStorage.resetTranfer();
         numAttemptsMade = 0;
         stateChanged = false;
-        clearVoltageReadings();
+        //VoltageReadings();
     }
 
     // Check if an error has taken place, and if so, check to make sure
@@ -263,7 +263,10 @@ bool BMS::isHealthy() {
 
 void BMS::updateVoltageReadings() {
     // TODO: Handle when an error has taken place
-    bq.getCellVoltage(cellVoltage, &totalVoltage, &minCellVoltage, &minCellVoltageID, &maxCellVoltage, &maxCellVoltageID);
+    for(int8_t i = 0; i < DEV::BQ76952::NUM_CELLS; i++){
+        cellVoltage[i]= i;
+    }
+    bq.getCellVoltage(cellVoltage, &totalVoltage, voltageInfo);
 }
 
 void BMS::clearVoltageReadings() {

@@ -226,19 +226,24 @@ BQ76952::Status BQ76952::communicationStatus() {
     }
     return BQ76952::Status::ERROR;
 }
+// Create struct that will hold CAN interrupt parameters
 
-BQ76952::Status BQ76952::getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32_t* sum, int16_t* minVoltage, uint8_t* minCellVoltageID, int16_t* maxVoltage, uint8_t* maxCellVoltageId) {
+
+BQ76952::Status BQ76952::getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32_t *sum, cellVoltageInfo& voltageInfo) {
     Status status = Status::OK;
     uint8_t cellVoltageReg = CELL_VOLTAGE_BASE_REG;
-
+    //Must use temporary storage variables or else the values displayed in PEAK will be inaccurate from regular changes.
     uint32_t currentVoltage = 0;
-    uint16_t currentMinVoltage=4;
-    uint16_t currentMaxVoltage;
+    int16_t currentMinVoltage = 4;
+    int16_t currentMaxVoltage =0 ;
     uint8_t currentMinCellID;
     uint8_t currentMaxCellID;
+
     // Loop over all the cells and update the cooresponding voltage
     for (uint8_t i = 0; i < NUM_CELLS; i++) {
-        status = makeDirectRead(cellVoltageReg, &cellVoltages[i]);
+
+        //status = makeDirectRead(cellVoltageReg, &cellVoltages[i]);
+        status = Status::OK;
         if (status != Status::OK) {
             return status;
         }
@@ -256,10 +261,10 @@ BQ76952::Status BQ76952::getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32
     }
 
     *sum = currentVoltage;
-    *minVoltage = currentMinVoltage;
-    *minCellVoltageID = currentMinCellID;
-    *maxVoltage = currentMaxVoltage;
-    *maxCellVoltageId = currentMaxCellID;
+    voltageInfo.minVoltage = currentMinVoltage;
+    voltageInfo.minCellVoltageID = currentMinCellID;
+    voltageInfo.maxVoltage = currentMaxVoltage;
+    voltageInfo.maxCellVoltageId = currentMaxCellID;
 
     return BQ76952::Status::OK;
 }

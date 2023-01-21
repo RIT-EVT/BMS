@@ -3,6 +3,7 @@
 #include <BMS/dev/Interlock.hpp>
 #include <BMS/dev/SystemDetect.hpp>
 #include <Canopen/co_core.h>
+#include <BMS/dev/BMSInfo.hpp>
 #include <stdint.h>
 namespace BMS {
 
@@ -188,32 +189,6 @@ private:
     int16_t batteryVoltage;
 
     /**
-     * Represents the voltage value of the cell with the lowest voltage in the pack.
-     * This value is updated by reading in the values from the bq chip and checking
-     * its value against all others.
-     */
-    int16_t minCellVoltage;
-
-    /**
-     * Represents the ID of the cell which has the lowest voltage. This id is stored
-     * as the index of the cell in the cellVoltages list +1.
-     */
-    uint8_t minCellVoltageID;
-
-    /**
-     * Represents the voltage value of the cell with the highest voltage in the pack.
-     * This value is updated by reading in the values from the bq chip and checking
-     * its value against all others.
-     */
-    int16_t maxCellVoltage;
-
-    /**
-     * Represents the ID of the cell which has the highest voltage. This id is stored
-     * as the index of the cell in the cellVoltages list +1.
-     */
-    uint8_t maxCellVoltageID;
-
-    /**
      * Represents the total current through the battery. Updating this value is not
      * yet implemented.
      */
@@ -258,6 +233,7 @@ private:
      */
     uint16_t cellVoltage[DEV::BQ76952::NUM_CELLS];
 
+    cellVoltageInfo voltageInfo;
     /**
      * Handles the start of the state machine logic. This considers the health
      * of the system, and the existance of BQ settings.
@@ -936,22 +912,22 @@ private:
         {
             .Key = CO_KEY(0x2100, 2, CO_UNSIGNED8 | CO_OBJ___PR_),
             .Type = nullptr,
-            .Data = (uintptr_t) &minCellVoltage,
+            .Data = (uintptr_t) &voltageInfo.minVoltage,
         },
         {
             .Key = CO_KEY(0x2100, 3, CO_UNSIGNED8 | CO_OBJ___PR_),
             .Type = nullptr,
-            .Data = (uintptr_t) &minCellVoltageID,
+            .Data = (uintptr_t) &voltageInfo.minCellVoltageID,
         },
         {
             .Key = CO_KEY(0x2100, 4, CO_UNSIGNED8 | CO_OBJ___PR_),
             .Type = nullptr,
-            .Data = (uintptr_t) &maxCellVoltage,
+            .Data = (uintptr_t) &voltageInfo.maxVoltage,
         },
         {
             .Key = CO_KEY(0x2100, 5, CO_UNSIGNED8 | CO_OBJ___PR_),
             .Type = nullptr,
-            .Data = (uintptr_t) &maxCellVoltageID,
+            .Data = (uintptr_t) &voltageInfo.maxCellVoltageId,
         },
         {
             .Key = CO_KEY(0x2100, 6, CO_UNSIGNED8 | CO_OBJ___PR_),
