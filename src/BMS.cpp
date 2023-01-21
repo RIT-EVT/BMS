@@ -22,10 +22,8 @@ BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
     updateVoltageReadings();
 }
 
-
-
 CO_OBJ_T* BMS::getObjectDictionary() {
-        return objectDictionaryOne;
+    return objectDictionaryOne;
 }
 
 uint16_t BMS::getObjectDictionarySize() {
