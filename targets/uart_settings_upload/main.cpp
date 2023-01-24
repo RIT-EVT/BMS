@@ -2,6 +2,10 @@
  * This utility is used to upload settings to the BMS EEPROM, so they can then be transferred to the
  * BQ
 */
+
+// Overwrite UART timeout to allow time to start running the transfer script
+#define EVT_UART_TIMEOUT 10000
+
 #include <EVT/dev/storage/M24C32.hpp>
 #include <EVT/io/manager.hpp>
 
