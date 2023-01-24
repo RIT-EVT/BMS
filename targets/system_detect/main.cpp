@@ -37,9 +37,9 @@ namespace log = EVT::core::log;
  * purposes
  */
 void canInterruptHandler(IO::CANMessage& message, void* priv) {
-    BMS::DEV::SystemDetect* systemDetect = (BMS::DEV::SystemDetect*) priv;
+    auto* systemDetect = (BMS::DEV::SystemDetect*) priv;
 
-    systemDetect->processHeartBeat(message.getId());
+    systemDetect->processHeartbeat(message.getId());
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -91,7 +91,7 @@ int main() {
     // Initialize the EEPROM
     EVT::core::DEV::M24C32 eeprom(0x50, i2c);
 
-    // Intialize the logger
+    // Initialize the logger
     log::LOGGER.setUART(&uart);
     log::LOGGER.setLogLevel(log::Logger::LogLevel::ERROR);
 
@@ -99,19 +99,19 @@ int main() {
     BMS::DEV::BQ76952 bq(i2c, 0x08);
     BMS::BQSettingsStorage bqSettingsStorage(eeprom, bq);
 
-    // Intialize the Interlock
+    // Initialize the Interlock
     // TODO: Determine actual interlock GPIO
     IO::GPIO& interlockGPIO = IO::getGPIO<IO::Pin::PB_0>(IO::GPIO::Direction::INPUT);
     BMS::DEV::Interlock interlock(interlockGPIO);
 
-    // Intialize the alarm pin
+    // Initialize the alarm pin
     IO::GPIO& alarm = IO::getGPIO<IO::Pin::PB_1>(IO::GPIO::Direction::INPUT);
 
     // Initialize the system OK pin
     // TODO: Determine actual system ok pin
     //IO::GPIO& bmsOK = IO::getGPIO<IO::Pin::PC_14>(IO::GPIO::Direction::OUTPUT);
 
-    // Intialize the BMS itself
+    // Initialize the BMS itself
     BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect /*, bmsOK*/);
 
     // Reserved memory for CANopen stack usage
@@ -154,13 +154,13 @@ int main() {
     // Join the CANopen network
     can.connect();
 
-    // Intialize CANopen logic
+    // Initialize CANopen logic
     CONodeInit(&canNode, &canSpec);
     CONodeStart(&canNode);
     CONmtSetMode(&canNode.Nmt, CO_OPERATIONAL);
 
     // Main processing loop, contains the following logic
-    // 1. Update CANopen logic and processing incomming messages
+    // 1. Update CANopen logic and processing incoming messages
     // 2. Run per-loop BMS state logic
     // 3. Wait for new data to come in
     while (1) {

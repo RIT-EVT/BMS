@@ -238,7 +238,7 @@ private:
     };
 
     /**
-     * Contains a mapping between the target cell and the corresponing
+     * Contains a mapping between the target cell and the corresponding
      * location in the `CB_ACTIVE_CELLS` bitmap. The idea that each cell is
      * an index into this lookup table.
      * NOTE: Cells are numbered starting at 1, so to get the bit position

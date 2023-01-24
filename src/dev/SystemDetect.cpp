@@ -6,20 +6,20 @@ namespace time = EVT::core::time;
 
 namespace BMS::DEV {
 
-SystemDetect::SystemDetect(uint32_t bikeHeartBeat, uint32_t chargeHeartBeat,
+SystemDetect::SystemDetect(uint32_t bikeHeartbeat, uint32_t chargeHeartbeat,
                            uint32_t timeout) {
-    this->bikeHeartBeat = bikeHeartBeat;
-    this->chargeHeartBeat = chargeHeartBeat;
+    this->bikeHeartBeat = bikeHeartbeat;
+    this->chargeHeartbeat = chargeHeartbeat;
     this->timeout = timeout;
     this->lastRead = 0;
     this->identifiedSystem = System::UNKNOWN;
 }
 
-void SystemDetect::processHeartBeat(uint32_t heartBeatID) {
-    if (heartBeatID == bikeHeartBeat) {
+void SystemDetect::processHeartbeat(uint32_t heartbeatID) {
+    if (heartbeatID == bikeHeartBeat) {
         identifiedSystem = System::BIKE;
         lastRead = time::millis();
-    } else if (heartBeatID == chargeHeartBeat) {
+    } else if (heartbeatID == chargeHeartbeat) {
         identifiedSystem = System::CHARGER;
         lastRead = time::millis();
     }

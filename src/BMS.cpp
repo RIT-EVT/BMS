@@ -2,6 +2,7 @@
 
 #include <EVT/utils/log.hpp>
 #include <EVT/utils/time.hpp>
+#include <cstring>
 
 namespace time = EVT::core::time;
 namespace log = EVT::core::log;
@@ -157,7 +158,7 @@ void BMS::transferSettingsState() {
 
         // If the number of errors are over the max
         if (numAttemptsMade >= MAX_BQ_COMM_ATTEMPTS) {
-            // If the settings did not transfer successfully, transition tp
+            // If the settings did not transfer successfully, transition to
             // error state
             // TODO: Update error mapping with error information
             state = State::INITIALIZATION_ERROR;
@@ -278,10 +279,8 @@ void BMS::updateVoltageReadings() {
 void BMS::clearVoltageReadings() {
     totalVoltage = 0;
 
-    // Zero out each cell voltage
-    for (uint16_t& v : cellVoltage) {
-        v = 0;
-    }
+    // Zero out all cell voltages
+    memset(cellVoltage, 0, DEV::BQ76952::NUM_CELLS * sizeof(uint16_t));
 }
 
 }// namespace BMS

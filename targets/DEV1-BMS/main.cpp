@@ -50,7 +50,7 @@ void canInterruptHandler(IO::CANMessage& message, void* priv) {
         params->queue;
     BMS::DEV::SystemDetect* systemDetect = params->systemDetect;
 
-    systemDetect->processHeartBeat(message.getId());
+    systemDetect->processHeartbeat(message.getId());
 
     if (queue == nullptr)
         return;

@@ -86,8 +86,9 @@ static CO_ERR COBQSettingWrite(CO_OBJ* obj, CO_NODE_T* node, void* buf, uint32_t
 
     auto* buffer = (uint8_t*) buf;
 
-    if (len == 0)
+    if (len == 0) {
         return CO_ERR_NONE;
+    }
 
     auto* storage = (BMS::BQSettingsStorage*) priv;
     if (!storage) {
