@@ -1,9 +1,10 @@
 #pragma once
 
-#include <BMS/BQSetting.hpp>
 #include <EVT/io/I2C.hpp>
 
 #include <Canopen/co_obj.h>
+
+#include <BQSetting.hpp>
 
 namespace BMS::DEV {
 
@@ -14,7 +15,7 @@ namespace BMS::DEV {
  *
  * Part of the logic contained is the ability to write out BQ settings to the
  * BQ chip itself. This will be able to handle taking in settings and making
- * the cooresponding I2C commands to write out the settings.
+ * the corresponding I2C commands to write out the settings.
  * TI Technical Reference Manual: https://www.ti.com/lit/ug/sluuby2b/sluuby2b.pdf
  */
 class BQ76952 {
@@ -137,7 +138,7 @@ public:
      * @return The result of the setting write attempt
      *         Status::I2C_ERROR => Failed to communicate with the BQ
      *         Status::ERROR => Setting not accepted by BQ
-     *         Status::OK => Succesfully wrote out the setting
+     *         Status::OK => Successfully wrote out the setting
      */
     Status writeRAMSetting(BQSetting& setting);
 
@@ -147,7 +148,7 @@ public:
      * This mode is discussed in detail in the BQ datasheet.
      *
      * @param[out] result Populated with true if the BQ chip is in config mode
-     * @return The status of attemping to get the current mode
+     * @return The status of attempting to get the current mode
      *          Status::I2C_ERROR => Failed to communicate with the BQ
      *          Status::ERROR => BQ encountered an error attempting to read
      *          Status::OK => Configure mode state read successfully
@@ -194,8 +195,8 @@ public:
      */
     Status setBalancing(uint8_t targetCell, uint8_t enable);
 
-    /** Total voltage read by the BQ chip (measured in millivolts) */
-    uint32_t totalVoltage;
+    /** Total voltage read by the BQ chip (measured in milliVolts) */
+    uint32_t totalVoltage = 0;
 
     /** CANopen interface for probing the state of the balancing */
     CO_OBJ_TYPE balancingCANOpen;
@@ -237,7 +238,7 @@ private:
     };
 
     /**
-     * Contains a mapping between the target cell and the cooresponing
+     * Contains a mapping between the target cell and the corresponding
      * location in the `CB_ACTIVE_CELLS` bitmap. The idea that each cell is
      * an index into this lookup table.
      * NOTE: Cells are numbered starting at 1, so to get the bit position

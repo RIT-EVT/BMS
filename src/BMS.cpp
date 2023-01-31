@@ -1,9 +1,11 @@
-#include <BMS/BMS.hpp>
+#include <BMS.hpp>
 
+#include <EVT/utils/log.hpp>
 #include <EVT/utils/time.hpp>
+#include <cstring>
 
-#include "BMS/BMSLogger.hpp"
-#include <cstdint>
+namespace time = EVT::core::time;
+namespace log = EVT::core::log;
 
 namespace BMS {
 
@@ -11,13 +13,12 @@ BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
          DEV::Interlock& interlock, EVT::core::IO::GPIO& alarm,
          DEV::SystemDetect& systemDetect) : bqSettingsStorage(bqSettingsStorage),
                                             bq(bq),
+                                            state(State::START),
                                             interlock(interlock),
                                             alarm(alarm),
-                                            systemDetect(systemDetect) {
-
-    state = State::START;
+                                            systemDetect(systemDetect),
+                                            stateChanged(true) {
     //bmsOK.writePin(EVT::core::IO::GPIO::State::LOW);
-    stateChanged = true;
 }
 
 CO_OBJ_T* BMS::getObjectDictionary() {
@@ -25,7 +26,7 @@ CO_OBJ_T* BMS::getObjectDictionary() {
 }
 
 uint16_t BMS::getObjectDictionarySize() {
-    return OBJECT_DIRECTIONARY_SIZE;
+    return OBJECT_DICTIONARY_SIZE;
 }
 
 void BMS::process() {
@@ -65,7 +66,7 @@ void BMS::startState() {
         numAttemptsMade = 0;
         stateChanged = false;
         clearVoltageReadings();
-        LOGGER.log(BMSLogger::LogLevel::INFO, "Entering start state");
+        log::LOGGER.log(log::Logger::LogLevel::INFO, "Entering start state");
     }
 
     // Check if an error has taken place, and if so, check to make sure
@@ -73,7 +74,7 @@ void BMS::startState() {
     if (numAttemptsMade > 0) {
         // If there has not been enough time between attempts, skip this run
         // of the state and try again later
-        if ((EVT::core::time::millis() - lastAttemptTime) < ERROR_TIME_DELAY) {
+        if ((time::millis() - lastAttemptTime) < ERROR_TIME_DELAY) {
             return;
         }
     }
@@ -85,7 +86,7 @@ void BMS::startState() {
         numAttemptsMade++;
 
         // Record current time
-        lastAttemptTime = EVT::core::time::millis();
+        lastAttemptTime = time::millis();
 
         if (numAttemptsMade >= MAX_BQ_COMM_ATTEMPTS) {
             // If communication could not be handled, transition to error state
@@ -111,7 +112,7 @@ void BMS::initializationErrorState() {
         //bmsOK.writePin(BMS_NOT_OK);
         stateChanged = false;
         clearVoltageReadings();
-        LOGGER.log(BMSLogger::LogLevel::INFO, "Entering initialization error state");
+        log::LOGGER.log(log::Logger::LogLevel::INFO, "Entering initialization error state");
     }
 }
 
@@ -120,7 +121,7 @@ void BMS::factoryInitState() {
         //bmsOK.writePin(BMS_NOT_OK);
         stateChanged = false;
         clearVoltageReadings();
-        LOGGER.log(BMSLogger::LogLevel::INFO, "Entering factory init state");
+        log::LOGGER.log(log::Logger::LogLevel::INFO, "Entering factory init state");
     }
 
     // Check to see if settings have come in, if so, go back to start state
@@ -133,11 +134,11 @@ void BMS::factoryInitState() {
 void BMS::transferSettingsState() {
     if (stateChanged) {
         //bmsOK.writePin(BMS_NOT_OK);
-        bqSettingsStorage.resetTranfer();
+        bqSettingsStorage.resetTransfer();
         numAttemptsMade = 0;
         stateChanged = false;
         clearVoltageReadings();
-        LOGGER.log(BMSLogger::LogLevel::INFO, "Entering transfer settings state");
+        log::LOGGER.log(log::Logger::LogLevel::INFO, "Entering transfer settings state");
     }
 
     // Check if an error has taken place, and if so, check to make sure
@@ -145,7 +146,7 @@ void BMS::transferSettingsState() {
     if (numAttemptsMade > 0) {
         // If there has not been enough time between attempts, skip this run
         // of the state and try again later
-        if ((EVT::core::time::millis() - lastAttemptTime) < ERROR_TIME_DELAY) {
+        if ((time::millis() - lastAttemptTime) < ERROR_TIME_DELAY) {
             return;
         }
     }
@@ -157,16 +158,16 @@ void BMS::transferSettingsState() {
 
         // If the number of errors are over the max
         if (numAttemptsMade >= MAX_BQ_COMM_ATTEMPTS) {
-            // If the settings did not transfer successfully, transiton tp
+            // If the settings did not transfer successfully, transition to
             // error state
             // TODO: Update error mapping with error information
             state = State::INITIALIZATION_ERROR;
             stateChanged = true;
         }
 
-        lastAttemptTime = EVT::core::time::millis();
+        lastAttemptTime = time::millis();
 
-        bqSettingsStorage.resetTranfer();
+        bqSettingsStorage.resetTransfer();
 
     } else if (isComplete) {
         state = State::SYSTEM_READY;
@@ -178,7 +179,7 @@ void BMS::systemReadyState() {
     if (stateChanged) {
         //bmsOK.writePin(BMS_NOT_OK);
         stateChanged = false;
-        LOGGER.log(BMSLogger::LogLevel::INFO, "Entering system ready state");
+        log::LOGGER.log(log::Logger::LogLevel::INFO, "Entering system ready state");
     }
 
     // TODO: Check for need to deep sleep and enter deep sleep mode
@@ -209,7 +210,7 @@ void BMS::unsafeConditionsError() {
     if (stateChanged) {
         //bmsOK.writePin(BMS_NOT_OK);
         stateChanged = false;
-        LOGGER.log(BMSLogger::LogLevel::INFO, "Entering unsafe conditions state");
+        log::LOGGER.log(log::Logger::LogLevel::INFO, "Entering unsafe conditions state");
     }
 
     updateVoltageReadings();
@@ -219,7 +220,7 @@ void BMS::powerDeliveryState() {
     if (stateChanged) {
         //bmsOK.writePin(BMS_OK);
         stateChanged = false;
-        LOGGER.log(BMSLogger::LogLevel::INFO, "Entering power delivery state");
+        log::LOGGER.log(log::Logger::LogLevel::INFO, "Entering power delivery state");
     }
 
     // TODO: Update error register of BMS
@@ -242,7 +243,7 @@ void BMS::chargingState() {
     if (stateChanged) {
         //bmsOK.writePin(BMS_OK);
         stateChanged = false;
-        LOGGER.log(BMSLogger::LogLevel::INFO, "Entering charging state");
+        log::LOGGER.log(log::Logger::LogLevel::INFO, "Entering charging state");
     }
 
     // TODO: Update error register of BMS
@@ -278,10 +279,8 @@ void BMS::updateVoltageReadings() {
 void BMS::clearVoltageReadings() {
     totalVoltage = 0;
 
-    // Zero out each cell voltage
-    for (uint8_t i = 0; i < DEV::BQ76952::NUM_CELLS; i++) {
-        cellVoltage[i] = 0;
-    }
+    // Zero out all cell voltages
+    memset(cellVoltage, 0, DEV::BQ76952::NUM_CELLS * sizeof(uint16_t));
 }
 
 }// namespace BMS

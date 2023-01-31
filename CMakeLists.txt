@@ -3,42 +3,32 @@
 ###############################################################################
 cmake_minimum_required(VERSION 3.15)
 
-set(EVT_CORE_DIR      ${CMAKE_SOURCE_DIR}/libs/EVT-core)
+# Convert CMake flags to compiler flags
+if(EVT_CORE_LOG_ENABLE)
+    add_compile_definitions(EVT_CORE_LOG_ENABLE)
+endif()
 
-# Handle Selection of the target device
-option(TARGET_DEV "Target device" "STM32F302x8")
+# Handle default selection of the target device
 if(NOT TARGET_DEV)
     set(TARGET_DEV "STM32F334x8")
 endif()
 
+set(EVT_CORE_DIR      ${CMAKE_SOURCE_DIR}/libs/EVT-core)
 
-if(TARGET_DEV STREQUAL "STM32F302x8")
-    add_compile_definitions(STM32F302x8)
-    add_compile_definitions(STM32F3xx)
-    message(STATUS "STM32F302x8 selected")
-elseif(TARGET_DEV STREQUAL "STM32F334x8")
-    add_compile_definitions(STM32F334x8)
-    add_compile_definitions(STM32F3xx)
-    message(STATUS "STM32F334x8 selected")
-else()
-    message(FATAL_ERROR "The target device is not supported")
-endif()
-
+# Link to the EVT-core library
+add_subdirectory(libs/EVT-core/)
 
 include(CMakeDependentOption)
 include(${EVT_CORE_DIR}/cmake/evt-core_compiler.cmake)
 include(${EVT_CORE_DIR}/cmake/evt-core_install.cmake)
 
-# Link to the EVT-core library
-add_subdirectory(libs/EVT-core/)
-
 ###############################################################################
 # Project Setup
 ###############################################################################
 set(BOARD_LIB_NAME   BMS)
-if("${BOARD_LIB_NAME}" STREQUAL CHANGE_ME)
+if("${BOARD_LIB_NAME}" STREQUAL BOARD_NAME)
     message(FATAL_ERROR
-            "You must set the template project name in CmakeLists.txt")
+            "You must set the template project name in the top-level CMakeLists.txt")
 endif()
 
 file(STRINGS version.txt BOARD_VERSION)
@@ -53,7 +43,6 @@ add_library(${PROJECT_NAME} STATIC)
 # Add sources
 target_sources(${PROJECT_NAME} PRIVATE
     src/BMS.cpp
-    src/BMSLogger.cpp
     src/BQSettingStorage.cpp
     src/BQSetting.cpp
     src/dev/BQ76952.cpp
@@ -65,8 +54,8 @@ target_sources(${PROJECT_NAME} PRIVATE
 # Handle dependencies
 ###############################################################################
 target_link_libraries(${PROJECT_NAME}
-    PUBLIC EVT
-)
+        PUBLIC EVT
+        )
 
 ###############################################################################
 # Install and expose library

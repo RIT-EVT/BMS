@@ -1,4 +1,5 @@
-#include <BMS/dev/BQ76952.hpp>
+#include <dev/BQ76952.hpp>
+
 #include <EVT/utils/time.hpp>
 
 // (void)0 is added to the end of each macro to force users to follow the macro with a ';'
@@ -130,14 +131,14 @@ static CO_ERR COBalancingCtrl(CO_OBJ* obj, CO_NODE_T* node, uint16_t func,
 namespace BMS::DEV {
 
 BQ76952::BQ76952(EVT::core::IO::I2C& i2c, uint8_t i2cAddress)
-    : i2c(i2c), i2cAddress(i2cAddress) {
-
-    balancingCANOpen.Ctrl = COBalancingCtrl;
-    balancingCANOpen.Read = COBQBalancingRead;
-    balancingCANOpen.Write = COBQBalancingWrite;
-    balancingCANOpen.Size = COBQBalancingSize;
-    balancingCANOpen.Private = this;
-}
+    : balancingCANOpen{
+        COBQBalancingSize,
+        COBalancingCtrl,
+        COBQBalancingRead,
+        COBQBalancingWrite,
+        this,
+    },
+      i2c(i2c), i2cAddress(i2cAddress) {}
 
 BQ76952::Status BQ76952::writeSetting(BMS::BQSetting& setting) {
     // Right now, the BQ only accepts settings made into RAM
@@ -289,7 +290,7 @@ BQ76952::Status BQ76952::writeRAMSetting(BMS::BQSetting& setting) {
         RETURN_IF_ERR(makeDirectRead(RAM_BASE_ADDR, &rawResponse));
         address = rawResponse;
 
-        // Check to see if a timeout occured
+        // Check to see if a timeout occurred
         if (EVT::core::time::millis() - startTime > TIMEOUT) {
             return Status::TIMEOUT;
         }

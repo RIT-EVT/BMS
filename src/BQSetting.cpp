@@ -1,15 +1,17 @@
-#include <BMS/BMSLogger.hpp>
-#include <BMS/BQSetting.hpp>
+#include <BQSetting.hpp>
+
+#include <EVT/utils/log.hpp>
+
+namespace log = EVT::core::log;
 
 namespace BMS {
 
-BQSetting::BQSetting(BQSettingType settingType, uint8_t numBytes, uint16_t address, uint32_t data) : settingType(settingType), address(address), data(data), numBytes(numBytes) {
-}
+BQSetting::BQSetting(BQSettingType settingType, uint8_t numBytes, uint16_t address, uint32_t data)
+    : settingType(settingType), address(address), data(data), numBytes(numBytes) {}
 
-BQSetting::BQSetting() {
-}
+BQSetting::BQSetting() : settingType(BQSettingType::UNINITIALIZED), address(0), data(0), numBytes(0) {}
 
-void BQSetting::fromArray(uint8_t buffer[ARRAY_SIZE]) {
+void BQSetting::fromArray(const uint8_t buffer[ARRAY_SIZE]) {
     settingType = static_cast<BQSettingType>(buffer[0] & 0x3);
     numBytes = (buffer[0] >> 2) & 0x7;
 
@@ -20,9 +22,9 @@ void BQSetting::fromArray(uint8_t buffer[ARRAY_SIZE]) {
         | (static_cast<uint32_t>(buffer[4]) << 8)
         | static_cast<uint32_t>(buffer[3]);
 
-    LOGGER.log(BMSLogger::LogLevel::DEBUG,
-               "Command Type: %u, Address: 0x%04X, Num Bytes: %u, DataL 0x%08X",
-               settingType, address, numBytes, data);
+    log::LOGGER.log(log::Logger::LogLevel::DEBUG,
+                    "Command Type: %u, Address: 0x%04X, Num Bytes: %u, DataL 0x%08X",
+                    settingType, address, numBytes, data);
 }
 
 void BQSetting::toArray(uint8_t buffer[ARRAY_SIZE]) {

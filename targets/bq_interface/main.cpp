@@ -1,14 +1,21 @@
-#include <BMS/BMSLogger.hpp>
-#include <BMS/dev/BQ76952.hpp>
+/**
+ * This target is used for testing the functionality of the BQ chip
+ */
+
+#include <cstdlib>
+
 #include <EVT/io/I2C.hpp>
 #include <EVT/io/UART.hpp>
 #include <EVT/io/manager.hpp>
 #include <EVT/io/pin.hpp>
+#include <EVT/utils/log.hpp>
 #include <EVT/utils/time.hpp>
-#include <cstdlib>
+
+#include <dev/BQ76952.hpp>
 
 namespace IO = EVT::core::IO;
 namespace time = EVT::core::time;
+namespace log = EVT::core::log;
 
 constexpr size_t MAX_BUFF = 100;
 
@@ -308,9 +315,9 @@ int main() {
     IO::I2C& i2c = IO::getI2C<IO::Pin::PB_6, IO::Pin::PB_7>();
     BMS::DEV::BQ76952 bq(i2c, 0x08);
 
-    IO::UART& uart = IO::getUART<IO::Pin::PA_9, IO::Pin::PA_10>(9600);
-    BMS::LOGGER.setUART(&uart);
-    BMS::LOGGER.setLogLevel(BMS::BMSLogger::LogLevel::DEBUG);
+    IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
+    log::LOGGER.setUART(&uart);
+    log::LOGGER.setLogLevel(log::Logger::LogLevel::DEBUG);
 
     time::wait(500);
 
