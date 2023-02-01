@@ -1,15 +1,21 @@
-#include <stdlib.h>
-#include <string.h>
+/**
+ * This target is used for testing the functionality of the BQ chip
+ */
 
-#include <BMS/dev/BQ76952.hpp>
+#include <cstdlib>
+
 #include <EVT/io/I2C.hpp>
 #include <EVT/io/UART.hpp>
 #include <EVT/io/manager.hpp>
 #include <EVT/io/pin.hpp>
+#include <EVT/utils/log.hpp>
 #include <EVT/utils/time.hpp>
+
+#include <dev/BQ76952.hpp>
 
 namespace IO = EVT::core::IO;
 namespace time = EVT::core::time;
+namespace log = EVT::core::log;
 
 constexpr size_t MAX_BUFF = 100;
 
@@ -120,7 +126,7 @@ void readBalancing(IO::UART& uart, BMS::DEV::BQ76952& bq) {
  * Set the balancing state for the specific cell
  *
  * @param[in] uart The UART interface to read from
- * @parampin] bq The BQ interface to use
+ * @param[in] bq The BQ interface to use
  */
 void setBalancing(IO::UART& uart, BMS::DEV::BQ76952& bq) {
     uart.printf("Enter the cell to set balancing of: ");
@@ -145,8 +151,7 @@ void setBalancing(IO::UART& uart, BMS::DEV::BQ76952& bq) {
  *
  * @param[in] uart The UART interface to write in from
  */
-void directWrite(IO::UART& uart) {
-}
+void directWrite(IO::UART& uart) {}
 
 /**
  * Function for making an indirect write request
@@ -266,11 +271,53 @@ void exitConfigMode(IO::UART& uart, BMS::DEV::BQ76952& bq) {
     uart.printf("BQ not in config mode\r\n");
 }
 
+void commandOnlySub(IO::UART& uart, BMS::DEV::BQ76952& bq) {
+    uart.printf("Enter the command-only subcommand address in hex: 0x");
+    uart.gets(inputBuffer, MAX_BUFF);
+    uart.printf("\r\n");
+
+    // Determine the target subcommand register
+    uint16_t reg = strtol(inputBuffer, nullptr, 16);
+
+    // Run the command
+    auto result = bq.commandOnlySubcommand(reg);
+
+    // Make sure the read was successful
+    if (result != BMS::DEV::BQ76952::Status::OK) {
+        uart.printf("Failed to read register: 0x%x\r\n", reg);
+        return;
+    }
+
+    uart.printf("Register 0x%x run\r\n", reg);
+}
+
+void getVoltages(IO::UART& uart, BMS::DEV::BQ76952& bq) {
+    uint16_t tot = 0;
+    for (uint8_t i = 0; i < 16; i++) {
+        uint8_t reg = 0x14 + 2 * i;
+        uint16_t regValue = 0;
+        auto result = bq.makeDirectRead(reg, &regValue);
+
+        // Make sure the read was successful
+        if (result != BMS::DEV::BQ76952::Status::OK) {
+            uart.printf("Failed to read register: 0x%x\r\n", reg);
+            return;
+        }
+
+        uart.printf("Cell %2d Voltage, Register %#x: %d.%d\r\n", i + 1, reg, regValue / 1000, regValue % 1000);
+
+        tot += regValue;
+    }
+    uart.printf("Total: %d.%d", tot / 1000, tot % 1000);
+}
+
 int main() {
-    IO::I2C& i2c = IO::getI2C<IO::Pin::PB_8, IO::Pin::PB_9>();
+    IO::I2C& i2c = IO::getI2C<IO::Pin::PB_6, IO::Pin::PB_7>();
     BMS::DEV::BQ76952 bq(i2c, 0x08);
 
     IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
+    log::LOGGER.setUART(&uart);
+    log::LOGGER.setLogLevel(log::Logger::LogLevel::DEBUG);
 
     time::wait(500);
 
@@ -318,6 +365,12 @@ int main() {
             break;
         case 'B':
             setBalancing(uart, bq);
+            break;
+        case 'f':
+            commandOnlySub(uart, bq);
+            break;
+        case 'v':
+            getVoltages(uart, bq);
             break;
         }
     }

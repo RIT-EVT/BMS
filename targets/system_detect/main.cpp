@@ -3,6 +3,7 @@
  * basic echo functionality where the uart will write back whatever the user
  * enters.
  */
+
 #include <EVT/io/CANopen.hpp>
 #include <EVT/io/UART.hpp>
 #include <EVT/io/manager.hpp>
@@ -13,16 +14,17 @@
 #include <EVT/dev/storage/EEPROM.hpp>
 #include <EVT/dev/storage/M24C32.hpp>
 
+#include <EVT/utils/log.hpp>
 #include <EVT/utils/types/FixedQueue.hpp>
 
-#include <BMS/BMS.hpp>
-#include <BMS/BMSLogger.hpp>
-#include <BMS/dev/BQ76952.hpp>
-#include <BMS/dev/SystemDetect.hpp>
+#include <BMS.hpp>
+#include <dev/BQ76952.hpp>
+#include <dev/SystemDetect.hpp>
 
 namespace IO = EVT::core::IO;
 namespace DEV = EVT::core::DEV;
 namespace time = EVT::core::time;
+namespace log = EVT::core::log;
 
 #define BIKE_HEART_BEAT 0x715
 #define CHARGER_HEART_BEAT 0x716
@@ -35,9 +37,9 @@ namespace time = EVT::core::time;
  * purposes
  */
 void canInterruptHandler(IO::CANMessage& message, void* priv) {
-    BMS::DEV::SystemDetect* systemDetect = (BMS::DEV::SystemDetect*) priv;
+    auto* systemDetect = (BMS::DEV::SystemDetect*) priv;
 
-    systemDetect->processHeartBeat(message.getId());
+    systemDetect->processHeartbeat(message.getId());
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -89,28 +91,28 @@ int main() {
     // Initialize the EEPROM
     EVT::core::DEV::M24C32 eeprom(0x50, i2c);
 
-    // Intialize the logger
-    BMS::LOGGER.setUART(&uart);
-    BMS::LOGGER.setLogLevel(BMS::BMSLogger::LogLevel::ERROR);
+    // Initialize the logger
+    log::LOGGER.setUART(&uart);
+    log::LOGGER.setLogLevel(log::Logger::LogLevel::ERROR);
 
     // Initialize the BQ interfaces
     BMS::DEV::BQ76952 bq(i2c, 0x08);
     BMS::BQSettingsStorage bqSettingsStorage(eeprom, bq);
 
-    // Intialize the Interlock
+    // Initialize the Interlock
     // TODO: Determine actual interlock GPIO
     IO::GPIO& interlockGPIO = IO::getGPIO<IO::Pin::PB_0>(IO::GPIO::Direction::INPUT);
     BMS::DEV::Interlock interlock(interlockGPIO);
 
-    // Intialize the alarm pin
+    // Initialize the alarm pin
     IO::GPIO& alarm = IO::getGPIO<IO::Pin::PB_1>(IO::GPIO::Direction::INPUT);
 
     // Initialize the system OK pin
     // TODO: Determine actual system ok pin
-    IO::GPIO& bmsOK = IO::getGPIO<IO::Pin::PC_14>(IO::GPIO::Direction::OUTPUT);
+    //IO::GPIO& bmsOK = IO::getGPIO<IO::Pin::PC_14>(IO::GPIO::Direction::OUTPUT);
 
-    // Intialize the BMS itself
-    BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect, bmsOK);
+    // Initialize the BMS itself
+    BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect /*, bmsOK*/);
 
     // Reserved memory for CANopen stack usage
     uint8_t sdoBuffer[1][CO_SDO_BUF_BYTE];
@@ -152,13 +154,13 @@ int main() {
     // Join the CANopen network
     can.connect();
 
-    // Intialize CANopen logic
+    // Initialize CANopen logic
     CONodeInit(&canNode, &canSpec);
     CONodeStart(&canNode);
     CONmtSetMode(&canNode.Nmt, CO_OPERATIONAL);
 
     // Main processing loop, contains the following logic
-    // 1. Update CANopen logic and processing incomming messages
+    // 1. Update CANopen logic and processing incoming messages
     // 2. Run per-loop BMS state logic
     // 3. Wait for new data to come in
     while (1) {

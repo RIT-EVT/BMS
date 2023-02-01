@@ -1,10 +1,12 @@
 #pragma once
 
-#include <BMS/BQSettingStorage.hpp>
-#include <BMS/dev/Interlock.hpp>
-#include <BMS/dev/SystemDetect.hpp>
+#include <cstdint>
+
 #include <Canopen/co_core.h>
-#include <stdint.h>
+
+#include <BQSettingStorage.hpp>
+#include <dev/Interlock.hpp>
+#include <dev/SystemDetect.hpp>
 
 namespace BMS {
 
@@ -41,12 +43,10 @@ public:
 
     /**
      * Make a new instance of the BMS with the given devices.
-     *
-     * @pre The alarm GPIO is set as an input
      */
     BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
         DEV::Interlock& interlock, EVT::core::IO::GPIO& alarm,
-        DEV::SystemDetect& systemDetect, EVT::core::IO::GPIO& bmsOK);
+        DEV::SystemDetect& systemDetect);
 
     /**
      * The node ID used to identify the device on the CAN network.
@@ -80,7 +80,7 @@ private:
      * Have to know the size of the object dictionary for initialization
      * process.
      */
-    static constexpr uint16_t OBJECT_DIRECTIONARY_SIZE = 42;
+    static constexpr uint16_t OBJECT_DICTIONARY_SIZE = 42;
 
     /**
      * The active state of the alarm. When the alarm is in this state,
@@ -113,7 +113,7 @@ private:
     static constexpr uint32_t ERROR_TIME_DELAY = 5000;
 
     /**
-     * The interface for storaging and retrieving BQ Settings.
+     * The interface for storing and retrieving BQ Settings.
      */
     BQSettingsStorage& bqSettingsStorage;
 
@@ -150,7 +150,7 @@ private:
      * is high, it represents that the BMS is in a state ready to
      * charge or discharge,
      */
-    EVT::core::IO::GPIO& bmsOK;
+    //    EVT::core::IO::GPIO& bmsOK;
 
     /**
      * Boolean flag that represents a state has just changed, this is useful
@@ -166,39 +166,39 @@ private:
      * For example, this is used for trying to communicate with the BQ N
      * number of times before failing
      */
-    uint16_t numAttemptsMade;
+    uint16_t numAttemptsMade = 0;
 
     /**
      * Keeps track of the last time an attempt was made. This is used in
      * combination with BMS::numAttemptsMade to attempt a task a certain
      * number of times with delay in attempts
      */
-    uint32_t lastAttemptTime;
+    uint32_t lastAttemptTime = 0;
 
     /**
      * Represents the total voltage read by the BQ chip. This value is updated
      * by reading the voltage from the BQ chip and is then exposed over
      * CANopen.
      */
-    uint32_t totalVoltage;
+    uint32_t totalVoltage = 0;
 
     /**
      * Stores the per-cell voltage for the battery pack. This value is updated
      * by reading the voltage from the BQ chip and is then exposed over
      * CANopen.
      */
-    uint16_t cellVoltage[DEV::BQ76952::NUM_CELLS];
+    uint16_t cellVoltage[DEV::BQ76952::NUM_CELLS] = {};
 
     /**
      * Handles the start of the state machine logic. This considers the health
-     * of the system, and the existance of BQ settings.
+     * of the system, and the existence of BQ settings.
      *
      * State: State::START
      */
     void startState();
 
     /**
-     * Handles holding the BMS in the intialization error state.
+     * Handles holding the BMS in the initialization error state.
      *
      * State: State::INITIALIZATION_ERROR
      */
@@ -213,7 +213,7 @@ private:
     void factoryInitState();
 
     /**
-     * Handles the state where settings are activly being sent from
+     * Handles the state where settings are actively being sent from
      * the BMS to the BQ chip.
      *
      * State: State::TRANSFER_SETTINGS
@@ -287,9 +287,13 @@ private:
      *
      * Array of CANopen objects. +1 for the special "end-of-array" marker
      */
-    CO_OBJ_T objectDictionary[OBJECT_DIRECTIONARY_SIZE + 1] = {
+    CO_OBJ_T objectDictionary[OBJECT_DICTIONARY_SIZE + 1] = {
         // Sync ID, defaults to 0x80
-        {CO_KEY(0x1005, 0, CO_UNSIGNED32 | CO_OBJ_D__R_), 0, (uintptr_t) 0x80},
+        {
+            CO_KEY(0x1005, 0, CO_UNSIGNED32 | CO_OBJ_D__R_),
+            nullptr,
+            (uintptr_t) 0x80,
+        },
 
         // Information about the hardware, hard coded sample values for now
         // 1: Vendor ID
@@ -298,22 +302,22 @@ private:
         // 4: Serial Number
         {
             .Key = CO_KEY(0x1018, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
-            .Type = 0,
+            .Type = nullptr,
             .Data = (uintptr_t) 0x10,
         },
         {
             .Key = CO_KEY(0x1018, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
-            .Type = 0,
+            .Type = nullptr,
             .Data = (uintptr_t) 0x11,
         },
         {
             .Key = CO_KEY(0x1018, 3, CO_UNSIGNED32 | CO_OBJ_D__R_),
-            .Type = 0,
+            .Type = nullptr,
             .Data = (uintptr_t) 0x12,
         },
         {
             .Key = CO_KEY(0x1018, 4, CO_UNSIGNED32 | CO_OBJ_D__R_),
-            .Type = 0,
+            .Type = nullptr,
             .Data = (uintptr_t) 0x13,
         },
 
@@ -322,12 +326,12 @@ private:
         // 2: Server -> Client ID, default is 0x580 + NODE_ID
         {
             .Key = CO_KEY(0x1200, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
-            .Type = 0,
+            .Type = nullptr,
             .Data = (uintptr_t) 0x600 + NODE_ID,
         },
         {
             .Key = CO_KEY(0x1200, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
-            .Type = 0,
+            .Type = nullptr,
             .Data = (uintptr_t) 0x580 + NODE_ID,
         },
 
@@ -335,28 +339,28 @@ private:
         // 0: The TPDO number, default 0
         // 1: The COB-ID used by TPDO0, provided as a function of the TPDO
         //    number
-        // 2: How the TPO is triggered, default to manual triggering
+        // 2: How the TPDO is triggered, defaulting to manual trigger
         // 3: Inhibit time, defaults to 0
         // 5: Timer trigger time in 1ms units, 0 will disable the timer based
         //    triggering
         {
             .Key = CO_KEY(0x1800, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
-            .Type = 0,
+            .Type = nullptr,
             .Data = (uintptr_t) 5,
         },
         {
             .Key = CO_KEY(0x1800, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
-            .Type = 0,
+            .Type = nullptr,
             .Data = (uintptr_t) 0x40000180 + NODE_ID,
         },
         {
             .Key = CO_KEY(0x1800, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
-            .Type = 0,
+            .Type = nullptr,
             .Data = (uintptr_t) 0xFE,
         },
         {
             .Key = CO_KEY(0x1800, 3, CO_UNSIGNED16 | CO_OBJ_D__R_),
-            .Type = 0,
+            .Type = nullptr,
             .Data = (uintptr_t) 0,
         },
         {
@@ -365,18 +369,18 @@ private:
             .Data = (uintptr_t) 2000,
         },
 
-        // TPDO0 mapping, determins the PDO messages to send when TPDO1 is triggered
+        // TPDO0 mapping, determines the PDO messages to send when TPDO1 is triggered
         // 0: The number of PDO message associated with the TPDO
         // 1: Link to the first PDO message
         // n: Link to the nth PDO message
         {
             .Key = CO_KEY(0x1A00, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
-            .Type = 0,
+            .Type = nullptr,
             .Data = (uintptr_t) 1,
         },
         {
             .Key = CO_KEY(0x1A00, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
-            .Type = 0,
+            .Type = nullptr,
             .Data = CO_LINK(0x2101, 0, 8),// Link to sample data position in dictionary
         },
 
@@ -387,7 +391,7 @@ private:
         {
             // The number of settings stored
             .Key = CO_KEY(0x2100, 0, CO_UNSIGNED16 | CO_OBJ___PRW),
-            .Type = 0,
+            .Type = nullptr,
             .Data = (uintptr_t) &bqSettingsStorage.numSettings,
         },
         {
@@ -398,84 +402,84 @@ private:
         },
 
         // Voltage values, as read from the BQ chip. The total voltage will
-        // periodically be broadcasted as a PDO. The individual series cell
-        // voltages will not be broadcasted via PDO, but will still be
+        // periodically be broadcast as a PDO. The individual series cell
+        // voltages will not be broadcast via PDO, but will still be
         // accessible over SDO.
         {
             .Key = CO_KEY(0x2101, 0, CO_UNSIGNED32 | CO_OBJ___PR_),
-            .Type = 0,
+            .Type = nullptr,
             .Data = (uintptr_t) &totalVoltage,
         },
         {
             .Key = CO_KEY(0x2101, 1, CO_UNSIGNED16 | CO_OBJ___PR_),
-            .Type = 0,
+            .Type = nullptr,
             .Data = (uintptr_t) &cellVoltage[0],
         },
         {
             .Key = CO_KEY(0x2101, 2, CO_UNSIGNED16 | CO_OBJ___PR_),
-            .Type = 0,
+            .Type = nullptr,
             .Data = (uintptr_t) &cellVoltage[1],
         },
         {
             .Key = CO_KEY(0x2101, 3, CO_UNSIGNED16 | CO_OBJ___PR_),
-            .Type = 0,
+            .Type = nullptr,
             .Data = (uintptr_t) &cellVoltage[2],
         },
         {
             .Key = CO_KEY(0x2101, 4, CO_UNSIGNED16 | CO_OBJ___PR_),
-            .Type = 0,
+            .Type = nullptr,
             .Data = (uintptr_t) &cellVoltage[3],
         },
         {
             .Key = CO_KEY(0x2101, 5, CO_UNSIGNED16 | CO_OBJ___PR_),
-            .Type = 0,
+            .Type = nullptr,
             .Data = (uintptr_t) &cellVoltage[4],
         },
         {
             .Key = CO_KEY(0x2101, 6, CO_UNSIGNED16 | CO_OBJ___PR_),
-            .Type = 0,
+            .Type = nullptr,
             .Data = (uintptr_t) &cellVoltage[5],
         },
         {
             .Key = CO_KEY(0x2101, 7, CO_UNSIGNED16 | CO_OBJ___PR_),
-            .Type = 0,
+            .Type = nullptr,
             .Data = (uintptr_t) &cellVoltage[6],
         },
         {
             .Key = CO_KEY(0x2101, 8, CO_UNSIGNED16 | CO_OBJ___PR_),
-            .Type = 0,
+            .Type = nullptr,
             .Data = (uintptr_t) &cellVoltage[7],
         },
         {
             .Key = CO_KEY(0x2101, 9, CO_UNSIGNED16 | CO_OBJ___PR_),
-            .Type = 0,
+            .Type = nullptr,
             .Data = (uintptr_t) &cellVoltage[8],
         },
         {
             .Key = CO_KEY(0x2101, 10, CO_UNSIGNED16 | CO_OBJ___PR_),
-            .Type = 0,
+            .Type = nullptr,
             .Data = (uintptr_t) &cellVoltage[9],
         },
         {
             .Key = CO_KEY(0x2101, 11, CO_UNSIGNED16 | CO_OBJ___PR_),
-            .Type = 0,
+            .Type = nullptr,
             .Data = (uintptr_t) &cellVoltage[10],
         },
         {
             .Key = CO_KEY(0x2101, 12, CO_UNSIGNED16 | CO_OBJ___PR_),
-            .Type = 0,
+            .Type = nullptr,
             .Data = (uintptr_t) &cellVoltage[11],
         },
 
         /// The current state the BMS is in. Can be read and written to
         {
             .Key = CO_KEY(0x2102, 0, CO_UNSIGNED32 | CO_OBJ___PRW),
-            .Type = 0,
+            .Type = nullptr,
             .Data = (uintptr_t) &state,
         },
 
         /// Expose information on the balancing of the target cells. Per
-        /// cell abilty to poll if the cell is balancing and write out
+        /// cell ability to poll if the cell is balancing and write out
         /// balancing control.
         {
             .Key = CO_KEY(0x2103, 1, CO_UNSIGNED8 | CO_OBJ___PRW),
