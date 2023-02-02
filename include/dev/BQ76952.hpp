@@ -6,6 +6,8 @@
 
 #include <BQSetting.hpp>
 
+#define CELL_REG(i) CELL_BALANCE_MAPPING[i] * 2 + 0x14
+
 namespace BMS::DEV {
 
 /**

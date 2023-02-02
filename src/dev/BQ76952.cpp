@@ -365,7 +365,7 @@ BQ76952::Status BQ76952::getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32
     uint32_t currentVoltage = 0;
     // Loop over all the cells and update the corresponding voltage
     for (uint8_t i = 0; i < NUM_CELLS; i++) {
-        status = makeDirectRead(CELL_REGS[i], &cellVoltages[i]);
+        status = makeDirectRead(CELL_REG(i), &cellVoltages[i]);
         if (status != Status::OK) {
             return status;
         }
