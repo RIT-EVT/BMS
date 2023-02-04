@@ -231,7 +231,7 @@ BQ76952::Status BQ76952::communicationStatus() {
 BQ76952::Status BQ76952::getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32_t& sum, cellVoltageInfo& voltageInfo) {
     Status status = Status::OK;
     uint8_t cellVoltageReg = CELL_VOLTAGE_BASE_REG;
-    //Must use temporary storage variables or else the values displayed in PEAK will be inaccurate from regular changes.
+    //Must use temporary storage variables or else the values reported over CAN will be inaccurate from regular changes.
     uint32_t currentVoltage = 0;
     int16_t currentMinVoltage = 4;
     int16_t currentMaxVoltage =0 ;
