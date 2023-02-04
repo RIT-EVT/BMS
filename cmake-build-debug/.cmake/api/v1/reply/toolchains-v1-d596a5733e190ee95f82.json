@@ -1,0 +1,127 @@
+{
+	"kind" : "toolchains",
+	"toolchains" : 
+	[
+		{
+			"compiler" : 
+			{
+				"implicit" : {},
+				"path" : "C:/Program_Files_(x86)/GNU_Arm Embedded_Toolchain/10_2021.10/bin/arm-none-eabi-gcc.exe"
+			},
+			"language" : "ASM"
+		},
+		{
+			"compiler" : 
+			{
+				"id" : "GNU",
+				"implicit" : 
+				{
+					"includeDirectories" : 
+					[
+						"C:/Program_Files_(x86)/GNU_Arm Embedded_Toolchain/10_2021.10/lib/gcc/arm-none-eabi/10.3.1/include",
+						"C:/Program_Files_(x86)/GNU_Arm Embedded_Toolchain/10_2021.10/lib/gcc/arm-none-eabi/10.3.1/include-fixed",
+						"C:/Program_Files_(x86)/GNU_Arm Embedded_Toolchain/10_2021.10/arm-none-eabi/include"
+					],
+					"linkDirectories" : 
+					[
+						"C:/Program_Files_(x86)/GNU_Arm Embedded_Toolchain/10_2021.10/lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard",
+						"C:/Program_Files_(x86)/GNU_Arm Embedded_Toolchain/10_2021.10/arm-none-eabi/lib/thumb/v7e-m+fp/hard",
+						"C:/Program_Files_(x86)/GNU_Arm Embedded_Toolchain/10_2021.10/lib/gcc/arm-none-eabi/10.3.1",
+						"C:/Program_Files_(x86)/GNU_Arm Embedded_Toolchain/10_2021.10/lib/gcc",
+						"C:/Program_Files_(x86)/GNU_Arm Embedded_Toolchain/10_2021.10/arm-none-eabi/lib"
+					],
+					"linkFrameworkDirectories" : [],
+					"linkLibraries" : 
+					[
+						"c_nano",
+						"m",
+						"nosys",
+						"gcc",
+						"g_nano",
+						"c_nano",
+						"gcc",
+						"c_nano",
+						"nosys",
+						"gcc",
+						"c_nano",
+						"nosys"
+					]
+				},
+				"path" : "C:/Program_Files_(x86)/GNU_Arm Embedded_Toolchain/10_2021.10/bin/arm-none-eabi-gcc.exe",
+				"version" : "10.3.1"
+			},
+			"language" : "C",
+			"sourceFileExtensions" : 
+			[
+				"c",
+				"m"
+			]
+		},
+		{
+			"compiler" : 
+			{
+				"id" : "GNU",
+				"implicit" : 
+				{
+					"includeDirectories" : 
+					[
+						"C:/Program_Files_(x86)/GNU_Arm Embedded_Toolchain/10_2021.10/arm-none-eabi/include/c++/10.3.1",
+						"C:/Program_Files_(x86)/GNU_Arm Embedded_Toolchain/10_2021.10/arm-none-eabi/include/c++/10.3.1/arm-none-eabi/thumb/v7e-m+fp/hard",
+						"C:/Program_Files_(x86)/GNU_Arm Embedded_Toolchain/10_2021.10/arm-none-eabi/include/c++/10.3.1/backward",
+						"C:/Program_Files_(x86)/GNU_Arm Embedded_Toolchain/10_2021.10/lib/gcc/arm-none-eabi/10.3.1/include",
+						"C:/Program_Files_(x86)/GNU_Arm Embedded_Toolchain/10_2021.10/lib/gcc/arm-none-eabi/10.3.1/include-fixed",
+						"C:/Program_Files_(x86)/GNU_Arm Embedded_Toolchain/10_2021.10/arm-none-eabi/include"
+					],
+					"linkDirectories" : 
+					[
+						"C:/Program_Files_(x86)/GNU_Arm Embedded_Toolchain/10_2021.10/lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard",
+						"C:/Program_Files_(x86)/GNU_Arm Embedded_Toolchain/10_2021.10/arm-none-eabi/lib/thumb/v7e-m+fp/hard",
+						"C:/Program_Files_(x86)/GNU_Arm Embedded_Toolchain/10_2021.10/lib/gcc/arm-none-eabi/10.3.1",
+						"C:/Program_Files_(x86)/GNU_Arm Embedded_Toolchain/10_2021.10/lib/gcc",
+						"C:/Program_Files_(x86)/GNU_Arm Embedded_Toolchain/10_2021.10/arm-none-eabi/lib"
+					],
+					"linkFrameworkDirectories" : [],
+					"linkLibraries" : 
+					[
+						"nosys",
+						"stdc++_nano",
+						"m",
+						"c_nano",
+						"gcc",
+						"g_nano",
+						"c_nano",
+						"gcc",
+						"c_nano",
+						"nosys",
+						"gcc",
+						"c_nano",
+						"nosys"
+					]
+				},
+				"path" : "C:/Program_Files_(x86)/GNU_Arm Embedded_Toolchain/10_2021.10/bin/arm-none-eabi-g++.exe",
+				"version" : "10.3.1"
+			},
+			"language" : "CXX",
+			"sourceFileExtensions" : 
+			[
+				"C",
+				"M",
+				"c++",
+				"cc",
+				"cpp",
+				"cxx",
+				"m",
+				"mm",
+				"mpp",
+				"CPP",
+				"ixx",
+				"cppm"
+			]
+		}
+	],
+	"version" : 
+	{
+		"major" : 1,
+		"minor" : 0
+	}
+}

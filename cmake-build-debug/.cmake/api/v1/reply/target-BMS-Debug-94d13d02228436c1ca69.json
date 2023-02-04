@@ -1,0 +1,281 @@
+{
+	"archive" : {},
+	"artifacts" : 
+	[
+		{
+			"path" : "libBMSd.a"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"install",
+			"install_and_expose",
+			"target_link_libraries",
+			"add_compile_definitions",
+			"target_compile_definitions",
+			"target_include_directories",
+			"target_sources"
+		],
+		"files" : 
+		[
+			"CMakeLists.txt",
+			"libs/EVT-core/cmake/evt-core_install.cmake"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 50,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 73,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 16,
+				"parent" : 2
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 66,
+				"parent" : 0
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 8,
+				"parent" : 0
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 20,
+				"parent" : 0
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 21,
+				"parent" : 0
+			},
+			{
+				"command" : 5,
+				"file" : 1,
+				"line" : 12,
+				"parent" : 2
+			},
+			{
+				"command" : 6,
+				"file" : 1,
+				"line" : 7,
+				"parent" : 2
+			},
+			{
+				"command" : 7,
+				"file" : 0,
+				"line" : 53,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16                             -mfloat-abi=hard -Og -Wall -fdata-sections                             -ffunction-sections -MMD -MP -MF -ggdb -g3                             -fno-rtti -Wvla -g"
+				},
+				{
+					"fragment" : "-std=gnu++17"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 5,
+					"define" : "CO_TPDO_N=8"
+				},
+				{
+					"backtrace" : 6,
+					"define" : "STM32F334x8"
+				},
+				{
+					"backtrace" : 7,
+					"define" : "STM32F3xx"
+				},
+				{
+					"backtrace" : 8,
+					"define" : "_EXPORT"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 9,
+					"path" : "C:/Users/trevo/CLionProjects/BMS/include"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "C:/Users/trevo/CLionProjects/BMS/libs/EVT-core/include"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "C:/Users/trevo/CLionProjects/BMS/libs/EVT-core/libs/HALf3/include"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "C:/Users/trevo/CLionProjects/BMS/libs/EVT-core/libs/canopen/canopen/config"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "C:/Users/trevo/CLionProjects/BMS/libs/EVT-core/libs/canopen/canopen/include"
+				}
+			],
+			"language" : "CXX",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					1
+				],
+				"standard" : "17"
+			},
+			"sourceIndexes" : 
+			[
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7
+			]
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 4,
+			"id" : "EVT::@485a6e76225502ead673"
+		},
+		{
+			"backtrace" : 4,
+			"id" : "HALf3::@e1f8d405e6a15bd41192"
+		},
+		{
+			"backtrace" : 4,
+			"id" : "Canopen::@616149bc794c5bd58fab"
+		}
+	],
+	"id" : "BMS::@6890427a1f51a3e7e1df",
+	"install" : 
+	{
+		"destinations" : 
+		[
+			{
+				"backtrace" : 3,
+				"path" : "lib"
+			}
+		],
+		"prefix" : 
+		{
+			"path" : "C:/Program Files (x86)/EVT"
+		}
+	},
+	"name" : "BMS",
+	"nameOnDisk" : "libBMSd.a",
+	"paths" : 
+	{
+		"build" : ".",
+		"source" : "."
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Header Files",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		},
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"path" : "include/BMS/dev/BMSInfo.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 10,
+			"compileGroupIndex" : 0,
+			"path" : "src/BMS.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 10,
+			"compileGroupIndex" : 0,
+			"path" : "src/BMSLogger.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 10,
+			"compileGroupIndex" : 0,
+			"path" : "src/BQSettingStorage.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 10,
+			"compileGroupIndex" : 0,
+			"path" : "src/BQSetting.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 10,
+			"compileGroupIndex" : 0,
+			"path" : "src/dev/BQ76952.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 10,
+			"compileGroupIndex" : 0,
+			"path" : "src/dev/Interlock.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 10,
+			"compileGroupIndex" : 0,
+			"path" : "src/dev/SystemDetect.cpp",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "STATIC_LIBRARY"
+}

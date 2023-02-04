@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "libs/EVT-core/libs/canopen/canopen",
+		"source" : "libs/EVT-core/libs/canopen/canopen"
+	}
+}

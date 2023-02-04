@@ -24,9 +24,6 @@ include(CMakeDependentOption)
 include(${EVT_CORE_DIR}/cmake/evt-core_compiler.cmake)
 include(${EVT_CORE_DIR}/cmake/evt-core_install.cmake)
 
-# Link to the EVT-core library
-add_subdirectory(libs/EVT-core/)
-
 ###############################################################################
 # Project Setup
 ###############################################################################
@@ -48,7 +45,6 @@ add_library(${PROJECT_NAME} STATIC)
 # Add sources
 target_sources(${PROJECT_NAME} PRIVATE
     src/BMS.cpp
-    src/BMSLogger.cpp
     src/BQSettingStorage.cpp
     src/BQSetting.cpp
     src/dev/BQ76952.cpp
