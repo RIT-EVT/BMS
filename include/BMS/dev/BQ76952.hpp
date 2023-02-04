@@ -163,10 +163,6 @@ public:
      * @param[out] cellVoltages The buffer to fill with the cell voltage. Must be NUM_CELLS in size
      * @param[out] sum The total voltage across all cells
      * @param[out] voltageInfo A struct containing the values below.
-     * @param[out] minVoltage Voltage value of the lowest cell voltage of all cells in the pack.
-     * @param[out] maxVoltage Voltage value of the highes cell voltage of all cells in the pack.
-     * @param[out] minCellVoltageID The ID of the cell with the lowest voltage.
-     * @param[out] maxCellVoltageId The ID of the cell with the highest voltage.
      * @return The status of the read attempt
      */
     Status getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32_t& sum, cellVoltageInfo& voltageInfo);

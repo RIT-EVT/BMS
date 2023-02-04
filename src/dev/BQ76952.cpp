@@ -226,7 +226,6 @@ BQ76952::Status BQ76952::communicationStatus() {
     }
     return BQ76952::Status::ERROR;
 }
-// Create struct that will hold CAN interrupt parameters
 
 
 BQ76952::Status BQ76952::getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32_t& sum, cellVoltageInfo& voltageInfo) {
@@ -243,7 +242,6 @@ BQ76952::Status BQ76952::getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32
     for (uint8_t i = 0; i < NUM_CELLS; i++) {
 
         status = makeDirectRead(cellVoltageReg, &cellVoltages[i]);
-        status = Status::OK;
         if (status != Status::OK) {
             return status;
         }
@@ -261,9 +259,9 @@ BQ76952::Status BQ76952::getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32
     }
 
     sum = currentVoltage;
-    voltageInfo.minVoltage = currentMinVoltage;
+    voltageInfo.minCellVoltage = currentMinVoltage;
     voltageInfo.minCellVoltageID = currentMinCellID;
-    voltageInfo.maxVoltage = currentMaxVoltage;
+    voltageInfo.maxCellVoltage = currentMaxVoltage;
     voltageInfo.maxCellVoltageId = currentMaxCellID;
 
     return BQ76952::Status::OK;

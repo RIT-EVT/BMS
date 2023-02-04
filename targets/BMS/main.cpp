@@ -1,6 +1,4 @@
-//
-// Created by trevo on 10/6/2022.
-//
+
 /**
  * This is a basic sample of using the UART module. The program provides a
  * basic echo functionality where the uart will write back whatever the user
@@ -158,7 +156,7 @@ int main(){
     canStackDriver.Timer = &timerDriver;
     canStackDriver.Nvm = &nvmDriver;
 
-    CO_NODE_SPEC canSpecOne = {
+    CO_NODE_SPEC canSpec = {
         .NodeId = BMS::BMS::NODE_ID,
         .Baudrate = IO::CAN::DEFAULT_BAUD,
         .Dict = bms.getObjectDictionary(),
@@ -172,7 +170,7 @@ int main(){
     };
 
 
-    CO_NODE canNodeOne;
+    CO_NODE canNode;
 
     time::wait(500);
 
@@ -180,9 +178,9 @@ int main(){
     if(can.connect() != IO::CAN::CANStatus::OK){
     }
     // Intialize CANopen logic
-    CONodeInit(&canNodeOne, &canSpecOne);
-    CONodeStart(&canNodeOne);
-    CONmtSetMode(&canNodeOne.Nmt, CO_OPERATIONAL);
+    CONodeInit(&canNode, &canSpec);
+    CONodeStart(&canNode);
+    CONmtSetMode(&canNode.Nmt, CO_OPERATIONAL);
 
 
     // Main processing loop, contains the following logic
@@ -191,13 +189,13 @@ int main(){
     // 3. Wait for new data to come in
     while (1) {
         // Process incoming CAN messages
-        CONodeProcess(&canNodeOne);
+        CONodeProcess(&canNode);
 
         // Update the state of timer based events
-        COTmrService(&canNodeOne.Tmr);
+        COTmrService(&canNode.Tmr);
 
         // Handle executing timer events that have elapsed
-        COTmrProcess(&canNodeOne.Tmr);
+        COTmrProcess(&canNode.Tmr);
 
         // Update the state of the BMS
         bms.process();

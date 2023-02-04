@@ -135,7 +135,7 @@ void BMS::transferSettingsState() {
         bqSettingsStorage.resetTranfer();
         numAttemptsMade = 0;
         stateChanged = false;
-        //VoltageReadings();
+        clearVoltageReadings();
     }
 
     // Check if an error has taken place, and if so, check to make sure
@@ -269,12 +269,12 @@ void BMS::updateVoltageReadings() {
 }
 
 void BMS::clearVoltageReadings() {
-//    totalVoltage = 0;
-//
-//    // Zero out each cell voltage
-//    for (uint8_t i = 0; i < DEV::BQ76952::NUM_CELLS; i++) {
-//        cellVoltage[i] = 0;
-//    }
+    totalVoltage = 0;
+
+    // Zero out each cell voltage
+    for (uint8_t i = 0; i < DEV::BQ76952::NUM_CELLS; i++) {
+        cellVoltage[i] = 0;
+    }
 }
 
 }// namespace BMS

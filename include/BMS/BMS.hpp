@@ -232,7 +232,10 @@ private:
      * CANopen.
      */
     uint16_t cellVoltage[DEV::BQ76952::NUM_CELLS];
-
+    /**
+     * Used to store values which the BMS updates.
+     * Holds information about the minimum and maximum cell's voltages and Ids.
+     */
     cellVoltageInfo voltageInfo;
     /**
      * Handles the start of the state machine logic. This considers the health
@@ -909,7 +912,7 @@ private:
         {
             .Key = CO_KEY(0x2100, 2, CO_UNSIGNED8 | CO_OBJ___PR_),
             .Type = nullptr,
-            .Data = (uintptr_t) &voltageInfo.minVoltage,
+            .Data = (uintptr_t) &voltageInfo.minCellVoltage,
         },
         {
             .Key = CO_KEY(0x2100, 3, CO_UNSIGNED8 | CO_OBJ___PR_),
@@ -919,7 +922,7 @@ private:
         {
             .Key = CO_KEY(0x2100, 4, CO_UNSIGNED8 | CO_OBJ___PR_),
             .Type = nullptr,
-            .Data = (uintptr_t) &voltageInfo.maxVoltage,
+            .Data = (uintptr_t) &voltageInfo.maxCellVoltage,
         },
         {
             .Key = CO_KEY(0x2100, 5, CO_UNSIGNED8 | CO_OBJ___PR_),
