@@ -38,5 +38,5 @@ of the SRS in `docs/srs.pdf`. The SRS is identical to the one generated via
 
 The DEV1-BMS is one component of the larger DEV1 project, you can find related
 projects in the [RIT-EVT](https://github.com/RIT-EVT) Github page.
-Additionally, the STM32f302r8 driver code is handled via the
+Additionally, the STM32f334 driver code is handled via the
 [EVT-core](https://github.com/RIT-EVT/EVT-core) project.

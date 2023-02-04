@@ -3,7 +3,10 @@
 ###############################################################################
 cmake_minimum_required(VERSION 3.15)
 
-set(EVT_CORE_DIR      ${CMAKE_SOURCE_DIR}/libs/EVT-core)
+# Convert CMake flags to compiler flags
+if(EVT_CORE_LOG_ENABLE)
+    add_compile_definitions(EVT_CORE_LOG_ENABLE)
+endif()
 
 add_compile_definitions(CO_TPDO_N=8)
 # Handle Selection of the target device
@@ -12,17 +15,10 @@ if(NOT TARGET_DEV)
     set(TARGET_DEV "STM32F334x8")
 endif()
 
+set(EVT_CORE_DIR      ${CMAKE_SOURCE_DIR}/libs/EVT-core)
 
-if(TARGET_DEV STREQUAL "STM32F302x8")
-    add_compile_definitions(STM32F302x8)
-    add_compile_definitions(STM32F3xx)
-elseif(TARGET_DEV STREQUAL "STM32F334x8")
-    add_compile_definitions(STM32F334x8)
-    add_compile_definitions(STM32F3xx)
-else()
-    message(FATAL_ERROR "The target device is not supported")
-endif()
-
+# Link to the EVT-core library
+add_subdirectory(libs/EVT-core/)
 
 include(CMakeDependentOption)
 include(${EVT_CORE_DIR}/cmake/evt-core_compiler.cmake)
@@ -35,9 +31,9 @@ add_subdirectory(libs/EVT-core/)
 # Project Setup
 ###############################################################################
 set(BOARD_LIB_NAME   BMS)
-if("${BOARD_LIB_NAME}" STREQUAL CHANGE_ME)
+if("${BOARD_LIB_NAME}" STREQUAL BOARD_NAME)
     message(FATAL_ERROR
-            "You must set the template project name in CmakeLists.txt")
+            "You must set the template project name in the top-level CMakeLists.txt")
 endif()
 
 file(STRINGS version.txt BOARD_VERSION)
@@ -47,7 +43,7 @@ project(${BOARD_LIB_NAME}
         LANGUAGES CXX C
 )
 
-add_library(${PROJECT_NAME} STATIC include/BMS/dev/BMSInfo.hpp)
+add_library(${PROJECT_NAME} STATIC)
 
 # Add sources
 target_sources(${PROJECT_NAME} PRIVATE
@@ -64,8 +60,8 @@ target_sources(${PROJECT_NAME} PRIVATE
 # Handle dependencies
 ###############################################################################
 target_link_libraries(${PROJECT_NAME}
-    PUBLIC EVT
-)
+        PUBLIC EVT
+        )
 
 ###############################################################################
 # Install and expose library

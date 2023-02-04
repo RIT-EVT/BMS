@@ -3,8 +3,10 @@
  * the data is properly formatter and verify that the data is parsed
  * correctly.
  */
-#include <BMS/BQSetting.hpp>
+
 #include <EVT/io/manager.hpp>
+
+#include <BQSetting.hpp>
 
 namespace IO = EVT::core::IO;
 

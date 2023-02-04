@@ -1,8 +1,8 @@
-#include <EVT/utils/time.hpp>
+#include <BQSettingStorage.hpp>
 
-#include <BMS/BMSLogger.hpp>
-#include <BMS/BQSettingStorage.hpp>
-#include <stdint.h>
+#include <EVT/utils/log.hpp>
+
+namespace log = EVT::core::log;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Functions for interacting with the BQSettingsStorage through CANopen
@@ -20,25 +20,25 @@
  */
 static uint32_t COBQSettingSize(struct CO_OBJ_T* obj, struct CO_NODE_T* node,
                                 uint32_t width, void* priv) {
-    BMS::BQSettingsStorage* storage = (BMS::BQSettingsStorage*) priv;
+    auto* storage = (BMS::BQSettingsStorage*) priv;
 
     (void) obj;
     (void) node;
     (void) width;
 
     if (!storage) {
-        BMS::LOGGER.log(BMS::BMSLogger::LogLevel::ERROR, "Storage not provided");
+        log::LOGGER.log(log::Logger::LogLevel::ERROR, "Storage not provided");
         return 0;
     }
 
-    BMS::LOGGER.log(BMS::BMSLogger::LogLevel::DEBUG, "Width value %u", width);
+    log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Width value %u", width);
 
     uint32_t numSettings = storage->getNumSettings();
     uint32_t sizeOfEachSetting = BMS::BQSetting::ARRAY_SIZE;
     uint32_t totalBytes = numSettings * sizeOfEachSetting;
 
-    BMS::LOGGER.log(BMS::BMSLogger::LogLevel::DEBUG, "Number of settings: %u", numSettings);
-    BMS::LOGGER.log(BMS::BMSLogger::LogLevel::DEBUG, "Total bytes: %u", totalBytes);
+    log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Number of settings: %u", numSettings);
+    log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Total bytes: %u", totalBytes);
 
     return totalBytes;
 }
@@ -48,7 +48,7 @@ static uint32_t COBQSettingSize(struct CO_OBJ_T* obj, struct CO_NODE_T* node,
  *
  * NOT YET SUPPORTED.
  *
- * @param obj[in] CANopen stack object dictionary eleement (not used)
+ * @param obj[in] CANopen stack object dictionary element (not used)
  * @param node[in] CANopen stack node (not used)
  * @param buf[out] The buffer to populate with data
  * @param len[in] The amount of data to read
@@ -62,7 +62,7 @@ static CO_ERR COBQSettingRead(CO_OBJ_T* obj, CO_NODE_T* node, void* buf, uint32_
     (void) buf;
     (void) len;
 
-    BMS::LOGGER.log(BMS::BMSLogger::LogLevel::WARNING, "Read not supported for BQSettings");
+    log::LOGGER.log(log::Logger::LogLevel::WARNING, "Read not supported for BQSettings");
 
     return CO_ERR_NONE;
 }
@@ -81,17 +81,18 @@ static CO_ERR COBQSettingRead(CO_OBJ_T* obj, CO_NODE_T* node, void* buf, uint32_
  */
 static CO_ERR COBQSettingWrite(CO_OBJ* obj, CO_NODE_T* node, void* buf, uint32_t len, void* priv) {
 
-    BMS::LOGGER.log(BMS::BMSLogger::LogLevel::INFO, "WRITE REQUEST MADE");
-    BMS::LOGGER.log(BMS::BMSLogger::LogLevel::INFO, "Bytes incoming: %u", len);
+    log::LOGGER.log(log::Logger::LogLevel::INFO, "WRITE REQUEST MADE");
+    log::LOGGER.log(log::Logger::LogLevel::INFO, "Bytes incoming: %u", len);
 
-    uint8_t* buffer = (uint8_t*) buf;
+    auto* buffer = (uint8_t*) buf;
 
-    if (len == 0)
+    if (len == 0) {
         return CO_ERR_NONE;
+    }
 
-    BMS::BQSettingsStorage* storage = (BMS::BQSettingsStorage*) priv;
+    auto* storage = (BMS::BQSettingsStorage*) priv;
     if (!storage) {
-        BMS::LOGGER.log(BMS::BMSLogger::LogLevel::ERROR, "Storage not provided");
+        log::LOGGER.log(log::Logger::LogLevel::ERROR, "Storage not provided");
         return CO_ERR_BAD_ARG;
     }
 
@@ -122,7 +123,7 @@ static CO_ERR COBQSettingCtrl(CO_OBJ* obj, CO_NODE_T* node, uint16_t func, uint3
         return CO_ERR_NONE;
     }
 
-    BMS::BQSettingsStorage* settingsStorage = (BMS::BQSettingsStorage*) priv;
+    auto* settingsStorage = (BMS::BQSettingsStorage*) priv;
 
     // Reset the offset
     if (func == CO_CTRL_SET_OFF) {
@@ -132,22 +133,22 @@ static CO_ERR COBQSettingCtrl(CO_OBJ* obj, CO_NODE_T* node, uint16_t func, uint3
         settingsStorage->writeNumSettings();
     }
 
-    BMS::LOGGER.log(BMS::BMSLogger::LogLevel::INFO, "CTRL FUNCTION EXECUTED");
-    BMS::LOGGER.log(BMS::BMSLogger::LogLevel::INFO, "Function %u", func);
+    log::LOGGER.log(log::Logger::LogLevel::INFO, "CTRL FUNCTION EXECUTED");
+    log::LOGGER.log(log::Logger::LogLevel::INFO, "Function %u", func);
 
     return CO_ERR_NONE;
 }
 
 namespace BMS {
 
-BQSettingsStorage::BQSettingsStorage(EVT::core::DEV::M24C32& eeprom, DEV::BQ76952& bq) : eeprom(eeprom),
-                                                                                         bq(bq) {
-    canOpenInterface.Ctrl = COBQSettingCtrl;
-    canOpenInterface.Read = COBQSettingRead;
-    canOpenInterface.Write = COBQSettingWrite;
-    canOpenInterface.Size = COBQSettingSize;
-    canOpenInterface.Private = this;
-
+BQSettingsStorage::BQSettingsStorage(EVT::core::DEV::M24C32& eeprom, DEV::BQ76952& bq) : canOpenInterface{
+    COBQSettingSize,
+    COBQSettingCtrl,
+    COBQSettingRead,
+    COBQSettingWrite,
+    this,
+},
+                                                                                         eeprom(eeprom), bq(bq) {
     startAddress = 0;
     addressLocation = startAddress + 2;
 
@@ -171,12 +172,12 @@ void BQSettingsStorage::readSetting(BQSetting& setting) {
     eeprom.readBytes(addressLocation,
                      buffer, BMS::BQSetting::ARRAY_SIZE);
 
-    LOGGER.log(BMSLogger::LogLevel::DEBUG,
-               "Address Location: %u", addressLocation);
-    LOGGER.log(BMSLogger::LogLevel::DEBUG,
-               "{ 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x }",
-               buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5],
-               buffer[6]);
+    log::LOGGER.log(log::Logger::LogLevel::DEBUG,
+                    "Address Location: %u", addressLocation);
+    log::LOGGER.log(log::Logger::LogLevel::DEBUG,
+                    "{ 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x }",
+                    buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5],
+                    buffer[6]);
 
     setting.fromArray(buffer);
 
@@ -189,13 +190,13 @@ void BQSettingsStorage::writeSetting(BQSetting& setting) {
     uint8_t buffer[BMS::BQSetting::ARRAY_SIZE];
     setting.toArray(buffer);
 
-    LOGGER.log(BMSLogger::LogLevel::DEBUG,
-               "{ 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x }",
-               buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5],
-               buffer[6]);
+    log::LOGGER.log(log::Logger::LogLevel::DEBUG,
+                    "{ 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x }",
+                    buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5],
+                    buffer[6]);
 
-    LOGGER.log(BMSLogger::LogLevel::DEBUG, "Writting to address: 0x%02x",
-               addressLocation);
+    log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Writing to address: 0x%02x",
+                    addressLocation);
     // Write the array of data into the EEPROM
     eeprom.writeBytes(addressLocation,
                       buffer, BMS::BQSetting::ARRAY_SIZE);
@@ -210,7 +211,7 @@ void BQSettingsStorage::writeSetting(BQSetting& setting) {
 void BQSettingsStorage::writeNumSettings() {
     eeprom.writeHalfWord(startAddress, numSettings);
 
-    // Once the total number of settings have been udpated, assume none
+    // Once the total number of settings have been updated, assume none
     // have yet been written.
     numSettingsWritten = 0;
 }
@@ -221,7 +222,7 @@ void BQSettingsStorage::resetEEPROMOffset() {
     addressLocation = startAddress + 2;
 }
 
-void BQSettingsStorage::resetTranfer() {
+void BQSettingsStorage::resetTransfer() {
     numSettingsTransferred = 0;
     resetEEPROMOffset();
 }
@@ -247,9 +248,9 @@ BMS::DEV::BQ76952::Status BQSettingsStorage::transferSetting(bool& isComplete) {
     if (status != BMS::DEV::BQ76952::Status::OK) {
         isComplete = false;
 
-        LOGGER.log(BMSLogger::LogLevel::ERROR,
-                   "Failed with address: 0x%04x, data: 0x%04x",
-                   setting.getAddress(), setting.getData());
+        log::LOGGER.log(log::Logger::LogLevel::ERROR,
+                        "Failed with address: 0x%04x, data: 0x%04x",
+                        setting.getAddress(), setting.getData());
 
         bq.exitConfigUpdateMode();
         return status;

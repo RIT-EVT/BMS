@@ -16,7 +16,7 @@ public:
      *
      * @pre The GPIO is set as an input
      */
-    Interlock(EVT::core::IO::GPIO& gpio);
+    explicit Interlock(EVT::core::IO::GPIO& gpio);
 
     /**
      * See if a cable is detected in the interlock

@@ -102,8 +102,8 @@ class BQSetting:
     def from_ti(string: str):
         """
         Convert the given TI format line (really just a CSV) into a BQSetting.
-        This also handles the logic of converting the data from the "user
-        friendly format" into a format that can be transfered.
+        This also handles the logic of converting the data from the
+        "user-friendly format" into a format that can be transferred.
 
         For example, this function will convert fractions into the packed
         IEEE format that is specified in "Section 3.3 Data Formats" of the
@@ -138,9 +138,9 @@ class BQSetting:
                                                       str(unconverted_data))
         converted_data = eval(conversion_string)
 
-        # Conversion between the types as defined by TI and how they coorilate
-        # to python stryct format characters. This takes account the size and
-        # type of the data
+        # Conversion between the types as defined by TI and how they correlate
+        # to python strict format characters. This takes into account the size
+        # and type of the data
         type_conversion = {
             # Byte sized data
             ('B', 1): 'B',
@@ -176,7 +176,7 @@ class BQSetting:
         Convert the BQSetting into a bytearray containing the binary contents
         of the setting in the format described TODO: Add URL
 
-        :return: Byte array of the data in the fomat described in url above
+        :return: Byte array of the data in the format described in url above
         """
         result = bytearray()
 

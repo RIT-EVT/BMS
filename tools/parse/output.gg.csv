@@ -1,0 +1,271 @@
+,Class name, SubClass name, Parameter name, Display Units, Data Type, Data Length, Address Offset, Default Value, Minimum Value, Maximum Value, Display Format, Read Formula, Write Formula, Flags,  Help, Native Units
+0,Calibration,Voltage,Cell 1 Gain,—,I,2,0x00009180,0,-32767,32767,ddd,x+0,x,,,—
+1,Calibration,Voltage,Cell 2 Gain,—,I,2,0x00009182,0,-32767,32767,ddd,x+0,x,,,—
+2,Calibration,Voltage,Cell 3 Gain,—,I,2,0x00009184,0,-32767,32767,ddd,x+0,x,,,—
+3,Calibration,Voltage,Cell 4 Gain,—,I,2,0x00009186,0,-32767,32767,ddd,x+0,x,,,—
+4,Calibration,Voltage,Cell 5 Gain,—,I,2,0x00009188,0,-32767,32767,ddd,x+0,x,,,—
+5,Calibration,Voltage,Cell 6 Gain,—,I,2,0x0000918a,0,-32767,32767,ddd,x+0,x,,,—
+6,Calibration,Voltage,Cell 7 Gain,—,I,2,0x0000918c,0,-32767,32767,ddd,x+0,x,,,—
+7,Calibration,Voltage,Cell 8 Gain,—,I,2,0x0000918e,0,-32767,32767,ddd,x+0,x,,,—
+8,Calibration,Voltage,Cell 9 Gain,—,I,2,0x00009190,0,-32767,32767,ddd,x+0,x,,,—
+9,Calibration,Voltage,Cell 10 Gain,—,I,2,0x00009192,0,-32767,32767,ddd,x+0,x,,,—
+10,Calibration,Voltage,Cell 11 Gain,—,I,2,0x00009194,0,-32767,32767,ddd,x+0,x,,,—
+11,Calibration,Voltage,Cell 12 Gain,—,I,2,0x00009196,0,-32767,32767,ddd,x+0,x,,,—
+12,Calibration,Voltage,Cell 13 Gain,—,I,2,0x00009198,0,-32767,32767,ddd,x+0,x,,,—
+13,Calibration,Voltage,Cell 14 Gain,—,I,2,0x0000919a,0,-32767,32767,ddd,x+0,x,,,—
+14,Calibration,Voltage,Cell 15 Gain,—,I,2,0x0000919c,0,-32767,32767,ddd,x+0,x,,,—
+15,Calibration,Voltage,Cell 16 Gain,—,I,2,0x0000919e,0,-32767,32767,ddd,x+0,x,,,—
+16,Calibration,Voltage,Pack Gain,—,U,2,0x000091a0,0,0,65535,ddd,x+0,x,,,—
+17,Calibration,Voltage,TOS Gain,—,U,2,0x000091a2,0,0,65535,ddd,x+0,x,,,—
+18,Calibration,Voltage,LD Gain,—,U,2,0x000091a4,0,0,65535,ddd,x+0,x,,,—
+19,Calibration,Voltage,ADC Gain,—,I,2,0x000091a6,0,-32767,32767,ddd,x+0,x,,,—
+20,Calibration,Current,CC Gain,mΩ,F,4,0x000091a8,75,1.00E-02,10.00E+02,f.ffffff,7.5684/x,7.5684/x,,,—
+21,Calibration,Current,Capacity Gain,mΩ,F,4,0x000091ac,223004430,2.98262E+03,4.193046E+08,f.ffffff,2257363.227/x,2257363.227/x,,,—
+22,Calibration,Vcell Offset,Vcell Offset,mV,I,2,0x000091b0,0,-32767,32767,ddd,x+0,x,,,mV
+23,Calibration,V Divider Offset,Vdiv Offset,userV,I,2,0x000091b2,0,-32767,32767,ddd,x+0,x,,,userV
+24,Calibration,Current Offset,Coulomb Counter Offset Samples,—,U,2,0x000091c6,64,0,65535,ddd,x+0,x,,,—
+25,Calibration,Current Offset,Board Offset,—,I,2,0x000091c8,0,-32768,32767,ddd,x+0,x,,,—
+26,Calibration,Temperature,Internal Temp Offset,°C,I,1,0x000091ca,0,-128,127,dd.d,x+0,x,,,0.1°C
+27,Calibration,Temperature,CFETOFF Temp Offset,°C,I,1,0x000091cb,0,-128,127,dd.d,x+0,x,,,0.1°C
+28,Calibration,Temperature,DFETOFF Temp Offset,°C,I,1,0x000091cc,0,-128,127,dd.d,x+0,x,,,0.1°C
+29,Calibration,Temperature,ALERT Temp Offset,°C,I,1,0x000091cd,0,-128,127,dd.d,x+0,x,,,0.1°C
+30,Calibration,Temperature,TS1 Temp Offset,°C,I,1,0x000091ce,0,-128,127,dd.d,x+0,x,,,0.1°C
+31,Calibration,Temperature,TS2 Temp Offset,°C,I,1,0x000091cf,0,-128,127,dd.d,x+0,x,,,0.1°C
+32,Calibration,Temperature,TS3 Temp Offset,°C,I,1,0x000091d0,0,-128,127,dd.d,x+0,x,,,0.1°C
+33,Calibration,Temperature,HDQ Temp Offset,°C,I,1,0x000091d1,0,-128,127,dd.d,x+0,x,,,0.1°C
+34,Calibration,Temperature,DCHG Temp Offset,°C,I,1,0x000091d2,0,-128,127,dd.d,x+0,x,,,0.1°C
+35,Calibration,Temperature,DDSG Temp Offset,°C,I,1,0x000091d3,0,-128,127,dd.d,x+0,x,,,0.1°C
+36,Calibration,Internal Temp Model,Int Gain,—,I,2,0x000091e2,25390,-32768,32767,ddd,x+0,x,,,—
+37,Calibration,Internal Temp Model,Int base offset,—,I,2,0x000091e4,3032,-32768,32767,ddd,x+0,x,,,—
+38,Calibration,Internal Temp Model,Int Maximum AD,—,I,2,0x000091e6,16383,-32768,32767,ddd,x+0,x,,,—
+39,Calibration,Internal Temp Model,Int Maximum Temp,0.1K,I,2,0x000091e8,6379,0,32767,ddd,x+0,x,,,0.1K
+40,Calibration,18K Temperature Model,Coeff a1,—,I,2,0x000091ea,-15524,-32768,32767,ddd,x+0,x,,,—
+41,Calibration,18K Temperature Model,Coeff a2,—,I,2,0x000091ec,26423,-32768,32767,ddd,x+0,x,,,—
+42,Calibration,18K Temperature Model,Coeff a3,—,I,2,0x000091ee,-22664,-32768,32767,ddd,x+0,x,,,—
+43,Calibration,18K Temperature Model,Coeff a4,—,I,2,0x000091f0,28834,-32768,32767,ddd,x+0,x,,,—
+44,Calibration,18K Temperature Model,Coeff a5,—,I,2,0x000091f2,672,-32768,32767,ddd,x+0,x,,,—
+45,Calibration,18K Temperature Model,Coeff b1,—,I,2,0x000091f4,-371,-32768,32767,ddd,x+0,x,,,—
+46,Calibration,18K Temperature Model,Coeff b2,—,I,2,0x000091f6,708,-32768,32767,ddd,x+0,x,,,—
+47,Calibration,18K Temperature Model,Coeff b3,—,I,2,0x000091f8,-3498,-32768,32767,ddd,x+0,x,,,—
+48,Calibration,18K Temperature Model,Coeff b4,—,I,2,0x000091fa,5051,-32768,32767,ddd,x+0,x,,,—
+49,Calibration,18K Temperature Model,Adc0,—,I,2,0x000091fe,11703,-32768,32767,ddd,x+0,x,,,—
+50,Calibration,180K Temperature Model,Coeff a1,—,I,2,0x00009200,-17513,-32768,32767,ddd,x+0,x,,,—
+51,Calibration,180K Temperature Model,Coeff a2,—,I,2,0x00009202,25759,-32768,32767,ddd,x+0,x,,,—
+52,Calibration,180K Temperature Model,Coeff a3,—,I,2,0x00009204,-23593,-32768,32767,ddd,x+0,x,,,—
+53,Calibration,180K Temperature Model,Coeff a4,—,I,2,0x00009206,32175,-32768,32767,ddd,x+0,x,,,—
+54,Calibration,180K Temperature Model,Coeff a5,—,I,2,0x00009208,2090,-32768,32767,ddd,x+0,x,,,—
+55,Calibration,180K Temperature Model,Coeff b1,—,I,2,0x0000920a,-2055,-32768,32767,ddd,x+0,x,,,—
+56,Calibration,180K Temperature Model,Coeff b2,—,I,2,0x0000920c,2955,-32768,32767,ddd,x+0,x,,,—
+57,Calibration,180K Temperature Model,Coeff b3,—,I,2,0x0000920e,-3427,-32768,32767,ddd,x+0,x,,,—
+58,Calibration,180K Temperature Model,Coeff b4,—,I,2,0x00009210,4385,-32768,32767,ddd,x+0,x,,,—
+59,Calibration,180K Temperature Model,Adc0,—,I,2,0x00009214,17246,-32768,32767,ddd,x+0,x,,,—
+60,Calibration,Custom Temperature Model,Coeff a1,—,I,2,0x00009216,0,-32768,32767,ddd,x+0,x,,,—
+61,Calibration,Custom Temperature Model,Coeff a2,—,I,2,0x00009218,0,-32768,32767,ddd,x+0,x,,,—
+62,Calibration,Custom Temperature Model,Coeff a3,—,I,2,0x0000921a,0,-32768,32767,ddd,x+0,x,,,—
+63,Calibration,Custom Temperature Model,Coeff a4,—,I,2,0x0000921c,0,-32768,32767,ddd,x+0,x,,,—
+64,Calibration,Custom Temperature Model,Coeff a5,—,I,2,0x0000921e,0,-32768,32767,ddd,x+0,x,,,—
+65,Calibration,Custom Temperature Model,Coeff b1,—,I,2,0x00009220,0,-32768,32767,ddd,x+0,x,,,—
+66,Calibration,Custom Temperature Model,Coeff b2,—,I,2,0x00009222,0,-32768,32767,ddd,x+0,x,,,—
+67,Calibration,Custom Temperature Model,Coeff b3,—,I,2,0x00009224,0,-32768,32767,ddd,x+0,x,,,—
+68,Calibration,Custom Temperature Model,Coeff b4,—,I,2,0x00009226,0,-32768,32767,ddd,x+0,x,,,—
+69,Calibration,Custom Temperature Model,Rc0,—,I,2,0x00009228,0,-32768,32767,ddd,x+0,x,,,—
+70,Calibration,Custom Temperature Model,Adc0,—,I,2,0x0000922a,0,-32768,32767,ddd,x+0,x,,,—
+71,Calibration,Current Deadband,Coulomb Counter Deadband,234nV,U,1,0x0000922d,9,0,255,ddd,x+0,x,,,234nV
+72,Calibration,CUV,CUV Threshold Override,Hex,U,2,0x000091d4,ffff,0x0000,0xffff,hhhh,x,x,,,Hex
+73,Calibration,COV,COV Threshold Override,Hex,U,2,0x000091d6,ffff,0x0000,0xffff,hhhh,x,x,,,Hex
+74,Settings,Fuse,Min Blow Fuse Voltage,mV,I,2,0x00009231,32767,0,32767,ddd,x*10,x/10,,,10mV
+75,Settings,Fuse,Fuse Blow Timeout,s,U,1,0x00009233,0,0,255,ddd,x+0,x,,,s
+76,Settings,Configuration,Power Config,Hex,B,2,0x00009234,2181,0,0xffff,hhhh,x,x,RSVD_0|RSVD_0|DPSLP_OT|SHUT_TS2|DPSLP_PD|DPSLP_LDO|DPSLP_LFO|SLEEP|OTSD|FASTADC|CB_LOOP_SLOW_1|CB_LOOP_SLOW_0|LOOP_SLOW_1|LOOP_SLOW_0|WK_SPD_1|WK_SPD_0,,Hex
+77,Settings,Configuration,REG12 Config,Hex,B,1,0x00009236,cc,0,0xff,hh,x,x,REG2V_2|REG2V_1|REG2V_0|REG2_EN|REG1V_2|REG1V_1|REG1V_0|REG1_EN,,Hex
+78,Settings,Configuration,REG0 Config,Hex,B,1,0x00009237,00,0,0x03,hh,x,x,RSVD_0|RSVD_0|RSVD_0|RSVD_0|RSVD_0|RSVD_0|RSVD|REG0_EN,,Hex
+79,Settings,Configuration,HWD Regulator Options,Hex,B,1,0x00009238,00,0,0xff,hh,x,x,RSVD_0|RSVD_0|TOGGLE_OPT_1|TOGGLE_OPT_0|TOGGLE_TIME_3|TOGGLE_TIME_2|TOGGLE_TIME_1|TOGGLE_TIME_0,,Hex
+80,Settings,Configuration,Comm Type,—,U,1,0x00009239,00,0,0x1f,hh,x,x,,,—
+81,Settings,Configuration,I2C Address,—,U,1,0x0000923a,00,0,0xff,hh,x,x,,,—
+82,Settings,Configuration,SPI Configuration,—,B,1,0x0000923c,20,0,0x7f,hh,x,x,RSVD_0|MISO_REG1|FILT|RSVD_0|RSVD_0|RSVD_0|RSVD_0|RSVD_0,,—
+83,Settings,Configuration,Comm Idle Time,s,U,1,0x0000923d,0,0,255,ddd,x+0,x,,,s
+84,Settings,Configuration,CFETOFF Pin Config,Hex,B,1,0x000092fa,00,0,0xff,hh,x,x,OPT5|OPT4|OPT3|OPT2|OPT1|OPT0|PIN_FXN1|PIN_FXN0,,Hex
+85,Settings,Configuration,DFETOFF Pin Config,Hex,B,1,0x000092fb,09,0,0xff,hh,x,x,OPT5|OPT4|OPT3|OPT2|OPT1|OPT0|PIN_FXN1|PIN_FXN0,,Hex
+86,Settings,Configuration,ALERT Pin Config,Hex,B,1,0x000092fc,0e,0,0xff,hh,x,x,OPT5|OPT4|OPT3|OPT2|OPT1|OPT0|PIN_FXN1|PIN_FXN0,,Hex
+87,Settings,Configuration,TS1 Config,Hex,B,1,0x000092fd,0b,0,0xff,hh,x,x,OPT5|OPT4|OPT3|OPT2|OPT1|OPT0|PIN_FXN1|PIN_FXN0,,Hex
+88,Settings,Configuration,TS2 Config,Hex,B,1,0x000092fe,b3,0,0xff,hh,x,x,OPT5|OPT4|OPT3|OPT2|OPT1|OPT0|PIN_FXN1|PIN_FXN0,,Hex
+89,Settings,Configuration,TS3 Config,Hex,B,1,0x000092ff,0b,0,0xff,hh,x,x,OPT5|OPT4|OPT3|OPT2|OPT1|OPT0|PIN_FXN1|PIN_FXN0,,Hex
+90,Settings,Configuration,HDQ Pin Config,Hex,B,1,0x00009300,0a,0,0xff,hh,x,x,OPT5|OPT4|OPT3|OPT2|OPT1|OPT0|PIN_FXN1|PIN_FXN0,,Hex
+91,Settings,Configuration,DCHG Pin Config,Hex,B,1,0x00009301,0d,0,0xff,hh,x,x,OPT5|OPT4|OPT3|OPT2|OPT1|OPT0|PIN_FXN1|PIN_FXN0,,Hex
+92,Settings,Configuration,DDSG Pin Config,Hex,B,1,0x00009302,0d,0,0xff,hh,x,x,OPT5|OPT4|OPT3|OPT2|OPT1|OPT0|PIN_FXN1|PIN_FXN0,,Hex
+93,Settings,Configuration,DA Configuration,Hex,B,1,0x00009303,07,0x00,0xff,hh,x,x,RSVD_0|RSVD_0|RSVD_0|TINT_FETT|TINT_EN|USER_VOLTS_CV|USER_AMPS_1|USER_AMPS_0,,Hex
+94,Settings,Configuration,Vcell Mode,Hex,B,2,0x00009304,d57f,0,0xffff,hhhh,x,x,Cell 16 Mode|Cell 15 Mode|Cell 14 Mode|Cell 13 Mode|Cell 12 Mode|Cell 11 Mode|Cell 10 Mode|Cell 9 Mode|Cell 8 Mode|Cell 7 Mode|Cell 6 Mode|Cell 5 Mode|Cell 4 Mode|Cell 3 Mode|Cell 2 Mode|Cell 1 Mode,,Hex
+95,Settings,Configuration,CC3 Samples,Num,U,1,0x00009307,80,2,255,ddd,x+0,x,,,Num
+96,Settings,Protection,Protection Configuration,Hex,B,2,0x0000925f,0002,0,0x07ff,hhhh,x,x,RSVD_0|RSVD_0|RSVD_0|RSVD_0|RSVD_0|SCDL_CURR_RECOV|OCDL_CURR_RECOV|FETF_FUSE|PACK_FUSE|RSVD_0|PF_OTP|PF_FUSE|PF_DPSLP|PF_REGS|PF_FETS|RSVD_0,,Hex
+97,Settings,Protection,Enabled Protections A,Hex,U,1,0x00009261,9c,0,0xff,hh,x,x,SCD|OCD2|OCD1|OCC|COV|CUV|RSVD_0|RSVD_0,,Hex
+98,Settings,Protection,Enabled Protections B,Hex,U,1,0x00009262,45,0,0xff,hh,x,x,OTF|OTINT|OTD|OTC|RSVD_0|UTINT|UTD|UTC,,Hex
+99,Settings,Protection,Enabled Protections C,Hex,U,1,0x00009263,00,0,0xff,hh,x,x,OCD3|SCDL|OCDL|COVL|RSVD|PTO|HWDF|RSVD_0,,Hex
+100,Settings,Protection,CHG FET Protections A,Hex,U,1,0x00009265,98,0,0xff,hh,x,x,SCD|RSVD_0|RSVD_0|OCC|COV|RSVD_0|RSVD_0|RSVD_0,,Hex
+101,Settings,Protection,CHG FET Protections B,Hex,U,1,0x00009266,44,0,0xff,hh,x,x,OTF|OTINT|RSVD_0|OTC|RSVD_0|UTINT|RSVD_0|UTC,,Hex
+102,Settings,Protection,CHG FET Protections C,Hex,U,1,0x00009267,56,0,0xff,hh,x,x,RSVD_0|SCDL|RSVD_0|COVL|RSVD_0|PTO|HWDF|RSVD_0,,Hex
+103,Settings,Protection,DSG FET Protections A,Hex,U,1,0x00009269,00,0,0xff,hh,x,x,SCD|OCD2|OCD1|RSVD_0|RSVD_0|CUV|RSVD_0|RSVD_0,,Hex
+104,Settings,Protection,DSG FET Protections B,Hex,U,1,0x0000926a,00,0,0xff,hh,x,x,OTF|OTINT|OTD|RSVD_0|RSVD_0|UTINT|UTD|RSVD_0,,Hex
+105,Settings,Protection,DSG FET Protections C,Hex,U,1,0x0000926b,00,0,0xff,hh,x,x,OCD3|SCDL|OCDL|RSVD_0|RSVD_0|RSVD_0|HWDF|RSVD_0,,Hex
+106,Settings,Protection,Body Diode Threshold,mA,I,2,0x00009273,32767,0,32767,ddd,x+0,x,,,mA
+107,Settings,Alarm,Default Alarm Mask,Hex,B,2,0x0000926d,f800,0,0xffff,hhhh,x,x,SSBC|SSA|PF|MSK_SFALERT|MSK_PFALERT|INITSTART|INITCOMP|RSVD_0|FULLSCAN|XCHG|XDSG|SHUTV|FUSE|CB|ADSCAN|WAKE,,Hex
+108,Settings,Alarm,SF Alert Mask A,Hex,U,1,0x0000926f,9c,0,0xff,hh,x,x,SCD|OCD2|OCD1|OCC|COV|CUV|RSVD_0|RSVD_0,,Hex
+109,Settings,Alarm,SF Alert Mask B,Hex,U,1,0x00009270,44,0,0xff,hh,x,x,OTF|OTINT|OTD|OTC|RSVD_0|UTINT|UTD|UTC,,Hex
+110,Settings,Alarm,SF Alert Mask C,Hex,U,1,0x00009271,02,0,0xff,hh,x,x,OCD3|SCDL|OCDL|COVL|RSVD_0|PTO|RSVD_1|RSVD_0,,Hex
+111,Settings,Alarm,PF Alert Mask A,Hex,U,1,0x000092c4,00,0,0xff,hh,x,x,CUDEP|SOTF|RSVD_0|SOT|SOCD|SOCC|SOV|SUV,,Hex
+112,Settings,Alarm,PF Alert Mask B,Hex,U,1,0x000092c5,00,0,0xff,hh,x,x,SCDL|RSVD_0|RSVD_0|VIMA|VIMR|2LVL|DFETF|CFETF,,Hex
+113,Settings,Alarm,PF Alert Mask C,Hex,U,1,0x000092c6,00,0,0xff,hh,x,x,RSVD_0|HWMX|VSSF|VREF|LFOF|RSVD_0|RSVD_0|RSVD_0,,Hex
+114,Settings,Alarm,PF Alert Mask D,Hex,U,1,0x000092c7,00,0,0xff,hh,x,x,RSVD_0|RSVD_0|RSVD_0|RSVD_0|RSVD_0|RSVD_0|RSVD_0|TOSF,,Hex
+115,Settings,Permanent Failure,Enabled PF A,Hex,U,1,0x000092c0,00,0,0xff,hh,x,x,CUDEP|SOTF|RSVD_0|SOT|SOCD|SOCC|SOV|SUV,,Hex
+116,Settings,Permanent Failure,Enabled PF B,Hex,U,1,0x000092c1,00,0,0xff,hh,x,x,SCDL|RSVD_0|RSVD_0|VIMA|VIMR|2LVL|DFETF|CFETF,,Hex
+117,Settings,Permanent Failure,Enabled PF C,Hex,U,1,0x000092c2,00,0,0xff,hh,x,x,CMDF|HWMX|VSSF|VREF|LFOF|IRMF|DRMF|OTPF,,Hex
+118,Settings,Permanent Failure,Enabled PF D,Hex,U,1,0x000092c3,00,0,0xff,hh,x,x,RSVD_0|RSVD_0|RSVD_0|RSVD_0|RSVD_0|RSVD_0|RSVD_0|TOSF,,Hex
+119,Settings,FET,FET Options,Hex,B,1,0x00009308,0c,0,0xff,hh,x,x,RSVD_0|RSVD_0|FET_INIT_OFF|PDSG_EN|FET_CTRL_EN|HOST_FET_EN|SLEEPCHG|SFET,,Hex
+120,Settings,FET,Chg Pump Control,Hex,U,1,0x00009309,03,0,0xff,hh,x,x,RSVD_0|RSVD_0|RSVD_0|RSVD_0|RSVD_0|SFMODE_SLEEP|LVEN|CPEN,,Hex
+121,Settings,FET,Precharge Start Voltage,mV,I,2,0x0000930a,0,0,32767,ddd,x+0,x,,,mV
+122,Settings,FET,Precharge Stop Voltage,mV,I,2,0x0000930c,0,0,32767,ddd,x+0,x,,,mV
+123,Settings,FET,Predischarge Timeout,10ms,U,1,0x0000930e,0,0,255,ddd,x+0,x,,,10ms
+124,Settings,FET,Predischarge Stop Delta,mV,U,1,0x0000930f,0,0,255,ddd,x*10,x/10,,,10mV
+125,Settings,Current Thresholds,Dsg Current Threshold,userA,I,2,0x00009310,3,0,32767,ddd,x+0,x,,,userA
+126,Settings,Current Thresholds,Chg Current Threshold,userA,I,2,0x00009312,2,0,32767,ddd,x+0,x,,,userA
+127,Settings,Cell Open-Wire,Check Time,s,U,1,0x00009314,5,0,255,ddd,x+0,x,,,s
+128,Settings,Interconnect Resistances,Cell 1 Interconnect,mΩ,I,2,0x00009315,0,0,32767,ddd,x+0,x,,,mΩ
+129,Settings,Interconnect Resistances,Cell 2 Interconnect,mΩ,I,2,0x00009317,0,0,32767,ddd,x+0,x,,,mΩ
+130,Settings,Interconnect Resistances,Cell 3 Interconnect,mΩ,I,2,0x00009319,0,0,32767,ddd,x+0,x,,,mΩ
+131,Settings,Interconnect Resistances,Cell 4 Interconnect,mΩ,I,2,0x0000931b,0,0,32767,ddd,x+0,x,,,mΩ
+132,Settings,Interconnect Resistances,Cell 5 Interconnect,mΩ,I,2,0x0000931d,0,0,32767,ddd,x+0,x,,,mΩ
+133,Settings,Interconnect Resistances,Cell 6 Interconnect,mΩ,I,2,0x0000931f,0,0,32767,ddd,x+0,x,,,mΩ
+134,Settings,Interconnect Resistances,Cell 7 Interconnect,mΩ,I,2,0x00009321,0,0,32767,ddd,x+0,x,,,mΩ
+135,Settings,Interconnect Resistances,Cell 8 Interconnect,mΩ,I,2,0x00009323,0,0,32767,ddd,x+0,x,,,mΩ
+136,Settings,Interconnect Resistances,Cell 9 Interconnect,mΩ,I,2,0x00009325,0,0,32767,ddd,x+0,x,,,mΩ
+137,Settings,Interconnect Resistances,Cell 10 Interconnect,mΩ,I,2,0x00009327,0,0,32767,ddd,x+0,x,,,mΩ
+138,Settings,Interconnect Resistances,Cell 11 Interconnect,mΩ,I,2,0x00009329,0,0,32767,ddd,x+0,x,,,mΩ
+139,Settings,Interconnect Resistances,Cell 12 Interconnect,mΩ,I,2,0x0000932b,0,0,32767,ddd,x+0,x,,,mΩ
+140,Settings,Interconnect Resistances,Cell 13 Interconnect,mΩ,I,2,0x0000932d,0,0,32767,ddd,x+0,x,,,mΩ
+141,Settings,Interconnect Resistances,Cell 14 Interconnect,mΩ,I,2,0x0000932f,0,0,32767,ddd,x+0,x,,,mΩ
+142,Settings,Interconnect Resistances,Cell 15 Interconnect,mΩ,I,2,0x00009331,0,0,32767,ddd,x+0,x,,,mΩ
+143,Settings,Interconnect Resistances,Cell 16 Interconnect,mΩ,I,2,0x00009333,0,0,32767,ddd,x+0,x,,,mΩ
+144,Settings,Manufacturing,Mfg Status Init,Hex,B,2,0x00009343,0000,0,0xffff,hhhh,x,x,RSVD_0|RSVD_0|RSVD_0|RSVD_0|RSVD_0|RSVD_0|RSVD_0|RSVD_0|OTPW_EN|PF_EN|RSVD_0|FET_EN|RSVD_0|RSVD_0|RSVD_0|RSVD_0,,Hex
+145,Settings,Cell Balancing Config,Balancing Configuration,Hex,B,1,0x00009335,09,0,0xff,hh,x,x,RSVD_0|RSVD_0|RSVD_0|CB_NO_CMD|CB_NOSLEEP|CB_SLEEP|CB_RLX|CB_CHG,,Hex
+146,Settings,Cell Balancing Config,Min Cell Temp,°C,I,1,0x00009336,-20,-128,127,ddd,x+0,x,,,°C
+147,Settings,Cell Balancing Config,Max Cell Temp,°C,I,1,0x00009337,45,-128,127,ddd,x+0,x,,,°C
+148,Settings,Cell Balancing Config,Max Internal Temp,°C,I,1,0x00009338,60,-128,127,ddd,x+0,x,,,°C
+149,Settings,Cell Balancing Config,Cell Balance Interval,s,U,1,0x00009339,20,1,255,ddd,x+0,x,,,s
+150,Settings,Cell Balancing Config,Cell Balance Max Cells,Num,U,1,0x0000933a,1,0,16,ddd,x+0,x,,,Num
+151,Settings,Cell Balancing Config,Cell Balance Min Cell V (Charge),mV,I,2,0x0000933b,3900,0,5000,ddd,x+0,x,,,mV
+152,Settings,Cell Balancing Config,Cell Balance Min Delta (Charge),mV,U,1,0x0000933d,40,0,255,ddd,x+0,x,,,mV
+153,Settings,Cell Balancing Config,Cell Balance Stop Delta (Charge),mV,U,1,0x0000933e,20,0,255,ddd,x+0,x,,,mV
+154,Settings,Cell Balancing Config,Cell Balance Min Cell V (Relax),mV,I,2,0x0000933f,3900,0,5000,ddd,x+0,x,,,mV
+155,Settings,Cell Balancing Config,Cell Balance Min Delta (Relax),mV,U,1,0x00009341,40,0,255,ddd,x+0,x,,,mV
+156,Settings,Cell Balancing Config,Cell Balance Stop Delta (Relax),mV,U,1,0x00009342,20,0,255,ddd,x+0,x,,,mV
+157,Power,Shutdown,Shutdown Cell Voltage,mV,I,2,0x0000923f,3000,0,32767,ddd,x+0,x,,,mV
+158,Power,Shutdown,Shutdown Stack Voltage,mV,I,2,0x00009241,3600,0,32767,ddd,x*10,x/10,,,10mV
+159,Power,Shutdown,Low V Shutdown Delay,s,U,1,0x00009243,1,0,63,ddd,x+0,x,,,s
+160,Power,Shutdown,Shutdown Temperature,°C,U,1,0x00009244,85,0,150,ddd,x+0,x,,,°C
+161,Power,Shutdown,Shutdown Temperature Delay,s,U,1,0x00009245,5,0,254,ddd,x+0,x,,,s
+162,Power,Shutdown,FET Off Delay,0.25s,U,1,0x00009252,0,0,127,ddd,x+0,x,,,0.25s
+163,Power,Shutdown,Shutdown Command Delay,0.25s,U,1,0x00009253,0,0,254,ddd,x+0,x,,,0.25s
+164,Power,Shutdown,Auto Shutdown Time,min,U,1,0x00009254,0,0,250,ddd,x+0,x,,,min
+165,Power,Shutdown,RAM Fail Shutdown Time,s,U,1,0x00009255,5,0,255,ddd,x+0,x,,,s
+166,Power,Sleep,Sleep Current,mA,I,2,0x00009248,20,0,32767,ddd,x+0,x,,,mA
+167,Power,Sleep,Voltage Time,s,U,1,0x0000924a,5,1,255,ddd,x+0,x,,,s
+168,Power,Sleep,Wake Comparator Current,mA,I,2,0x0000924b,500,500,32767,ddd,x+0,x,,,mA
+169,Power,Sleep,Sleep Hysteresis Time,s,U,1,0x0000924d,10,0,255,ddd,x+0,x,,,s
+170,Power,Sleep,Sleep Charger Voltage Threshold,mV,I,2,0x0000924e,3700,0,32767,ddd,x*10,x/10,,,10mV
+171,Power,Sleep,Sleep Charger PACK-TOS Delta,mV,I,2,0x00009250,200,10,8500,ddd,x*10,x/10,,,10mV
+172,System Data,Integrity,Config RAM Signature,Hex,U,2,0x000091e0,0000,0,0x7fff,hhhh,x,x,,,Hex
+173,Protections,CUV,Threshold,50.6mV,U,1,0x00009275,56,20,80,ddd,x+0,x,,,50.6mV
+174,Protections,CUV,Delay,3.3 ms,U,2,0x00009276,74,1,2047,ddd,x+0,x,,,3.3 ms
+175,Protections,CUV,Recovery Hysteresis,50.6mV,U,1,0x0000927b,2,2,20,ddd,x+0,x,,,50.6mV
+176,Protections,COV,Threshold,50.6mV,U,1,0x00009278,83,20,110,ddd,x+0,x,,,50.6mV
+177,Protections,COV,Delay,3.3 ms,U,2,0x00009279,74,1,2047,ddd,x+0,x,,,3.3 ms
+178,Protections,COV,Recovery Hysteresis,50.6mV,U,1,0x0000927c,2,2,20,ddd,x+0,x,,,50.6mV
+179,Protections,COVL,Latch Limit,—,U,1,0x0000927d,0,0,255,ddd,x+0,x,,,—
+180,Protections,COVL,Counter Dec Delay,s,U,1,0x0000927e,10,0,255,ddd,x+0,x,,,s
+181,Protections,COVL,Recovery Time,s,U,1,0x0000927f,15,0,255,ddd,x+0,x,,,s
+182,Protections,OCC,Threshold,mV,U,1,0x00009280,4,2,62,ddd,x*2,x/2,,,2mV
+183,Protections,OCC,Delay,3.3 ms,U,1,0x00009281,4,1,127,ddd,x+0,x,,,3.3 ms
+184,Protections,OCC,Recovery Threshold,mA,I,2,0x00009288,-200,-32768,32767,ddd,x+0,x,,,mA
+185,Protections,OCC,PACK-TOS Delta,mV,I,2,0x000092b0,200,10,8500,ddd,x*10,x/10,,,10mV
+186,Protections,OCD1,Threshold,mV,U,1,0x00009282,33,2,100,ddd,x*2,x/2,,,2mV
+187,Protections,OCD2,Delay,3.3 ms,U,1,0x00009285,1,1,127,ddd,x+0,x,,,3.3 ms
+188,Protections,SCD,Threshold,—,U,1,0x00009286,4,0,15,ddd,x+0,x,,,—
+189,Protections,SCD,Delay,µs,U,1,0x00009287,2,1,31,ddd,(x-1)*15,(x/15)+1,,,15µs
+190,Protections,SCD,Recovery Time,s,U,1,0x00009294,5,0,255,ddd,x+0,x,,,s
+191,Protections,OCD3,Threshold,userA,I,2,0x0000928a,-4000,-32768,0,ddd,x+0,x,,,userA
+192,Protections,OCD3,Delay,s,U,1,0x0000928c,1,0,255,ddd,x+0,x,,,s
+193,Protections,OCD,Recovery Threshold,mA,I,2,0x0000928d,200,-32768,32767,ddd,x+0,x,,,mA
+194,Protections,OCDL,Latch Limit,—,U,1,0x0000928f,0,0,255,ddd,x+0,x,,,—
+195,Protections,OCDL,Counter Dec Delay,s,U,1,0x00009290,10,0,255,ddd,x+0,x,,,s
+196,Protections,OCDL,Recovery Time,s,U,1,0x00009291,15,0,255,ddd,x+0,x,,,s
+197,Protections,OCDL,Recovery Threshold,mA,I,2,0x00009292,200,-32768,32767,ddd,x+0,x,,,mA
+198,Protections,SCDL,Latch Limit,—,U,1,0x00009295,0,0,255,ddd,x+0,x,,,—
+199,Protections,SCDL,Counter Dec Delay,s,U,1,0x00009296,10,0,255,ddd,x+0,x,,,s
+200,Protections,SCDL,Recovery Time,s,U,1,0x00009297,15,0,255,ddd,x+0,x,,,s
+201,Protections,SCDL,Recovery Threshold,mA,I,2,0x00009298,200,-32768,32767,ddd,x+0,x,,,mA
+202,Protections,OTC,Threshold,°C,I,1,0x0000929a,55,-40,120,ddd,x+0,x,,,°C
+203,Protections,OTC,Delay,s,U,1,0x0000929b,2,0,255,ddd,x+0,x,,,s
+204,Protections,OTC,Recovery,°C,I,1,0x0000929c,50,-40,120,ddd,x+0,x,,,°C
+205,Protections,OTD,Threshold,°C,I,1,0x0000929d,60,-40,120,ddd,x+0,x,,,°C
+206,Protections,OTD,Delay,s,U,1,0x0000929e,2,0,255,ddd,x+0,x,,,s
+207,Protections,OTD,Recovery,°C,I,1,0x0000929f,55,-40,120,ddd,x+0,x,,,°C
+208,Protections,OTF,Threshold,°C,U,1,0x000092a0,80,0,150,ddd,x+0,x,,,°C
+209,Protections,OTF,Delay,s,U,1,0x000092a1,2,0,255,ddd,x+0,x,,,s
+210,Protections,OTF,Recovery,°C,U,1,0x000092a2,65,0,150,ddd,x+0,x,,,°C
+211,Protections,OTINT,Threshold,°C,I,1,0x000092a3,85,-40,120,ddd,x+0,x,,,°C
+212,Protections,OTINT,Delay,s,U,1,0x000092a4,2,0,255,ddd,x+0,x,,,s
+213,Protections,OTINT,Recovery,°C,I,1,0x000092a5,80,-40,120,ddd,x+0,x,,,°C
+214,Protections,UTC,Threshold,°C,I,1,0x000092a6,0,-40,120,ddd,x+0,x,,,°C
+215,Protections,UTC,Delay,s,U,1,0x000092a7,2,0,255,ddd,x+0,x,,,s
+216,Protections,UTC,Recovery,°C,I,1,0x000092a8,5,-40,120,ddd,x+0,x,,,°C
+217,Protections,UTD,Threshold,°C,I,1,0x000092a9,0,-40,120,ddd,x+0,x,,,°C
+218,Protections,UTD,Delay,s,U,1,0x000092aa,2,0,255,ddd,x+0,x,,,s
+219,Protections,UTD,Recovery,°C,I,1,0x000092ab,5,-40,120,ddd,x+0,x,,,°C
+220,Protections,UTINT,Threshold,°C,I,1,0x000092ac,-20,-40,120,ddd,x+0,x,,,°C
+221,Protections,UTINT,Delay,s,U,1,0x000092ad,2,0,255,ddd,x+0,x,,,s
+222,Protections,UTINT,Recovery,°C,I,1,0x000092ae,-15,-40,120,ddd,x+0,x,,,°C
+223,Protections,Recovery,Time,s,U,1,0x000092af,3,0,255,ddd,x+0,x,,,s
+224,Protections,HWD,Delay,s,U,2,0x000092b2,3,0,65535,ddd,x+0,x,,,s
+225,Protections,Load Detect,Active Time,s,U,1,0x000092b4,0,0,255,ddd,x+0,x,,,s
+226,Protections,Load Detect,Retry Delay,s,U,1,0x000092b5,0,0,255,ddd,x+0,x,,,s
+227,Protections,Load Detect,Timeout,hrs,U,2,0x000092b6,1,0,65535,ddd,x+0,x,,,hrs
+228,Protections,PTO,Charge Threshold,mA,I,2,0x000092ba,250,-32768,32767,ddd,x+0,x,,,mA
+229,Protections,PTO,Delay,s,U,2,0x000092bc,1800,0,65535,ddd,x+0,x,,,s
+230,Protections,PTO,Reset,userAh,I,2,0x000092be,2,0,10000,ddd,x+0,x,,,userAh
+231,Permanent Fail,CUDEP,Threshold,mV,I,2,0x000092c8,0,0,32767,ddd,x+0,x,,,mV
+232,Permanent Fail,CUDEP,Delay,s,U,1,0x000092ca,255,0,255,ddd,x+0,x,,,s
+233,Permanent Fail,SUV,Threshold,mV,I,2,0x000092cb,32767,0,32767,ddd,x+0,x,,,mV
+234,Permanent Fail,SUV,Delay,s,U,1,0x000092cd,255,0,255,ddd,x+0,x,,,s
+235,Permanent Fail,SOV,Threshold,mV,I,2,0x000092ce,32767,0,32767,ddd,x+0,x,,,mV
+236,Permanent Fail,SOV,Delay,s,U,1,0x000092d0,255,0,255,ddd,x+0,x,,,s
+237,Permanent Fail,TOS,Threshold,mV,I,2,0x000092d1,32767,0,32767,ddd,x+0,x,,,mV
+238,Permanent Fail,TOS,Delay,s,U,1,0x000092d3,255,0,255,ddd,x+0,x,,,s
+239,Permanent Fail,SOCC,Threshold,userA,I,2,0x000092d4,-32768,-32768,32767,ddd,x+0,x,,,userA
+240,Permanent Fail,SOCC,Delay,s,U,1,0x000092d6,255,0,255,ddd,x+0,x,,,s
+241,Permanent Fail,SOCD,Threshold,userA,I,2,0x000092d7,32767,-32768,32767,ddd,x+0,x,,,userA
+242,Permanent Fail,SOCD,Delay,s,U,1,0x000092d9,255,0,255,ddd,x+0,x,,,s
+243,Permanent Fail,SOT,Threshold,°C,I,1,0x000092da,120,-40,120,ddd,x+0,x,,,°C
+244,Permanent Fail,SOT,Delay,s,U,1,0x000092db,255,0,255,ddd,x+0,x,,,s
+245,Permanent Fail,SOTF,Threshold,°C,U,1,0x000092dc,150,0,150,ddd,x+0,x,,,°C
+246,Permanent Fail,SOTF,Delay,s,U,1,0x000092dd,255,0,255,ddd,x+0,x,,,s
+247,Permanent Fail,VIMR,Check Voltage,mV,I,2,0x000092de,5500,0,5500,ddd,x+0,x,,,mV
+248,Permanent Fail,VIMR,Max Relax Current,mA,I,2,0x000092e0,32767,10,32767,ddd,x+0,x,,,mA
+249,Permanent Fail,VIMR,Threshold,mV,I,2,0x000092e2,5500,0,5500,ddd,x+0,x,,,mV
+250,Permanent Fail,VIMR,Delay,s,U,1,0x000092e4,255,0,255,ddd,x+0,x,,,s
+251,Permanent Fail,VIMR,Relax Min Duration,s,U,2,0x000092e5,65535,0,65535,ddd,x+0,x,,,s
+252,Permanent Fail,VIMA,Check Voltage,mV,I,2,0x000092e7,5500,0,5500,ddd,x+0,x,,,mV
+253,Permanent Fail,VIMA,Min Active Current,mA,I,2,0x000092e9,32767,10,32767,ddd,x+0,x,,,mA
+254,Permanent Fail,VIMA,Threshold,mV,I,2,0x000092eb,5500,0,5500,ddd,x+0,x,,,mV
+255,Permanent Fail,VIMA,Delay,s,U,1,0x000092ed,255,0,255,ddd,x+0,x,,,s
+256,Permanent Fail,CFETF,OFF Threshold,mA,I,2,0x000092ee,5000,10,5000,ddd,x+0,x,,,mA
+257,Permanent Fail,CFETF,OFF Delay,s,U,1,0x000092f0,255,0,255,ddd,x+0,x,,,s
+258,Permanent Fail,DFETF,OFF Threshold,mA,I,2,0x000092f1,-10,-5000,-10,ddd,x+0,x,,,mA
+259,Permanent Fail,DFETF,OFF Delay,s,U,1,0x000092f3,255,0,255,ddd,x+0,x,,,s
+260,Permanent Fail,VSSF,Fail Threshold,—,I,2,0x000092f4,32767,1,32767,ddd,x+0,x,,,—
+261,Permanent Fail,VSSF,Delay,s,U,1,0x000092f6,255,0,255,ddd,x+0,x,,,s
+262,Permanent Fail,2LVL,Delay,s,U,1,0x000092f7,255,0,255,ddd,x+0,x,,,s
+263,Permanent Fail,LFOF,Delay,s,U,1,0x000092f8,255,0,255,ddd,x+0,x,,,s
+264,Permanent Fail,HWMX,Delay,s,U,1,0x000092f9,255,0,255,ddd,x+0,x,,,s
+265,Security,Settings,Security Settings,Hex,B,1,0x00009256,00,0,0x07,hh,x,x,RSVD_0|RSVD_0|RSVD_0|RSVD_0|RSVD_0|PERM_SEAL|LOCK_CFG|SEAL,,Hex
+266,Security,Keys,Unseal Key Step 1,Hex,U,2,0x00009257,0414,0x0100,0xffff,hhhh,x,x,,,Hex
+267,Security,Keys,Unseal Key Step 2,Hex,U,2,0x00009259,3672,0x0100,0xffff,hhhh,x,x,,,Hex
+268,Security,Keys,Full Access Key Step 1,Hex,U,2,0x0000925b,ffff,0x0100,0xffff,hhhh,x,x,,,Hex
+269,Security,Keys,Full Access Key Step 2,Hex,U,2,0x0000925d,ffff,0x0100,0xffff,hhhh,x,x,,,Hex

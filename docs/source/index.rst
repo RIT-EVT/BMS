@@ -13,7 +13,7 @@ Introduction
 The DEV1-BMS is the Battery Management System for the RIT-EVT Dirt
 Electric Vehicle (DEV1). The system is based around the BQ76952 TI battery
 monitor and protector chip. The firmware for the DEV1-BMS is written for
-the STM32f302r8 microcontroller that is designed into the DEV1-BMS.
+the STM32f334 microcontroller that is designed into the DEV1-BMS.
 
 The DEV1-BMS will have the following responsibilities.
 
@@ -28,12 +28,20 @@ For a more detailed description of the requirements, refer to the
 The DEV1-BMS project is in its rampup phase. Currently documentation is being
 generated for the project including requirements and implementation design.
 
+The DEV1-BMS project is currently in the hardware bringup phase. Software
+testing has taken place with a BQ76952 EVM, external EEPROM, and external
+CAN transciever. Preliminary testing has taken place on EVT produced hardware,
+but additional testing and features are needed before the system is ready for
+use on the bike. A detailed description of the current state of the BMS
+software is linked below.
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
    api/index.rst
    srs.rst
+   software_state.rst
    BQ/index.rst
 
 State Transition Diagram

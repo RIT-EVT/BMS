@@ -88,11 +88,11 @@ Objective
 ---------
 
 The goal of this manual is to give users the knowledge necessary to convert
-TI settings into a binary format which can then be transfered to the BMS.
+TI settings into a binary format which can then be transferred to the BMS.
 This will focus on the scripts included in the utility. Focus will not be
 on the format of the data, the meaning behind the settings, nor on the
 specifics of the implementation. For more of the specifics on the BQ
-chip, refer to `the cooresponding documentation <https://dev1-bms.readthedocs.io/en/latest/BQ/index.html>`_.
+chip, refer to `the corresponding documentation <https://dev1-bms.readthedocs.io/en/latest/BQ/index.html>`_.
 
 Criteria
 --------
