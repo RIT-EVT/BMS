@@ -55,8 +55,8 @@ public:
 
     /**
      * Get a pointer to the start of the CANopen object dictionary.
-     * @param index the index of the object dictionary being selected
      *
+     * @param index the index of the object dictionary being selected
      * @return Pointer to the start of the CANopen object dictionary.
      */
     CO_OBJ_T* getObjectDictionary();
@@ -184,60 +184,58 @@ private:
     uint32_t totalVoltage = 0;
 
     /**
-     * Represents the total voltage in the battery. Updating this value is not
-     * yet implemented.
+     * Represents the total voltage in the battery
      */
     int16_t batteryVoltage;
 
     /**
-     * Represents the total current through the battery. Updating this value is not
-     * yet implemented.
+     * Represents the total current through the battery
      */
     int16_t current;
 
     /**
-     * Represents the lowest temperature value from any thermistor in the battery pack. Updating this value is not
-     * yet implemented.
+     * Represents the lowest temperature value from any thermistor in the battery pack
      */
     int8_t batteryPackMinTemp;
 
     /**
-     * Represents the highest temperature value from any thermistor in the battery pack. Updating this value is not
-     * yet implemented.
+     * Represents the highest temperature value from any thermistor in the battery pack
      */
     int8_t batteryPackMaxTemp;
 
     /**
-     * Represents the state of charge (maybe?) of the battery. Updating this value is not yet implemented.
+     * Represents the state of charge of the battery
      */
     uint8_t SOC;
 
     /**
-     *I have no clue what this is.
+     * Maximum regen current
      */
     uint8_t recapActualAllowed;
 
     /**
-     *I have no clue what this is.
+     * Maximum discharge current
      */
     uint8_t dischargeActualAllowed;
 
     /**
-     * Stores the per-thermistor temperature for the battery pack. Updating this value is not
-     * yet implemented.
+     * Stores the per-thermistor temperature for the battery pack
      */
     uint16_t thermistorTemperature[DEV::BQ76952::NUM_CELLS];
+
     /**
      * Stores the per-cell voltage for the battery pack. This value is updated
      * by reading the voltage from the BQ chip and is then exposed over
      * CANopen.
      */
     uint16_t cellVoltage[DEV::BQ76952::NUM_CELLS] = {};
+
     /**
      * Used to store values which the BMS updates.
      * Holds information about the minimum and maximum cell's voltages and Ids.
      */
     cellVoltageInfo voltageInfo;
+
     /**
      * Handles the start of the state machine logic. This considers the health
      * of the system, and the existence of BQ settings.
@@ -338,7 +336,7 @@ private:
      */
     CO_OBJ_T objectDictionary[OBJECT_DICTIONARY_SIZE + 1] = {
         // Sync ID, defaults to 0x80
-        {CO_KEY(0x1005, 0, CO_UNSIGNED32 | CO_OBJ_D__R_), 0, (uintptr_t) 0x80},
+        {CO_KEY(0x1005, 0, CO_UNSIGNED32 | CO_OBJ_D__R_), 0, (uintptr_t) 0x80,},
 
         // Information about the hardware, hard coded sample values for now
         // 1: Vendor ID
@@ -384,7 +382,7 @@ private:
         // 0: The TPDO number, default 0
         // 1: The COB-ID used by TPDO0, provided as a function of the TPDO
         //    number
-        // 2: How the TPO is triggered, default to manual triggering
+        // 2: How the TPDO is triggered, defaulting to manual triggering
         // 3: Inhibit time, defaults to 0
         // 5: Timer trigger time in 1ms units, 0 will disable the timer based
         //    triggering
@@ -414,7 +412,7 @@ private:
             .Data = (uintptr_t) 2000,
         },
 
-        // TPDO0 mapping, determins the PDO messages to send when TPDO1 is triggered
+        // TPDO0 mapping, determines the PDO messages to send when TPDO1 is triggered
         // 0: The number of PDO message associated with the TPDO
         // 1: Link to the first PDO message
         // n: Link to the nth PDO message
@@ -447,8 +445,8 @@ private:
         },
 
         // Voltage values, as read from the BQ chip. The total voltage will
-        // periodically be broadcasted as a PDO. The individual series cell
-        // voltages will not be broadcasted via PDO, but will still be
+        // periodically be broadcast as a PDO. The individual series cell
+        // voltages will not be broadcast via PDO, but will still be
         // accessible over SDO.
         {
             .Key = CO_KEY(0x2101, 0, CO_UNSIGNED32 | CO_OBJ___PR_),

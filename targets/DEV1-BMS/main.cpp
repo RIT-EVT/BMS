@@ -92,6 +92,7 @@ extern "C" void COTmrUnlock(void) {}
 int main() {
     // Initialize system
     IO::init();
+
     // Queue that will store CANopen messages
     EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage> canOpenQueue;
 

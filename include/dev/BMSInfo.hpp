@@ -1,10 +1,10 @@
 #pragma once
-#include <stdint.h>
-/*
- * Holds the declarations of any information which the BMS updates.
- */
 
-//A struct used by the updateVoltageReadings() to consolidate and reduce the number of arguments which are passed as parameters.
+#include <cstdint>
+
+/*
+ * Holds closely-related information about battery voltages to pass into methods more concisely
+ */
 struct cellVoltageInfo {
     int16_t minCellVoltage;
     uint8_t minCellVoltageID;

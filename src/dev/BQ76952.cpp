@@ -363,36 +363,36 @@ BQ76952::Status BQ76952::getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32
     Status status = Status::OK;
     uint8_t cellVoltageReg = CELL_VOLTAGE_BASE_ADDR;
     //Must use temporary storage variables or else the values reported over CAN will be inaccurate from regular changes.
-    uint32_t currentVoltage = 0;
-    uint16_t currentMinVoltage = 4;
-    uint16_t currentMaxVoltage = 0;
-    uint8_t currentMinCellID;
-    uint8_t currentMaxCellID;
+    uint32_t tempVoltage = 0;
+    uint16_t tempMinVoltage = 4;
+    uint16_t tempMaxVoltage = 0;
+    uint8_t tempMinCellID;
+    uint8_t tempMaxCellID;
 
     // Loop over all the cells and update the corresponding voltage
     for (uint8_t i = 0; i < NUM_CELLS; i++) {
-        status = makeDirectRead(cellVoltageReg, &cellVoltages[i]);
+        status = makeDirectRead(CELL_REG(i), &cellVoltages[i]);
         if (status != Status::OK) {
             return status;
         }
-        if (cellVoltages[i] < currentMinVoltage) {
-            currentMinVoltage = cellVoltages[i];
-            currentMinCellID = i + 1;
-        } else if (cellVoltages[i] > currentMaxVoltage) {
-            currentMaxVoltage = cellVoltages[i];
-            currentMaxCellID = i + 1;
+        if (cellVoltages[i] < tempMinVoltage) {
+            tempMinVoltage = cellVoltages[i];
+            tempMinCellID = i + 1;
+        } else if (cellVoltages[i] > tempMaxVoltage) {
+            tempMaxVoltage = cellVoltages[i];
+            tempMaxCellID = i + 1;
         }
-        currentVoltage += cellVoltages[i];
+        tempVoltage += cellVoltages[i];
 
         // Each cell register is 2 bytes off from each other
         cellVoltageReg += 2;
     }
 
-    sum = currentVoltage;
-    voltageInfo.minCellVoltage = currentMinVoltage;
-    voltageInfo.minCellVoltageID = currentMinCellID;
-    voltageInfo.maxCellVoltage = currentMaxVoltage;
-    voltageInfo.maxCellVoltageId = currentMaxCellID;
+    sum = tempVoltage;
+    voltageInfo.minCellVoltage = tempMinVoltage;
+    voltageInfo.minCellVoltageID = tempMinCellID;
+    voltageInfo.maxCellVoltage = tempMaxVoltage;
+    voltageInfo.maxCellVoltageId = tempMaxCellID;
 
     return BQ76952::Status::OK;
 }

@@ -1,12 +1,11 @@
 #pragma once
 
-#include <BQSetting.hpp>
 #include <EVT/io/I2C.hpp>
+
+#include <BQSetting.hpp>
 #include <dev/BMSInfo.hpp>
 
 #include <Canopen/co_obj.h>
-
-#include <BQSetting.hpp>
 
 #define CELL_REG(i) CELL_BALANCE_MAPPING[i] * 2 + 0x14
 
@@ -179,7 +178,6 @@ public:
      */
     Status getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32_t& sum, cellVoltageInfo& voltageInfo);
 
-    // Total voltage read by the BQ chip (measured in millivolts)
     /**
      * Determine the state of balancing on a given cell. This will read the
      * balancing state from the BQ and report back.
