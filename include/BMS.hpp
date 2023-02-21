@@ -81,7 +81,7 @@ private:
      * Have to know the size of the object dictionary for initialization
      * process.
      */
-    static constexpr uint16_t OBJECT_DIRECTIONARY_SIZE = 151;
+    static constexpr uint16_t OBJECT_DICTIONARY_SIZE = 151;
 
     /**
      * The active state of the alarm. When the alarm is in this state,
@@ -336,7 +336,7 @@ private:
      *
      * Array of CANopen objects. +1 for the special "end-of-array" marker
      */
-    CO_OBJ_T objectDictionary[OBJECT_DIRECTIONARY_SIZE + 1] = {
+    CO_OBJ_T objectDictionary[OBJECT_DICTIONARY_SIZE + 1] = {
         // Sync ID, defaults to 0x80
         {CO_KEY(0x1005, 0, CO_UNSIGNED32 | CO_OBJ_D__R_), 0, (uintptr_t) 0x80},
 

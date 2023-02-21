@@ -89,7 +89,7 @@ extern "C" void COTmrLock(void) {}
 
 extern "C" void COTmrUnlock(void) {}
 
-int main(){
+int main() {
     // Initialize system
     IO::init();
     // Queue that will store CANopen messages

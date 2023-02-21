@@ -24,7 +24,7 @@ BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
 }
 
 CO_OBJ_T* BMS::getObjectDictionary() {
-    return objectDictionaryOne;
+    return objectDictionary;
 }
 
 uint16_t BMS::getObjectDictionarySize() {
@@ -275,7 +275,7 @@ void BMS::updateVoltageReadings() {
     //       which results in a lot of I2C calls. This isn't directly an
     //       issue, just not necessary. Could be limited to update once a
     //       second.
-    bq.getCellVoltage(cellVoltage, &totalVoltage);
+    bq.getCellVoltage(cellVoltage, totalVoltage, voltageInfo);
 }
 
 void BMS::clearVoltageReadings() {

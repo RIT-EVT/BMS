@@ -1,8 +1,8 @@
 #pragma once
 
-#include <BMS/BQSetting.hpp>
+#include <BQSetting.hpp>
 #include <EVT/io/I2C.hpp>
-#include <BMS/dev/BMSInfo.hpp>
+#include <dev/BMSInfo.hpp>
 
 #include <Canopen/co_obj.h>
 
@@ -168,9 +168,6 @@ public:
      * @return State::OK on success, Status::ERROR otherwise
      */
     Status communicationStatus();
-
-
-
 
     /**
      * Fill a buffer with the per cell voltage.
