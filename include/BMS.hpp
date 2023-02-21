@@ -51,7 +51,7 @@ public:
     /**
      * The node ID used to identify the device on the CAN network.
      */
-    static constexpr uint8_t NODE_ID = 0x05;
+    static constexpr uint8_t NODE_ID = 0x20;
 
     /**
      * Get a pointer to the start of the CANopen object dictionary.
@@ -66,6 +66,11 @@ public:
      * @return The number of elements in the object dictionary
      */
     uint16_t getObjectDictionarySize();
+
+    /**
+     * Set private variables to values that make CAN testing easy
+     */
+    void canTest();
 
     /**
      * Handle running the core logic of the BMS. This involves
@@ -899,12 +904,12 @@ private:
         // User defined data, this will be where we put elements that can be
         // accessed via SDO and depending on configuration PDO
         {
-            .Key = CO_KEY(0x2100, 1, CO_UNSIGNED8 | CO_OBJ___PR_),
+            .Key = CO_KEY(0x2100, 1, CO_SIGNED16 | CO_OBJ___PR_),
             .Type = nullptr,
             .Data = (uintptr_t) &batteryVoltage,
         },
         {
-            .Key = CO_KEY(0x2100, 2, CO_UNSIGNED8 | CO_OBJ___PR_),
+            .Key = CO_KEY(0x2100, 2, CO_SIGNED16 | CO_OBJ___PR_),
             .Type = nullptr,
             .Data = (uintptr_t) &voltageInfo.minCellVoltage,
         },
@@ -914,7 +919,7 @@ private:
             .Data = (uintptr_t) &voltageInfo.minCellVoltageID,
         },
         {
-            .Key = CO_KEY(0x2100, 4, CO_UNSIGNED8 | CO_OBJ___PR_),
+            .Key = CO_KEY(0x2100, 4, CO_SIGNED16 | CO_OBJ___PR_),
             .Type = nullptr,
             .Data = (uintptr_t) &voltageInfo.maxCellVoltage,
         },
@@ -924,17 +929,17 @@ private:
             .Data = (uintptr_t) &voltageInfo.maxCellVoltageId,
         },
         {
-            .Key = CO_KEY(0x2100, 6, CO_UNSIGNED8 | CO_OBJ___PR_),
+            .Key = CO_KEY(0x2100, 6, CO_SIGNED16 | CO_OBJ___PR_),
             .Type = nullptr,
             .Data = (uintptr_t) &current,
         },
         {
-            .Key = CO_KEY(0x2100, 7, CO_UNSIGNED8 | CO_OBJ___PR_),
+            .Key = CO_KEY(0x2100, 7, CO_SIGNED8 | CO_OBJ___PR_),
             .Type = nullptr,
             .Data = (uintptr_t) &batteryPackMinTemp,
         },
         {
-            .Key = CO_KEY(0x2100, 8, CO_UNSIGNED8 | CO_OBJ___PR_),
+            .Key = CO_KEY(0x2100, 8, CO_SIGNED8 | CO_OBJ___PR_),
             .Type = nullptr,
             .Data = (uintptr_t) &batteryPackMaxTemp,
         },
