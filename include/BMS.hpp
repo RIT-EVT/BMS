@@ -447,13 +447,13 @@ private:
             .Type = CO_TEVENT,
             .Data = (uintptr_t) 2000,
         },
+
         // TPDO2 settings
         // 0: The TPDO number, default 0
         // 1: The COB-ID used by TPDO1, provided as a function of the TPDO number
         // 2: How the TPO is triggered, default to manual triggering
         // 3: Inhibit time, defaults to 0
         // 5: Timer trigger time in 1ms units, 0 will disable the timer based triggering
-
         {
             .Key = CO_KEY(0x1802, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
             .Type = nullptr,
@@ -486,7 +486,6 @@ private:
         // 2: How the TPO is triggered, default to manual triggering
         // 3: Inhibit time, defaults to 0
         // 5: Timer trigger time in 1ms units, 0 will disable the timer based triggering
-
         {
             .Key = CO_KEY(0x1803, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
             .Type = nullptr,
@@ -519,7 +518,6 @@ private:
         // 2: How the TPO is triggered, default to manual triggering
         // 3: Inhibit time, defaults to 0
         // 5: Timer trigger time in 1ms units, 0 will disable the timer based triggering
-
         {
             .Key = CO_KEY(0x1804, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
             .Type = nullptr,
@@ -552,7 +550,6 @@ private:
         // 2: How the TPO is triggered, default to manual triggering
         // 3: Inhibit time, defaults to 0
         // 5: Timer trigger time in 1ms units, 0 will disable the timer based triggering
-
         {
             .Key = CO_KEY(0x1805, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
             .Type = nullptr,
@@ -578,13 +575,13 @@ private:
             .Type = CO_TEVENT,
             .Data = (uintptr_t) 2000,
         },
+
         // TPDO6 settings
         // 0: The TPDO number, default 0
         // 1: The COB-ID used by TPDO1, provided as a function of the TPDO number
         // 2: How the TPO is triggered, default to manual triggering
         // 3: Inhibit time, defaults to 0
         // 5: Timer trigger time in 1ms units, 0 will disable the timer based triggering
-
         {
             .Key = CO_KEY(0x1806, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
             .Type = nullptr,
@@ -610,13 +607,13 @@ private:
             .Type = CO_TEVENT,
             .Data = (uintptr_t) 2000,
         },
+
         // TPDO7 settings
         // 0: The TPDO number, default 0
         // 1: The COB-ID used by TPDO1, provided as a function of the TPDO number
         // 2: How the TPO is triggered, default to manual triggering
         // 3: Inhibit time, defaults to 0
         // 5: Timer trigger time in 1ms units, 0 will disable the timer based triggering
-
         {
             .Key = CO_KEY(0x1807, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
             .Type = nullptr,
@@ -642,6 +639,7 @@ private:
             .Type = CO_TEVENT,
             .Data = (uintptr_t) 2000,
         },
+
         // TPDO0 mapping, determines the PDO messages to send when TPDO1 is triggered
         // 0: The number of PDO messages associated with the TPDO
         // 1: Link to the first PDO message
@@ -651,27 +649,27 @@ private:
             .Type = nullptr,
             .Data = (uintptr_t) 5,
         },
-        {
+        { // batteryVoltage
             .Key = CO_KEY(0x1A00, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 1, 16),
         },
-        {
+        { // minCellVoltage
             .Key = CO_KEY(0x1A00, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 2, 16),
         },
-        {
+        { // minCellVoltageID
             .Key = CO_KEY(0x1A00, 3, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 3, 8),
         },
-        {
+        { // maxCellVoltage
             .Key = CO_KEY(0x1A00, 4, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 4, 16),
         },
-        {
+        { // maxCellVoltageID
             .Key = CO_KEY(0x1A00, 5, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 5, 8),
@@ -686,42 +684,42 @@ private:
             .Type = nullptr,
             .Data = (uintptr_t) 7,
         },
-
-        {
+        { // current
             .Key = CO_KEY(0x1A01, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 6, 16),
         },
-        {
+        { // batteryPackMinTemp
             .Key = CO_KEY(0x1A01, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 7, 8),
         },
-        {
+        { // batteryPackMaxTemp
             .Key = CO_KEY(0x1A01, 3, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 8, 8),
         },
-        {
+        { // SOC
             .Key = CO_KEY(0x1A01, 4, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 9, 8),
         },
-        {
+        { // state
             .Key = CO_KEY(0x1A01, 5, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 10, 8),
         },
-        {
+        { // recapActualAllowed
             .Key = CO_KEY(0x1A01, 6, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 11, 8),
         },
-        {
+        { // dischargeActualAllowed
             .Key = CO_KEY(0x1A01, 7, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 12, 8),
         },
+
         // TPDO2 mapping, determines the PDO messages to send when TPDO2 is triggered
         // 0: The number of PDO messages associated with the TPDO
         // 1: Link to the first PDO message
@@ -731,27 +729,27 @@ private:
             .Type = nullptr,
             .Data = (uintptr_t) 4,
         },
-
-        {
+        { // cellVoltage[0]
             .Key = CO_KEY(0x1A02, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 13, 16),
         },
-        {
+        { // cellVoltage[1]
             .Key = CO_KEY(0x1A02, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 14, 16),
         },
-        {
+        { // cellVoltage[2]
             .Key = CO_KEY(0x1A02, 3, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 15, 16),
         },
-        {
+        { // cellVoltage[3]
             .Key = CO_KEY(0x1A02, 4, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 16, 16),
         },
+
         // TPDO3 mapping, determines the PDO messages to send when TPDO3 is triggered
         // 0: The number of PDO messages associated with the TPDO
         // 1: Link to the first PDO message
@@ -761,27 +759,27 @@ private:
             .Type = nullptr,
             .Data = (uintptr_t) 4,
         },
-
-        {
+        { // cellVoltage[4]
             .Key = CO_KEY(0x1A03, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 17, 16),
         },
-        {
+        { // cellVoltage[5]
             .Key = CO_KEY(0x1A03, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 18, 16),
         },
-        {
+        { // cellVoltage[6]
             .Key = CO_KEY(0x1A03, 3, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 19, 16),
         },
-        {
+        { // cellVoltage[7]
             .Key = CO_KEY(0x1A03, 4, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 20, 16),
         },
+
         // TPDO4 mapping, determines the PDO messages to send when TPDO4 is triggered
         // 0: The number of PDO messages associated with the TPDO
         // 1: Link to the first PDO message
@@ -791,27 +789,27 @@ private:
             .Type = nullptr,
             .Data = (uintptr_t) 4,
         },
-
-        {
+        { // cellVoltage[8]
             .Key = CO_KEY(0x1A04, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 21, 16),
         },
-        {
+        { // cellVoltage[9]
             .Key = CO_KEY(0x1A04, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 22, 16),
         },
-        {
+        { // cellVoltage[10]
             .Key = CO_KEY(0x1A04, 3, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 23, 16),
         },
-        {
+        { // cellVoltage[11]
             .Key = CO_KEY(0x1A04, 4, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 24, 16),
         },
+
         // TPDO5 mapping, determines the PDO messages to send when TPDO5 is triggered
         // 0: The number of PDO messages associated with the TPDO
         // 1: Link to the first PDO message
@@ -821,22 +819,22 @@ private:
             .Type = nullptr,
             .Data = (uintptr_t) 4,
         },
-        {
+        { // thermistorTemperature[0]
             .Key = CO_KEY(0x1A05, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 25, 16),
         },
-        {
+        { // thermistorTemperature[1]
             .Key = CO_KEY(0x1A05, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 26, 16),
         },
-        {
+        { // thermistorTemperature[2]
             .Key = CO_KEY(0x1A05, 3, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 27, 16),
         },
-        {
+        { // thermistorTemperature[3]
             .Key = CO_KEY(0x1A05, 4, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 28, 16),
@@ -851,26 +849,27 @@ private:
             .Type = nullptr,
             .Data = (uintptr_t) 4,
         },
-        {
+        { // thermistorTemperature[4]
             .Key = CO_KEY(0x1A06, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 29, 16),
         },
-        {
+        { // thermistorTemperature[5]
             .Key = CO_KEY(0x1A06, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 30, 16),
         },
-        {
+        { // thermistorTemperature[6]
             .Key = CO_KEY(0x1A06, 3, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 31, 16),
         },
-        {
+        { // thermistorTemperature[7]
             .Key = CO_KEY(0x1A06, 4, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 32, 16),
         },
+
         // TPDO7 mapping, determines the PDO messages to send when TPDO7 is triggered
         // 0: The number of PDO messages associated with the TPDO
         // 1: Link to the first PDO message
@@ -880,22 +879,22 @@ private:
             .Type = nullptr,
             .Data = (uintptr_t) 4,
         },
-        {
+        { // thermistorTemperature[8]
             .Key = CO_KEY(0x1A07, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 33, 16),
         },
-        {
+        { // thermistorTemperature[9]
             .Key = CO_KEY(0x1A07, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 34, 16),
         },
-        {
+        { // thermistorTemperature[10]
             .Key = CO_KEY(0x1A07, 3, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 35, 16),
         },
-        {
+        { // thermistorTemperature[11]
             .Key = CO_KEY(0x1A07, 4, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 36, 16),
@@ -916,7 +915,7 @@ private:
         {
             .Key = CO_KEY(0x2100, 3, CO_UNSIGNED8 | CO_OBJ___PR_),
             .Type = nullptr,
-            .Data = (uintptr_t) &voltageInfo.minCellVoltageID,
+            .Data = (uintptr_t) &voltageInfo.minCellVoltageId,
         },
         {
             .Key = CO_KEY(0x2100, 4, CO_SIGNED16 | CO_OBJ___PR_),

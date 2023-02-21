@@ -390,7 +390,7 @@ BQ76952::Status BQ76952::getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32
 
     sum = tempVoltage;
     voltageInfo.minCellVoltage = tempMinVoltage;
-    voltageInfo.minCellVoltageID = tempMinCellID;
+    voltageInfo.minCellVoltageId = tempMinCellID;
     voltageInfo.maxCellVoltage = tempMaxVoltage;
     voltageInfo.maxCellVoltageId = tempMaxCellID;
 

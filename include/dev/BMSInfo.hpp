@@ -7,7 +7,7 @@
  */
 struct cellVoltageInfo {
     int16_t minCellVoltage;
-    uint8_t minCellVoltageID;
+    uint8_t minCellVoltageId;
     int16_t maxCellVoltage;
     uint8_t maxCellVoltageId;
 };
