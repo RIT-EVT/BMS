@@ -36,7 +36,7 @@ void BMS::canTest() {
     voltageInfo = {
         0x6745,
         0x89,
-        (int16_t)0xcdab,
+        (int16_t) 0xcdab,
         0xef,
     };
     current = 0x2301;
