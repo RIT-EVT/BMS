@@ -336,7 +336,11 @@ private:
      */
     CO_OBJ_T objectDictionary[OBJECT_DICTIONARY_SIZE + 1] = {
         // Sync ID, defaults to 0x80
-        {CO_KEY(0x1005, 0, CO_UNSIGNED32 | CO_OBJ_D__R_), 0, (uintptr_t) 0x80,},
+        {
+            CO_KEY(0x1005, 0, CO_UNSIGNED32 | CO_OBJ_D__R_),
+            0,
+            (uintptr_t) 0x80,
+        },
 
         // Information about the hardware, hard coded sample values for now
         // 1: Vendor ID
