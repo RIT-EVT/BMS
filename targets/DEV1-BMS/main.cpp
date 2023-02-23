@@ -198,7 +198,7 @@ int main() {
         // Handle executing timer events that have elapsed
         COTmrProcess(&canNode.Tmr);
         // Update the state of the BMS
-        bms.canTest();
+        bms.process();
         // Wait for new data to come in
         time::wait(10);
     }

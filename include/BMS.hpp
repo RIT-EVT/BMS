@@ -389,7 +389,7 @@ private:
         // 1: The COB-ID used by TPDO0, provided as a function of the TPDO number
         // 2: How the TPO is triggered, default to manual triggering
         // 3: Inhibit time, defaults to 0
-        // 5: Timer trigger time in 1ms units, 0 will disable the timer based triggering
+        // 4: Timer trigger time in 1ms units, 0 will disable the timer based triggering
         {
             .Key = CO_KEY(0x1800, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
             .Type = nullptr,
@@ -421,7 +421,7 @@ private:
         // 1: The COB-ID used by TPDO1, provided as a function of the TPDO number
         // 2: How the TPO is triggered, default to manual triggering
         // 3: Inhibit time, defaults to 0
-        // 5: Timer trigger time in 1ms units, 0 will disable the timer based triggering
+        // 4: Timer trigger time in 1ms units, 0 will disable the timer based triggering
         {
             .Key = CO_KEY(0x1801, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
             .Type = nullptr,
@@ -453,7 +453,7 @@ private:
         // 1: The COB-ID used by TPDO1, provided as a function of the TPDO number
         // 2: How the TPO is triggered, default to manual triggering
         // 3: Inhibit time, defaults to 0
-        // 5: Timer trigger time in 1ms units, 0 will disable the timer based triggering
+        // 4: Timer trigger time in 1ms units, 0 will disable the timer based triggering
         {
             .Key = CO_KEY(0x1802, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
             .Type = nullptr,
@@ -485,7 +485,7 @@ private:
         // 1: The COB-ID used by TPDO1, provided as a function of the TPDO number
         // 2: How the TPO is triggered, default to manual triggering
         // 3: Inhibit time, defaults to 0
-        // 5: Timer trigger time in 1ms units, 0 will disable the timer based triggering
+        // 4: Timer trigger time in 1ms units, 0 will disable the timer based triggering
         {
             .Key = CO_KEY(0x1803, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
             .Type = nullptr,
@@ -517,7 +517,7 @@ private:
         // 1: The COB-ID used by TPDO1, provided as a function of the TPDO number
         // 2: How the TPO is triggered, default to manual triggering
         // 3: Inhibit time, defaults to 0
-        // 5: Timer trigger time in 1ms units, 0 will disable the timer based triggering
+        // 4: Timer trigger time in 1ms units, 0 will disable the timer based triggering
         {
             .Key = CO_KEY(0x1804, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
             .Type = nullptr,
@@ -549,7 +549,7 @@ private:
         // 1: The COB-ID used by TPDO1, provided as a function of the TPDO number
         // 2: How the TPO is triggered, default to manual triggering
         // 3: Inhibit time, defaults to 0
-        // 5: Timer trigger time in 1ms units, 0 will disable the timer based triggering
+        // 4: Timer trigger time in 1ms units, 0 will disable the timer based triggering
         {
             .Key = CO_KEY(0x1805, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
             .Type = nullptr,
@@ -581,7 +581,7 @@ private:
         // 1: The COB-ID used by TPDO1, provided as a function of the TPDO number
         // 2: How the TPO is triggered, default to manual triggering
         // 3: Inhibit time, defaults to 0
-        // 5: Timer trigger time in 1ms units, 0 will disable the timer based triggering
+        // 4: Timer trigger time in 1ms units, 0 will disable the timer based triggering
         {
             .Key = CO_KEY(0x1806, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
             .Type = nullptr,
@@ -613,7 +613,7 @@ private:
         // 1: The COB-ID used by TPDO1, provided as a function of the TPDO number
         // 2: How the TPO is triggered, default to manual triggering
         // 3: Inhibit time, defaults to 0
-        // 5: Timer trigger time in 1ms units, 0 will disable the timer based triggering
+        // 4: Timer trigger time in 1ms units, 0 will disable the timer based triggering
         {
             .Key = CO_KEY(0x1807, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
             .Type = nullptr,
