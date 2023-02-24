@@ -649,27 +649,32 @@ private:
             .Type = nullptr,
             .Data = (uintptr_t) 5,
         },
-        { // batteryVoltage
+        {
+            // batteryVoltage
             .Key = CO_KEY(0x1A00, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 1, 16),
         },
-        { // minCellVoltage
+        {
+            // minCellVoltage
             .Key = CO_KEY(0x1A00, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 2, 16),
         },
-        { // minCellVoltageID
+        {
+            // minCellVoltageID
             .Key = CO_KEY(0x1A00, 3, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 3, 8),
         },
-        { // maxCellVoltage
+        {
+            // maxCellVoltage
             .Key = CO_KEY(0x1A00, 4, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 4, 16),
         },
-        { // maxCellVoltageID
+        {
+            // maxCellVoltageID
             .Key = CO_KEY(0x1A00, 5, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 5, 8),
@@ -684,37 +689,44 @@ private:
             .Type = nullptr,
             .Data = (uintptr_t) 7,
         },
-        { // current
+        {
+            // current
             .Key = CO_KEY(0x1A01, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 6, 16),
         },
-        { // batteryPackMinTemp
+        {
+            // batteryPackMinTemp
             .Key = CO_KEY(0x1A01, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 7, 8),
         },
-        { // batteryPackMaxTemp
+        {
+            // batteryPackMaxTemp
             .Key = CO_KEY(0x1A01, 3, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 8, 8),
         },
-        { // SOC
+        {
+            // SOC
             .Key = CO_KEY(0x1A01, 4, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 9, 8),
         },
-        { // state
+        {
+            // state
             .Key = CO_KEY(0x1A01, 5, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 10, 8),
         },
-        { // recapActualAllowed
+        {
+            // recapActualAllowed
             .Key = CO_KEY(0x1A01, 6, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 11, 8),
         },
-        { // dischargeActualAllowed
+        {
+            // dischargeActualAllowed
             .Key = CO_KEY(0x1A01, 7, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 12, 8),
@@ -729,22 +741,26 @@ private:
             .Type = nullptr,
             .Data = (uintptr_t) 4,
         },
-        { // cellVoltage[0]
+        {
+            // cellVoltage[0]
             .Key = CO_KEY(0x1A02, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 13, 16),
         },
-        { // cellVoltage[1]
+        {
+            // cellVoltage[1]
             .Key = CO_KEY(0x1A02, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 14, 16),
         },
-        { // cellVoltage[2]
+        {
+            // cellVoltage[2]
             .Key = CO_KEY(0x1A02, 3, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 15, 16),
         },
-        { // cellVoltage[3]
+        {
+            // cellVoltage[3]
             .Key = CO_KEY(0x1A02, 4, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 16, 16),
@@ -759,22 +775,26 @@ private:
             .Type = nullptr,
             .Data = (uintptr_t) 4,
         },
-        { // cellVoltage[4]
+        {
+            // cellVoltage[4]
             .Key = CO_KEY(0x1A03, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 17, 16),
         },
-        { // cellVoltage[5]
+        {
+            // cellVoltage[5]
             .Key = CO_KEY(0x1A03, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 18, 16),
         },
-        { // cellVoltage[6]
+        {
+            // cellVoltage[6]
             .Key = CO_KEY(0x1A03, 3, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 19, 16),
         },
-        { // cellVoltage[7]
+        {
+            // cellVoltage[7]
             .Key = CO_KEY(0x1A03, 4, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 20, 16),
@@ -789,22 +809,26 @@ private:
             .Type = nullptr,
             .Data = (uintptr_t) 4,
         },
-        { // cellVoltage[8]
+        {
+            // cellVoltage[8]
             .Key = CO_KEY(0x1A04, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 21, 16),
         },
-        { // cellVoltage[9]
+        {
+            // cellVoltage[9]
             .Key = CO_KEY(0x1A04, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 22, 16),
         },
-        { // cellVoltage[10]
+        {
+            // cellVoltage[10]
             .Key = CO_KEY(0x1A04, 3, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 23, 16),
         },
-        { // cellVoltage[11]
+        {
+            // cellVoltage[11]
             .Key = CO_KEY(0x1A04, 4, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 24, 16),
@@ -819,22 +843,26 @@ private:
             .Type = nullptr,
             .Data = (uintptr_t) 4,
         },
-        { // thermistorTemperature[0]
+        {
+            // thermistorTemperature[0]
             .Key = CO_KEY(0x1A05, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 25, 16),
         },
-        { // thermistorTemperature[1]
+        {
+            // thermistorTemperature[1]
             .Key = CO_KEY(0x1A05, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 26, 16),
         },
-        { // thermistorTemperature[2]
+        {
+            // thermistorTemperature[2]
             .Key = CO_KEY(0x1A05, 3, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 27, 16),
         },
-        { // thermistorTemperature[3]
+        {
+            // thermistorTemperature[3]
             .Key = CO_KEY(0x1A05, 4, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 28, 16),
@@ -849,22 +877,26 @@ private:
             .Type = nullptr,
             .Data = (uintptr_t) 4,
         },
-        { // thermistorTemperature[4]
+        {
+            // thermistorTemperature[4]
             .Key = CO_KEY(0x1A06, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 29, 16),
         },
-        { // thermistorTemperature[5]
+        {
+            // thermistorTemperature[5]
             .Key = CO_KEY(0x1A06, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 30, 16),
         },
-        { // thermistorTemperature[6]
+        {
+            // thermistorTemperature[6]
             .Key = CO_KEY(0x1A06, 3, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 31, 16),
         },
-        { // thermistorTemperature[7]
+        {
+            // thermistorTemperature[7]
             .Key = CO_KEY(0x1A06, 4, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 32, 16),
@@ -879,22 +911,26 @@ private:
             .Type = nullptr,
             .Data = (uintptr_t) 4,
         },
-        { // thermistorTemperature[8]
+        {
+            // thermistorTemperature[8]
             .Key = CO_KEY(0x1A07, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 33, 16),
         },
-        { // thermistorTemperature[9]
+        {
+            // thermistorTemperature[9]
             .Key = CO_KEY(0x1A07, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 34, 16),
         },
-        { // thermistorTemperature[10]
+        {
+            // thermistorTemperature[10]
             .Key = CO_KEY(0x1A07, 3, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 35, 16),
         },
-        { // thermistorTemperature[11]
+        {
+            // thermistorTemperature[11]
             .Key = CO_KEY(0x1A07, 4, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 36, 16),
