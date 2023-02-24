@@ -8,7 +8,11 @@ if(EVT_CORE_LOG_ENABLE)
     add_compile_definitions(EVT_CORE_LOG_ENABLE)
 endif()
 
-# Handle default selection of the target device
+# Allow for up to 8 CANopen TPDOs
+add_compile_definitions(CO_TPDO_N=8)
+
+# Handle Selection of the target device
+option(TARGET_DEV "Target device" "STM32F302x8")
 if(NOT TARGET_DEV)
     set(TARGET_DEV "STM32F334x8")
 endif()

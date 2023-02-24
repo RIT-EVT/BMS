@@ -19,14 +19,53 @@ BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
                                             systemDetect(systemDetect),
                                             stateChanged(true) {
     //bmsOK.writePin(EVT::core::IO::GPIO::State::LOW);
+
+    updateVoltageReadings();
 }
 
 CO_OBJ_T* BMS::getObjectDictionary() {
-    return &objectDictionary[0];
+    return objectDictionary;
 }
 
 uint16_t BMS::getObjectDictionarySize() {
     return OBJECT_DICTIONARY_SIZE;
+}
+
+void BMS::canTest() {
+    batteryVoltage = 0x2301;
+    voltageInfo = {
+        0x6745,
+        0x89,
+        (int16_t) 0xcdab,
+        0xef,
+    };
+    current = 0x2301;
+    batteryPackMinTemp = 0x45;
+    batteryPackMaxTemp = 0x67;
+    SOC = 0x89;
+    state = static_cast<State>(0xab);
+    recapActualAllowed = 0xcd;
+    dischargeActualAllowed = 0xef;
+    for (uint8_t i = 0; i < 12; i++) {
+        switch (i % 4) {
+        case 0:
+            cellVoltage[i] = 0x2301;
+            thermistorTemperature[i] = 0x2301;
+            break;
+        case 1:
+            cellVoltage[i] = 0x6745;
+            thermistorTemperature[i] = 0x6745;
+            break;
+        case 2:
+            cellVoltage[i] = 0xab89;
+            thermistorTemperature[i] = 0xab89;
+            break;
+        case 3:
+            cellVoltage[i] = 0xefcd;
+            thermistorTemperature[i] = 0xefcd;
+            break;
+        }
+    }
 }
 
 void BMS::process() {
@@ -273,7 +312,7 @@ void BMS::updateVoltageReadings() {
     //       which results in a lot of I2C calls. This isn't directly an
     //       issue, just not necessary. Could be limited to update once a
     //       second.
-    bq.getCellVoltage(cellVoltage, &totalVoltage);
+    bq.getCellVoltage(cellVoltage, totalVoltage, voltageInfo);
 }
 
 void BMS::clearVoltageReadings() {

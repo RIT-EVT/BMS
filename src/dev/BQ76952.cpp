@@ -359,21 +359,40 @@ BQ76952::Status BQ76952::communicationStatus() {
     return BQ76952::Status::ERROR;
 }
 
-BQ76952::Status BQ76952::getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32_t* sum) {
-    Status status;
+BQ76952::Status BQ76952::getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32_t& sum, cellVoltageInfo& voltageInfo) {
+    Status status = Status::OK;
+    uint8_t cellVoltageReg = CELL_VOLTAGE_BASE_ADDR;
+    //Must use temporary storage variables or else the values reported over CAN will be inaccurate from regular changes.
+    uint32_t tempVoltage = 0;
+    uint16_t tempMinVoltage = 4;
+    uint16_t tempMaxVoltage = 0;
+    uint8_t tempMinCellID;
+    uint8_t tempMaxCellID;
 
-    uint32_t currentVoltage = 0;
     // Loop over all the cells and update the corresponding voltage
     for (uint8_t i = 0; i < NUM_CELLS; i++) {
         status = makeDirectRead(CELL_REG(i), &cellVoltages[i]);
         if (status != Status::OK) {
             return status;
         }
+        if (cellVoltages[i] < tempMinVoltage) {
+            tempMinVoltage = cellVoltages[i];
+            tempMinCellID = i + 1;
+        } else if (cellVoltages[i] > tempMaxVoltage) {
+            tempMaxVoltage = cellVoltages[i];
+            tempMaxCellID = i + 1;
+        }
+        tempVoltage += cellVoltages[i];
 
-        currentVoltage += cellVoltages[i];
+        // Each cell register is 2 bytes off from each other
+        cellVoltageReg += 2;
     }
 
-    *sum = currentVoltage;
+    sum = tempVoltage;
+    voltageInfo.minCellVoltage = tempMinVoltage;
+    voltageInfo.minCellVoltageId = tempMinCellID;
+    voltageInfo.maxCellVoltage = tempMaxVoltage;
+    voltageInfo.maxCellVoltageId = tempMaxCellID;
 
     return BQ76952::Status::OK;
 }

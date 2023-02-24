@@ -2,9 +2,10 @@
 
 #include <EVT/io/I2C.hpp>
 
-#include <Canopen/co_obj.h>
-
 #include <BQSetting.hpp>
+#include <dev/BMSInfo.hpp>
+
+#include <Canopen/co_obj.h>
 
 #define CELL_REG(i) CELL_BALANCE_MAPPING[i] * 2 + 0x14
 
@@ -170,12 +171,12 @@ public:
     /**
      * Fill a buffer with the per cell voltage.
      *
-     * @param[out] cellVoltages The buffer to fill with the cell voltage. Must be
-     *            NUM_CELLS in size
+     * @param[out] cellVoltages The buffer to fill with the cell voltage. Must be NUM_CELLS in size
      * @param[out] sum The total voltage across all cells
+     * @param[out] voltageInfo A struct containing the values below.
      * @return The status of the read attempt
      */
-    Status getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32_t* sum);
+    Status getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32_t& sum, cellVoltageInfo& voltageInfo);
 
     /**
      * Determine the state of balancing on a given cell. This will read the
