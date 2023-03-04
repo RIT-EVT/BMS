@@ -5,9 +5,9 @@
 #include <Canopen/co_core.h>
 
 #include <BQSettingStorage.hpp>
+#include <EVT/io/pin.hpp>
 #include <dev/Interlock.hpp>
 #include <dev/SystemDetect.hpp>
-#include <EVT/io/pin.hpp>
 
 namespace IO = EVT::core::IO;
 
@@ -54,7 +54,6 @@ public:
     static constexpr IO::Pin I2C_SCL_PIN = IO::Pin::PB_6;
     static constexpr IO::Pin I2C_SDA_PIN = IO::Pin::PB_7;
     static constexpr IO::Pin INTERLOCK_PIN = IO::Pin::PA_3;
-
 
     /**
      * Make a new instance of the BMS with the given devices

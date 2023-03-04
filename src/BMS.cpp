@@ -12,13 +12,13 @@ namespace BMS {
 BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
          DEV::Interlock& interlock, IO::GPIO& alarm,
          DEV::SystemDetect& systemDetect, IO::GPIO& bmsOK) : bqSettingsStorage(bqSettingsStorage),
-                                            bq(bq),
-                                            state(State::START),
-                                            interlock(interlock),
-                                            alarm(alarm),
-                                            systemDetect(systemDetect),
-                                            bmsOK(bmsOK),
-                                            stateChanged(true) {
+                                                             bq(bq),
+                                                             state(State::START),
+                                                             interlock(interlock),
+                                                             alarm(alarm),
+                                                             systemDetect(systemDetect),
+                                                             bmsOK(bmsOK),
+                                                             stateChanged(true) {
     bmsOK.writePin(IO::GPIO::State::LOW);
 
     updateVoltageReadings();
