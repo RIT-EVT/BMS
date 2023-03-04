@@ -43,6 +43,7 @@ public:
         CHARGING = 8
     };
 
+    /** BMS Pinout */
     static constexpr IO::Pin OK_PIN = IO::Pin::PA_6;
     static constexpr IO::Pin ALARM_PIN = IO::Pin::PA_5;
     static constexpr IO::Pin UART_TX_PIN = IO::Pin::PA_9;
@@ -55,7 +56,14 @@ public:
 
 
     /**
-     * Make a new instance of the BMS with the given devices.
+     * Make a new instance of the BMS with the given devices
+     *
+     * @param bqSettingsStorage Object used to manage BQ settings storage
+     * @param bq BQ chip instance
+     * @param interlock GPIO used to check the interlock status
+     * @param alarm GPIO used to check the BQ alarm status
+     * @param systemDetect Object used to detect what system the BMS is connected to
+     * @param bmsOK GPIO used to output the OK signal from the BMS
      */
     BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
         DEV::Interlock& interlock, IO::GPIO& alarm,
