@@ -112,7 +112,7 @@ int main() {
     IO::GPIO& bmsOK = IO::getGPIO<BMS::BMS::OK_PIN>(IO::GPIO::Direction::OUTPUT);
 
     // Initialize the BMS itself
-    BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect /*, bmsOK*/);
+    BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect, bmsOK);
 
     // Reserved memory for CANopen stack usage
     uint8_t sdoBuffer[1][CO_SDO_BUF_BYTE];

@@ -134,15 +134,10 @@ int main() {
     IO::GPIO& alarm = IO::getGPIO<BMS::BMS::ALARM_PIN>(IO::GPIO::Direction::INPUT);
 
     // Initialize the system OK pin
-    // TODO: Replace with writing out to the BQ. In reality, the BQ is
-    //       what controls the status OK GPIO not the STM itself directly.
-    //       Instead of using the STM GPIO to represent status ok, this will
-    //       need to be replaced with a call to the BQ to update the ok
-    //       GPIO.
-    //IO::GPIO& bmsOK = IO::getGPIO<IO::Pin::PB_3>(IO::GPIO::Direction::OUTPUT);
+    IO::GPIO& bmsOK = IO::getGPIO<IO::Pin::PB_3>(IO::GPIO::Direction::OUTPUT);
 
     // Initialize the BMS itself
-    BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect);
+    BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect, bmsOK);
 
     // Reserved memory for CANopen stack usage
     uint8_t sdoBuffer[1][CO_SDO_BUF_BYTE];

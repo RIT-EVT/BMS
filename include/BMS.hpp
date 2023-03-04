@@ -7,6 +7,7 @@
 #include <BQSettingStorage.hpp>
 #include <dev/Interlock.hpp>
 #include <dev/SystemDetect.hpp>
+#include <EVT/io/pin.hpp>
 
 namespace IO = EVT::core::IO;
 
