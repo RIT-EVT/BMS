@@ -58,8 +58,8 @@ public:
      * Make a new instance of the BMS with the given devices.
      */
     BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
-        DEV::Interlock& interlock, EVT::core::IO::GPIO& alarm,
-        DEV::SystemDetect& systemDetect);
+        DEV::Interlock& interlock, IO::GPIO& alarm,
+        DEV::SystemDetect& systemDetect, IO::GPIO& bmsOK);
 
     /**
      * The node ID used to identify the device on the CAN network.
@@ -104,20 +104,20 @@ private:
      * The active state of the alarm. When the alarm is in this state,
      * the BQ has detected some critical error
      */
-    static constexpr EVT::core::IO::GPIO::State ALARM_ACTIVE_STATE =
-        EVT::core::IO::GPIO::State::HIGH;
+    static constexpr IO::GPIO::State ALARM_ACTIVE_STATE =
+        IO::GPIO::State::HIGH;
 
     /**
      * State for representing the BMS is in an OK state to charge/discharge
      */
-    static constexpr EVT::core::IO::GPIO::State BMS_OK =
-        EVT::core::IO::GPIO::State::HIGH;
+    static constexpr IO::GPIO::State BMS_OK =
+        IO::GPIO::State::HIGH;
 
     /**
      * State for representing the BMS is in not in an OK state to charge/discharge
      */
-    static constexpr EVT::core::IO::GPIO::State BMS_NOT_OK =
-        EVT::core::IO::GPIO::State::LOW;
+    static constexpr IO::GPIO::State BMS_NOT_OK =
+        IO::GPIO::State::LOW;
 
     /**
      * Number of attempts that will be made to communicate with the BQ
@@ -156,7 +156,7 @@ private:
      * If the alarm pin is in it's active state, should assume it is unsafe
      * to charge/discharge
      */
-    EVT::core::IO::GPIO& alarm;
+    IO::GPIO& alarm;
 
     /**
      * This determines which system the BMS is attached to.
@@ -168,7 +168,7 @@ private:
      * is high, it represents that the BMS is in a state ready to
      * charge or discharge,
      */
-    //    EVT::core::IO::GPIO& bmsOK;
+    IO::GPIO& bmsOK;
 
     /**
      * Boolean flag that represents a state has just changed, this is useful
