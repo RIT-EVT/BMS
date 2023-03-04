@@ -8,6 +8,7 @@
 #include <EVT/io/manager.hpp>
 #include <EVT/utils/log.hpp>
 
+#include <BMS.hpp>
 #include <BQSetting.hpp>
 #include <BQSettingStorage.hpp>
 #include <dev/BQ76952.hpp>
@@ -16,11 +17,11 @@ namespace IO = EVT::core::IO;
 namespace log = EVT::core::log;
 
 int main() {
-    IO::UART& uart = IO::getUART<IO::Pin::PA_9, IO::Pin::PA_10>(9600);
+    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(9600);
 
     uart.printf("\r\n\r\nEEPROM Dump\r\n");
 
-    IO::I2C& i2c = IO::getI2C<IO::Pin::PB_6, IO::Pin::PB_7>();
+    IO::I2C& i2c = IO::getI2C<BMS::BMS::I2C_SCL_PIN, BMS::BMS::I2C_SDA_PIN>();
     EVT::core::DEV::M24C32 eeprom(0x57, i2c);
 
     log::LOGGER.setUART(&uart);

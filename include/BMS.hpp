@@ -8,6 +8,8 @@
 #include <dev/Interlock.hpp>
 #include <dev/SystemDetect.hpp>
 
+namespace IO = EVT::core::IO;
+
 namespace BMS {
 
 /**
@@ -40,6 +42,17 @@ public:
         /// When the BMS is handling charging the battery pack
         CHARGING = 8
     };
+
+    static constexpr IO::Pin OK_PIN = IO::Pin::PA_6;
+    static constexpr IO::Pin ALARM_PIN = IO::Pin::PA_5;
+    static constexpr IO::Pin UART_TX_PIN = IO::Pin::PA_9;
+    static constexpr IO::Pin UART_RX_PIN = IO::Pin::PA_10;
+    static constexpr IO::Pin CAN_TX_PIN = IO::Pin::PA_12;
+    static constexpr IO::Pin CAN_RX_PIN = IO::Pin::PA_11;
+    static constexpr IO::Pin I2C_SCL_PIN = IO::Pin::PB_6;
+    static constexpr IO::Pin I2C_SDA_PIN = IO::Pin::PB_7;
+    static constexpr IO::Pin INTERLOCK_PIN = IO::Pin::PA_3;
+
 
     /**
      * Make a new instance of the BMS with the given devices.

@@ -6,6 +6,7 @@
 // Overwrite UART timeout to allow time to start running the transfer script
 #define EVT_UART_TIMEOUT 10000
 
+#include <BMS.hpp>
 #include <EVT/dev/storage/M24C32.hpp>
 #include <EVT/io/manager.hpp>
 
@@ -15,9 +16,9 @@ int main() {
     // Initialize system
     IO::init();
 
-    IO::UART& uart = IO::getUART<IO::Pin::PA_9, IO::Pin::PA_10>(9600);
+    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(9600);
 
-    IO::I2C& i2c = IO::getI2C<IO::Pin::PB_6, IO::Pin::PB_7>();
+    IO::I2C& i2c = IO::getI2C<BMS::BMS::I2C_SCL_PIN, BMS::BMS::I2C_SDA_PIN>();
     EVT::core::DEV::M24C32 eeprom(0x57, i2c);
 
     uart.printf("Test start\r\n");

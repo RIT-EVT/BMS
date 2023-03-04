@@ -107,10 +107,10 @@ int main() {
     };
 
     // Initialize IO
-    IO::CAN& can = IO::getCAN<IO::Pin::PA_12, IO::Pin::PA_11>();
+    IO::CAN& can = IO::getCAN<BMS::BMS::CAN_TX_PIN, BMS::BMS::CAN_RX_PIN>();
     can.addIRQHandler(canInterruptHandler, reinterpret_cast<void*>(&canParams));
-    IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
-    IO::I2C& i2c = IO::getI2C<IO::Pin::PB_6, IO::Pin::PB_7>();
+    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_TX_PIN>(9600);
+    IO::I2C& i2c = IO::getI2C<BMS::BMS::I2C_SCL_PIN, BMS::BMS::I2C_SDA_PIN>();
 
     // Initialize the timer
     DEV::Timerf302x8 timer(TIM2, 100);
@@ -127,11 +127,11 @@ int main() {
     BMS::BQSettingsStorage bqSettingsStorage(eeprom, bq);
 
     // Initialize the Interlock
-    IO::GPIO& interlockGPIO = IO::getGPIO<IO::Pin::PA_3>(IO::GPIO::Direction::INPUT);
+    IO::GPIO& interlockGPIO = IO::getGPIO<BMS::BMS::INTERLOCK_PIN>(IO::GPIO::Direction::INPUT);
     BMS::DEV::Interlock interlock(interlockGPIO);
 
     // Initialize the alarm pin
-    IO::GPIO& alarm = IO::getGPIO<IO::Pin::PB_0>(IO::GPIO::Direction::INPUT);
+    IO::GPIO& alarm = IO::getGPIO<BMS::BMS::ALARM_PIN>(IO::GPIO::Direction::INPUT);
 
     // Initialize the system OK pin
     // TODO: Replace with writing out to the BQ. In reality, the BQ is
