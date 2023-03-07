@@ -8,6 +8,7 @@
 #include <EVT/utils/log.hpp>
 #include <EVT/utils/time.hpp>
 
+#include <BMS.hpp>
 #include <BQSetting.hpp>
 #include <BQSettingStorage.hpp>
 #include <dev/BQ76952.hpp>
@@ -20,8 +21,8 @@ constexpr uint8_t BQ_I2C_ADDR = 0x08;
 int main() {
     IO::init();
 
-    IO::UART& uart = IO::getUART<IO::Pin::PA_9, IO::Pin::PA_10>(9600);
-    IO::I2C& i2c = IO::getI2C<IO::Pin::PB_6, IO::Pin::PB_7>();
+    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(9600);
+    IO::I2C& i2c = IO::getI2C<BMS::BMS::I2C_SCL_PIN, BMS::BMS::I2C_SDA_PIN>();
     EVT::core::DEV::M24C32 eeprom(0x57, i2c);
 
     uart.printf("\r\n\r\nBQ Setting Transfer Test\r\n");

@@ -80,10 +80,10 @@ int main() {
     BMS::DEV::SystemDetect systemDetect(BIKE_HEART_BEAT, CHARGER_HEART_BEAT, TIMEOUT);
 
     // Initialize IO
-    IO::CAN& can = IO::getCAN<IO::Pin::PA_12, IO::Pin::PA_11>();
+    IO::CAN& can = IO::getCAN<BMS::BMS::CAN_TX_PIN, BMS::BMS::CAN_RX_PIN>();
     can.addIRQHandler(canInterruptHandler, reinterpret_cast<void*>(&systemDetect));
-    IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
-    EVT::core::IO::I2C& i2c = EVT::core::IO::getI2C<IO::Pin::PB_8, IO::Pin::PB_9>();
+    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(9600);
+    EVT::core::IO::I2C& i2c = EVT::core::IO::getI2C<BMS::BMS::I2C_SCL_PIN, BMS::BMS::I2C_SDA_PIN>();
 
     // Initialize the timer
     DEV::Timerf302x8 timer(TIM2, 100);
@@ -101,18 +101,18 @@ int main() {
 
     // Initialize the Interlock
     // TODO: Determine actual interlock GPIO
-    IO::GPIO& interlockGPIO = IO::getGPIO<IO::Pin::PB_0>(IO::GPIO::Direction::INPUT);
+    IO::GPIO& interlockGPIO = IO::getGPIO<BMS::BMS::INTERLOCK_PIN>(IO::GPIO::Direction::INPUT);
     BMS::DEV::Interlock interlock(interlockGPIO);
 
     // Initialize the alarm pin
-    IO::GPIO& alarm = IO::getGPIO<IO::Pin::PB_1>(IO::GPIO::Direction::INPUT);
+    IO::GPIO& alarm = IO::getGPIO<BMS::BMS::ALARM_PIN>(IO::GPIO::Direction::INPUT);
 
     // Initialize the system OK pin
     // TODO: Determine actual system ok pin
-    //IO::GPIO& bmsOK = IO::getGPIO<IO::Pin::PC_14>(IO::GPIO::Direction::OUTPUT);
+    IO::GPIO& bmsOK = IO::getGPIO<BMS::BMS::OK_PIN>(IO::GPIO::Direction::OUTPUT);
 
     // Initialize the BMS itself
-    BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect /*, bmsOK*/);
+    BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect, bmsOK);
 
     // Reserved memory for CANopen stack usage
     uint8_t sdoBuffer[1][CO_SDO_BUF_BYTE];

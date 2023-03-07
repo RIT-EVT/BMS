@@ -6,6 +6,7 @@
 
 #include <EVT/io/manager.hpp>
 
+#include <BMS.hpp>
 #include <BQSetting.hpp>
 
 namespace IO = EVT::core::IO;
@@ -137,7 +138,7 @@ void serializeDeserializeTest(IO::UART& uart) {
 }
 
 int main() {
-    IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
+    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(9600);
 
     uart.printf("\r\n\r\nBQ SETTING TEST\r\n");
 

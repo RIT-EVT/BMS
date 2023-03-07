@@ -10,15 +10,16 @@ namespace log = EVT::core::log;
 namespace BMS {
 
 BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
-         DEV::Interlock& interlock, EVT::core::IO::GPIO& alarm,
-         DEV::SystemDetect& systemDetect) : bqSettingsStorage(bqSettingsStorage),
-                                            bq(bq),
-                                            state(State::START),
-                                            interlock(interlock),
-                                            alarm(alarm),
-                                            systemDetect(systemDetect),
-                                            stateChanged(true) {
-    //bmsOK.writePin(EVT::core::IO::GPIO::State::LOW);
+         DEV::Interlock& interlock, IO::GPIO& alarm,
+         DEV::SystemDetect& systemDetect, IO::GPIO& bmsOK) : bqSettingsStorage(bqSettingsStorage),
+                                                             bq(bq),
+                                                             state(State::START),
+                                                             interlock(interlock),
+                                                             alarm(alarm),
+                                                             systemDetect(systemDetect),
+                                                             bmsOK(bmsOK),
+                                                             stateChanged(true) {
+    bmsOK.writePin(IO::GPIO::State::LOW);
 
     updateVoltageReadings();
 }
@@ -101,7 +102,7 @@ void BMS::process() {
 
 void BMS::startState() {
     if (stateChanged) {
-        //bmsOK.writePin(BMS_NOT_OK);
+        bmsOK.writePin(BMS_NOT_OK);
         numAttemptsMade = 0;
         stateChanged = false;
         clearVoltageReadings();
@@ -148,7 +149,7 @@ void BMS::startState() {
 
 void BMS::initializationErrorState() {
     if (stateChanged) {
-        //bmsOK.writePin(BMS_NOT_OK);
+        bmsOK.writePin(BMS_NOT_OK);
         stateChanged = false;
         clearVoltageReadings();
         log::LOGGER.log(log::Logger::LogLevel::INFO, "Entering initialization error state");
@@ -157,7 +158,7 @@ void BMS::initializationErrorState() {
 
 void BMS::factoryInitState() {
     if (stateChanged) {
-        //bmsOK.writePin(BMS_NOT_OK);
+        bmsOK.writePin(BMS_NOT_OK);
         stateChanged = false;
         clearVoltageReadings();
         log::LOGGER.log(log::Logger::LogLevel::INFO, "Entering factory init state");
@@ -172,7 +173,7 @@ void BMS::factoryInitState() {
 
 void BMS::transferSettingsState() {
     if (stateChanged) {
-        //bmsOK.writePin(BMS_NOT_OK);
+        bmsOK.writePin(BMS_NOT_OK);
         bqSettingsStorage.resetTransfer();
         numAttemptsMade = 0;
         stateChanged = false;
@@ -216,7 +217,7 @@ void BMS::transferSettingsState() {
 
 void BMS::systemReadyState() {
     if (stateChanged) {
-        //bmsOK.writePin(BMS_NOT_OK);
+        bmsOK.writePin(BMS_NOT_OK);
         stateChanged = false;
         log::LOGGER.log(log::Logger::LogLevel::INFO, "Entering system ready state");
     }
@@ -247,7 +248,7 @@ void BMS::systemReadyState() {
 
 void BMS::unsafeConditionsError() {
     if (stateChanged) {
-        //bmsOK.writePin(BMS_NOT_OK);
+        bmsOK.writePin(BMS_NOT_OK);
         stateChanged = false;
         log::LOGGER.log(log::Logger::LogLevel::INFO, "Entering unsafe conditions state");
     }
@@ -257,7 +258,7 @@ void BMS::unsafeConditionsError() {
 
 void BMS::powerDeliveryState() {
     if (stateChanged) {
-        //bmsOK.writePin(BMS_OK);
+        bmsOK.writePin(BMS_OK);
         stateChanged = false;
         log::LOGGER.log(log::Logger::LogLevel::INFO, "Entering power delivery state");
     }
@@ -280,7 +281,7 @@ void BMS::powerDeliveryState() {
 
 void BMS::chargingState() {
     if (stateChanged) {
-        //bmsOK.writePin(BMS_OK);
+        bmsOK.writePin(BMS_OK);
         stateChanged = false;
         log::LOGGER.log(log::Logger::LogLevel::INFO, "Entering charging state");
     }

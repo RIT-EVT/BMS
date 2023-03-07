@@ -11,6 +11,7 @@
 #include <EVT/utils/log.hpp>
 #include <EVT/utils/time.hpp>
 
+#include <BMS.hpp>
 #include <dev/BQ76952.hpp>
 
 namespace IO = EVT::core::IO;
@@ -312,10 +313,10 @@ void getVoltages(IO::UART& uart, BMS::DEV::BQ76952& bq) {
 }
 
 int main() {
-    IO::I2C& i2c = IO::getI2C<IO::Pin::PB_6, IO::Pin::PB_7>();
+    IO::I2C& i2c = IO::getI2C<BMS::BMS::I2C_SCL_PIN, BMS::BMS::I2C_SDA_PIN>();
     BMS::DEV::BQ76952 bq(i2c, 0x08);
 
-    IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
+    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(9600);
     log::LOGGER.setUART(&uart);
     log::LOGGER.setLogLevel(log::Logger::LogLevel::DEBUG);
 

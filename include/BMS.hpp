@@ -5,8 +5,11 @@
 #include <Canopen/co_core.h>
 
 #include <BQSettingStorage.hpp>
+#include <EVT/io/pin.hpp>
 #include <dev/Interlock.hpp>
 #include <dev/SystemDetect.hpp>
+
+namespace IO = EVT::core::IO;
 
 namespace BMS {
 
@@ -41,12 +44,30 @@ public:
         CHARGING = 8
     };
 
+    /** BMS Pinout */
+    static constexpr IO::Pin OK_PIN = IO::Pin::PA_6;
+    static constexpr IO::Pin ALARM_PIN = IO::Pin::PA_5;
+    static constexpr IO::Pin UART_TX_PIN = IO::Pin::PA_9;
+    static constexpr IO::Pin UART_RX_PIN = IO::Pin::PA_10;
+    static constexpr IO::Pin CAN_TX_PIN = IO::Pin::PA_12;
+    static constexpr IO::Pin CAN_RX_PIN = IO::Pin::PA_11;
+    static constexpr IO::Pin I2C_SCL_PIN = IO::Pin::PB_6;
+    static constexpr IO::Pin I2C_SDA_PIN = IO::Pin::PB_7;
+    static constexpr IO::Pin INTERLOCK_PIN = IO::Pin::PA_3;
+
     /**
-     * Make a new instance of the BMS with the given devices.
+     * Make a new instance of the BMS with the given devices
+     *
+     * @param bqSettingsStorage Object used to manage BQ settings storage
+     * @param bq BQ chip instance
+     * @param interlock GPIO used to check the interlock status
+     * @param alarm GPIO used to check the BQ alarm status
+     * @param systemDetect Object used to detect what system the BMS is connected to
+     * @param bmsOK GPIO used to output the OK signal from the BMS
      */
     BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
-        DEV::Interlock& interlock, EVT::core::IO::GPIO& alarm,
-        DEV::SystemDetect& systemDetect);
+        DEV::Interlock& interlock, IO::GPIO& alarm,
+        DEV::SystemDetect& systemDetect, IO::GPIO& bmsOK);
 
     /**
      * The node ID used to identify the device on the CAN network.
@@ -91,20 +112,20 @@ private:
      * The active state of the alarm. When the alarm is in this state,
      * the BQ has detected some critical error
      */
-    static constexpr EVT::core::IO::GPIO::State ALARM_ACTIVE_STATE =
-        EVT::core::IO::GPIO::State::HIGH;
+    static constexpr IO::GPIO::State ALARM_ACTIVE_STATE =
+        IO::GPIO::State::HIGH;
 
     /**
      * State for representing the BMS is in an OK state to charge/discharge
      */
-    static constexpr EVT::core::IO::GPIO::State BMS_OK =
-        EVT::core::IO::GPIO::State::HIGH;
+    static constexpr IO::GPIO::State BMS_OK =
+        IO::GPIO::State::HIGH;
 
     /**
      * State for representing the BMS is in not in an OK state to charge/discharge
      */
-    static constexpr EVT::core::IO::GPIO::State BMS_NOT_OK =
-        EVT::core::IO::GPIO::State::LOW;
+    static constexpr IO::GPIO::State BMS_NOT_OK =
+        IO::GPIO::State::LOW;
 
     /**
      * Number of attempts that will be made to communicate with the BQ
@@ -143,7 +164,7 @@ private:
      * If the alarm pin is in it's active state, should assume it is unsafe
      * to charge/discharge
      */
-    EVT::core::IO::GPIO& alarm;
+    IO::GPIO& alarm;
 
     /**
      * This determines which system the BMS is attached to.
@@ -155,7 +176,7 @@ private:
      * is high, it represents that the BMS is in a state ready to
      * charge or discharge,
      */
-    //    EVT::core::IO::GPIO& bmsOK;
+    IO::GPIO& bmsOK;
 
     /**
      * Boolean flag that represents a state has just changed, this is useful
