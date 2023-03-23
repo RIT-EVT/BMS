@@ -54,6 +54,7 @@ target_sources(${PROJECT_NAME} PRIVATE
     src/dev/BQ76952.cpp
     src/dev/Interlock.cpp
     src/dev/SystemDetect.cpp
+    src/dev/ThermistorMux.cpp
 )
 
 ###############################################################################

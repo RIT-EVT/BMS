@@ -135,8 +135,18 @@ int main() {
     // Initialize the system OK pin
     IO::GPIO& bmsOK = IO::getGPIO<BMS::BMS::OK_PIN>(IO::GPIO::Direction::OUTPUT);
 
+    // Initialize the thermistor MUX
+    IO::GPIO* muxSelectArr[3] = {
+        &IO::getGPIO<BMS::BMS::MUX_S1_PIN>(),
+        &IO::getGPIO<BMS::BMS::MUX_S2_PIN>(),
+        &IO::getGPIO<BMS::BMS::MUX_S3_PIN>(),
+    };
+    IO::ADC& thermAdc = IO::getADC<BMS::BMS::TEMP_INPUT_PIN>();
+
+    BMS::DEV::ThermistorMux thermMux(muxSelectArr, thermAdc);
+
     // Initialize the BMS itself
-    BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect, bmsOK);
+    BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect, bmsOK, thermMux);
 
     // Reserved memory for CANopen stack usage
     uint8_t sdoBuffer[1][CO_SDO_BUF_BYTE];

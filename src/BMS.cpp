@@ -11,14 +11,11 @@ namespace BMS {
 
 BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
          DEV::Interlock& interlock, IO::GPIO& alarm,
-         DEV::SystemDetect& systemDetect, IO::GPIO& bmsOK) : bqSettingsStorage(bqSettingsStorage),
-                                                             bq(bq),
-                                                             state(State::START),
-                                                             interlock(interlock),
-                                                             alarm(alarm),
-                                                             systemDetect(systemDetect),
-                                                             bmsOK(bmsOK),
-                                                             stateChanged(true) {
+         DEV::SystemDetect& systemDetect, IO::GPIO& bmsOK,
+         DEV::ThermistorMux thermMux) : bqSettingsStorage(bqSettingsStorage),
+                                        bq(bq), state(State::START), interlock(interlock),
+                                        alarm(alarm), systemDetect(systemDetect), bmsOK(bmsOK),
+                                        thermistorMux(thermMux), stateChanged(true) {
     bmsOK.writePin(IO::GPIO::State::LOW);
 
     updateVoltageReadings();
@@ -244,6 +241,7 @@ void BMS::systemReadyState() {
     }
 
     updateVoltageReadings();
+    updateThermistorReading();
 }
 
 void BMS::unsafeConditionsError() {
@@ -254,6 +252,7 @@ void BMS::unsafeConditionsError() {
     }
 
     updateVoltageReadings();
+    updateThermistorReading();
 }
 
 void BMS::powerDeliveryState() {
@@ -277,6 +276,7 @@ void BMS::powerDeliveryState() {
     }
 
     updateVoltageReadings();
+    updateThermistorReading();
 }
 
 void BMS::chargingState() {
@@ -300,6 +300,7 @@ void BMS::chargingState() {
     }
 
     updateVoltageReadings();
+    updateThermistorReading();
 }
 
 bool BMS::isHealthy() {
@@ -314,6 +315,11 @@ void BMS::updateVoltageReadings() {
     //       issue, just not necessary. Could be limited to update once a
     //       second.
     bq.getCellVoltage(cellVoltage, totalVoltage, voltageInfo);
+}
+
+void BMS::updateThermistorReading() {
+    lastCheckedThermNum = (lastCheckedThermNum + 1) % DEV::ThermistorMux::NUM_THERMISTORS;
+    thermistorTemperature[lastCheckedThermNum] = thermistorMux.getTemp(lastCheckedThermNum);
 }
 
 void BMS::clearVoltageReadings() {

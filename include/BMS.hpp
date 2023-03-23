@@ -4,6 +4,7 @@
 
 #include <Canopen/co_core.h>
 
+#include <dev/ThermistorMux.hpp>
 #include <BQSettingStorage.hpp>
 #include <EVT/io/pin.hpp>
 #include <dev/Interlock.hpp>
@@ -54,6 +55,10 @@ public:
     static constexpr IO::Pin I2C_SCL_PIN = IO::Pin::PB_6;
     static constexpr IO::Pin I2C_SDA_PIN = IO::Pin::PB_7;
     static constexpr IO::Pin INTERLOCK_PIN = IO::Pin::PA_3;
+    static constexpr IO::Pin TEMP_INPUT_PIN = IO::Pin::PA_0;
+    static constexpr IO::Pin MUX_S1_PIN = IO::Pin::PA_15;
+    static constexpr IO::Pin MUX_S2_PIN = IO::Pin::PB_4;
+    static constexpr IO::Pin MUX_S3_PIN = IO::Pin::PA_8;
 
     /**
      * Make a new instance of the BMS with the given devices
@@ -64,10 +69,11 @@ public:
      * @param alarm GPIO used to check the BQ alarm status
      * @param systemDetect Object used to detect what system the BMS is connected to
      * @param bmsOK GPIO used to output the OK signal from the BMS
+     * @param thermMux
      */
     BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
         DEV::Interlock& interlock, IO::GPIO& alarm,
-        DEV::SystemDetect& systemDetect, IO::GPIO& bmsOK);
+        DEV::SystemDetect& systemDetect, IO::GPIO& bmsOK, DEV::ThermistorMux thermMux);
 
     /**
      * The node ID used to identify the device on the CAN network.
@@ -179,6 +185,11 @@ private:
     IO::GPIO& bmsOK;
 
     /**
+     *
+     */
+    DEV::ThermistorMux thermistorMux;
+
+    /**
      * Boolean flag that represents a state has just changed, this is useful
      * for determining when operations should take place that only take place
      * once per state change.
@@ -267,6 +278,11 @@ private:
     };
 
     /**
+     *
+     */
+    uint8_t lastCheckedThermNum = -1;
+
+    /**
      * Handles the start of the state machine logic. This considers the health
      * of the system, and the existence of BQ settings.
      *
@@ -347,6 +363,11 @@ private:
      * be present.
      */
     void updateVoltageReadings();
+
+    /**
+     *
+     */
+    void updateThermistorReading();
 
     /**
      * Will clear the local voltage values (set to 0). This is to represent
