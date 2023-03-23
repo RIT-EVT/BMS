@@ -456,7 +456,7 @@ private:
         {
             .Key = CO_KEY(0x1801, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(0) + NODE_ID + 1,
+            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(1) + NODE_ID,
         },
         {
             .Key = CO_KEY(0x1801, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
@@ -476,7 +476,7 @@ private:
 
         // TPDO2 settings
         // 0: The TPDO number, default 0
-        // 1: The COB-ID used by TPDO1, provided as a function of the TPDO number
+        // 1: The COB-ID used by TPDO2, provided as a function of the TPDO number
         // 2: How the TPO is triggered, default to manual triggering
         // 3: Inhibit time, defaults to 0
         // 5: Timer trigger time in 1ms units, 0 will disable the timer based triggering
@@ -488,7 +488,7 @@ private:
         {
             .Key = CO_KEY(0x1802, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(0) + NODE_ID + 2,
+            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(2) + NODE_ID,
         },
         {
             .Key = CO_KEY(0x1802, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
@@ -508,7 +508,7 @@ private:
 
         // TPDO3 settings
         // 0: The TPDO number, default 0
-        // 1: The COB-ID used by TPDO1, provided as a function of the TPDO number
+        // 1: The COB-ID used by TPDO3, provided as a function of the TPDO number
         // 2: How the TPO is triggered, default to manual triggering
         // 3: Inhibit time, defaults to 0
         // 5: Timer trigger time in 1ms units, 0 will disable the timer based triggering
@@ -520,7 +520,7 @@ private:
         {
             .Key = CO_KEY(0x1803, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(1) + NODE_ID,
+            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(3) + NODE_ID,
         },
         {
             .Key = CO_KEY(0x1803, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
@@ -540,7 +540,7 @@ private:
 
         // TPDO4 settings
         // 0: The TPDO number, default 0
-        // 1: The COB-ID used by TPDO1, provided as a function of the TPDO number
+        // 1: The COB-ID used by TPDO4, provided as a function of the TPDO number
         // 2: How the TPO is triggered, default to manual triggering
         // 3: Inhibit time, defaults to 0
         // 5: Timer trigger time in 1ms units, 0 will disable the timer based triggering
@@ -552,7 +552,7 @@ private:
         {
             .Key = CO_KEY(0x1804, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(1) + NODE_ID + 1,
+            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(0) + NODE_ID + 1,
         },
         {
             .Key = CO_KEY(0x1804, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
@@ -572,7 +572,7 @@ private:
 
         // TPDO5 settings
         // 0: The TPDO number, default 0
-        // 1: The COB-ID used by TPDO1, provided as a function of the TPDO number
+        // 1: The COB-ID used by TPDO5, provided as a function of the TPDO number
         // 2: How the TPO is triggered, default to manual triggering
         // 3: Inhibit time, defaults to 0
         // 5: Timer trigger time in 1ms units, 0 will disable the timer based triggering
@@ -584,7 +584,7 @@ private:
         {
             .Key = CO_KEY(0x1805, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(1) + NODE_ID + 2,
+            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(1) + NODE_ID + 1,
         },
         {
             .Key = CO_KEY(0x1805, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
@@ -604,7 +604,7 @@ private:
 
         // TPDO6 settings
         // 0: The TPDO number, default 0
-        // 1: The COB-ID used by TPDO1, provided as a function of the TPDO number
+        // 1: The COB-ID used by TPDO6, provided as a function of the TPDO number
         // 2: How the TPO is triggered, default to manual triggering
         // 3: Inhibit time, defaults to 0
         // 5: Timer trigger time in 1ms units, 0 will disable the timer based triggering
@@ -616,7 +616,7 @@ private:
         {
             .Key = CO_KEY(0x1806, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(2) + NODE_ID,
+            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(2) + NODE_ID + 1,
         },
         {
             .Key = CO_KEY(0x1806, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
@@ -636,7 +636,7 @@ private:
 
         // TPDO7 settings
         // 0: The TPDO number, default 0
-        // 1: The COB-ID used by TPDO1, provided as a function of the TPDO number
+        // 1: The COB-ID used by TPDO7, provided as a function of the TPDO number
         // 2: How the TPO is triggered, default to manual triggering
         // 3: Inhibit time, defaults to 0
         // 5: Timer trigger time in 1ms units, 0 will disable the timer based triggering
@@ -648,7 +648,7 @@ private:
         {
             .Key = CO_KEY(0x1807, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(2) + NODE_ID + 1,
+            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(3) + NODE_ID + 1,
         },
         {
             .Key = CO_KEY(0x1807, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
