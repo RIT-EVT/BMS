@@ -11,6 +11,8 @@ endif()
 # Allow for up to 8 CANopen TPDOs
 add_compile_definitions(CO_TPDO_N=8)
 
+add_compile_definitions(USE_HAL_DRIVER)
+
 # Handle Selection of the target device
 option(TARGET_DEV "Target device" "STM32F302x8")
 if(NOT TARGET_DEV)

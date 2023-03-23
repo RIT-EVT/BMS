@@ -6,11 +6,10 @@
 
 #include <EVT/io/CANopen.hpp>
 #include <EVT/io/UART.hpp>
-#include <EVT/io/manager.hpp>
+#include <EVT/manager.hpp>
 #include <EVT/io/pin.hpp>
 #include <EVT/io/types/CANMessage.hpp>
 
-#include <EVT/dev/platform/f3xx/f302x8/Timerf302x8.hpp>
 #include <EVT/dev/storage/EEPROM.hpp>
 #include <EVT/dev/storage/M24C32.hpp>
 
@@ -74,7 +73,7 @@ extern "C" void COTmrUnlock(void) {}
 
 int main() {
     // Initialize system
-    IO::init();
+    EVT::core::platform::init();
 
     // Initialize the system detect
     BMS::DEV::SystemDetect systemDetect(BIKE_HEART_BEAT, CHARGER_HEART_BEAT, TIMEOUT);
@@ -82,11 +81,11 @@ int main() {
     // Initialize IO
     IO::CAN& can = IO::getCAN<BMS::BMS::CAN_TX_PIN, BMS::BMS::CAN_RX_PIN>();
     can.addIRQHandler(canInterruptHandler, reinterpret_cast<void*>(&systemDetect));
-    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(9600);
+    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(115200, true);
     EVT::core::IO::I2C& i2c = EVT::core::IO::getI2C<BMS::BMS::I2C_SCL_PIN, BMS::BMS::I2C_SDA_PIN>();
 
     // Initialize the timer
-    DEV::Timerf302x8 timer(TIM2, 100);
+    DEV::Timer& timer = DEV::getTimer<DEV::MCUTimer::Timer2>(100);
 
     // Initialize the EEPROM
     EVT::core::DEV::M24C32 eeprom(0x50, i2c);

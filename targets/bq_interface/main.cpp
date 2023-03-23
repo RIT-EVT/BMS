@@ -6,8 +6,7 @@
 
 #include <EVT/io/I2C.hpp>
 #include <EVT/io/UART.hpp>
-#include <EVT/io/manager.hpp>
-#include <EVT/io/pin.hpp>
+#include <EVT/manager.hpp>
 #include <EVT/utils/log.hpp>
 #include <EVT/utils/time.hpp>
 
@@ -313,10 +312,12 @@ void getVoltages(IO::UART& uart, BMS::DEV::BQ76952& bq) {
 }
 
 int main() {
+    EVT::core::platform::init();
+
     IO::I2C& i2c = IO::getI2C<BMS::BMS::I2C_SCL_PIN, BMS::BMS::I2C_SDA_PIN>();
     BMS::DEV::BQ76952 bq(i2c, 0x08);
 
-    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(9600);
+    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(115200, true);
     log::LOGGER.setUART(&uart);
     log::LOGGER.setLogLevel(log::Logger::LogLevel::DEBUG);
 

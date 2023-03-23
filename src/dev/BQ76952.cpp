@@ -1,6 +1,7 @@
 #include <dev/BQ76952.hpp>
 
 #include <EVT/utils/time.hpp>
+#include <EVT/utils/log.hpp>
 
 // (void)0 is added to the end of each macro to force users to follow the macro with a ';'
 /// Macro to make an I2C transfer and return an error on failure
@@ -11,13 +12,15 @@
     (void) 0
 
 /// Macro to pass along errors that may have been generated
-#define RETURN_IF_ERR(func)          \
-    {                                \
-        Status result_ = func;       \
-        if (result_ != Status::OK) { \
-            return result_;          \
-        }                            \
-    }                                \
+#define RETURN_IF_ERR(func)                                                                     \
+{                                                                                               \
+    Status result_ = func;                                                                      \
+    if (result_ != Status::OK) {                                                                \
+            EVT::core::log::LOGGER.log(EVT::core::log::Logger::LogLevel::ERROR, "BQ ERROR: %d", \
+                                       (uint8_t)result_);                                       \
+            return result_;                                                                     \
+    }                                                                                           \
+}                                                                                               \
     (void) 0
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -143,6 +146,7 @@ BQ76952::BQ76952(EVT::core::IO::I2C& i2c, uint8_t i2cAddress)
 BQ76952::Status BQ76952::writeSetting(BMS::BQSetting& setting) {
     // Right now, the BQ only accepts settings made into RAM
     if (setting.getSettingType() != BMS::BQSetting::BQSettingType::RAM) {
+        EVT::core::log::LOGGER.log(EVT::core::log::Logger::LogLevel::ERROR, "Setting type is incorrect");
         return Status::ERROR;
     }
     return writeRAMSetting(setting);

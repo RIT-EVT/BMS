@@ -113,7 +113,7 @@ private:
      * the BQ has detected some critical error
      */
     static constexpr IO::GPIO::State ALARM_ACTIVE_STATE =
-        IO::GPIO::State::HIGH;
+        IO::GPIO::State::LOW;
 
     /**
      * State for representing the BMS is in an OK state to charge/discharge
