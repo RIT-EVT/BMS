@@ -211,42 +211,42 @@ private:
     /**
      * Represents the total voltage in the battery
      */
-    int16_t batteryVoltage;
+    int16_t batteryVoltage = 0;
 
     /**
      * Represents the total current through the battery
      */
-    int16_t current;
+    int16_t current = 0;
 
     /**
      * Represents the lowest temperature value from any thermistor in the battery pack
      */
-    int8_t batteryPackMinTemp;
+    int8_t batteryPackMinTemp = 0;
 
     /**
      * Represents the highest temperature value from any thermistor in the battery pack
      */
-    int8_t batteryPackMaxTemp;
+    int8_t batteryPackMaxTemp = 0;
 
     /**
      * Represents the state of charge of the battery
      */
-    uint8_t SOC;
+    uint8_t SOC = 0;
 
     /**
      * Maximum regen current
      */
-    uint8_t recapActualAllowed;
+    uint8_t recapActualAllowed = 0;
 
     /**
      * Maximum discharge current
      */
-    uint8_t dischargeActualAllowed;
+    uint8_t dischargeActualAllowed = 0;
 
     /**
      * Stores the per-thermistor temperature for the battery pack
      */
-    uint16_t thermistorTemperature[DEV::BQ76952::NUM_CELLS];
+    uint16_t thermistorTemperature[DEV::BQ76952::NUM_CELLS] = {};
 
     /**
      * Stores the per-cell voltage for the battery pack. This value is updated
@@ -259,7 +259,12 @@ private:
      * Used to store values which the BMS updates.
      * Holds information about the minimum and maximum cell's voltages and Ids.
      */
-    cellVoltageInfo voltageInfo;
+    cellVoltageInfo voltageInfo {
+        .minCellVoltage = 0,
+        .minCellVoltageId = 0,
+        .maxCellVoltage = 0,
+        .maxCellVoltageId = 0,
+    };
 
     /**
      * Handles the start of the state machine logic. This considers the health
