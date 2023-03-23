@@ -195,6 +195,9 @@ int main() {
     CONodeStart(&canNode);
     CONmtSetMode(&canNode.Nmt, CO_OPERATIONAL);
 
+    // Start watchdog
+    DEV::IWDG& iwdg = DEV::getIWDG(500);
+
     log::LOGGER.log(log::Logger::LogLevel::INFO, "Initialization complete");
 
     // Main processing loop, contains the following logic
@@ -210,6 +213,8 @@ int main() {
         COTmrProcess(&canNode.Tmr);
         // Update the state of the BMS
         bms.process();
+        // Pet the watchdog
+        iwdg.refresh();
         // Wait for new data to come in
         time::wait(10);
     }
