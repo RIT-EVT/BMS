@@ -304,7 +304,7 @@ void getVoltages(IO::UART& uart, BMS::DEV::BQ76952& bq) {
             return;
         }
 
-        uart.printf("Cell %2d Voltage, Register %#x: %d.%d\r\n", i + 1, reg, regValue / 1000, regValue % 1000);
+        uart.printf("Cell %2d Voltage, Register %#x: %d.%03d\r\n", i + 1, reg, regValue / 1000, regValue % 1000);
 
         tot += regValue;
     }

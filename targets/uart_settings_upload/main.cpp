@@ -16,7 +16,7 @@ int main() {
     // Initialize system
     EVT::core::platform::init();
 
-    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(115200, true);
+    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(9600, true);
 
     IO::I2C& i2c = IO::getI2C<BMS::BMS::I2C_SCL_PIN, BMS::BMS::I2C_SDA_PIN>();
     EVT::core::DEV::M24C32 eeprom(0x57, i2c);
