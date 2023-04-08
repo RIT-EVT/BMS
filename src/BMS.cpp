@@ -315,6 +315,7 @@ void BMS::updateVoltageReadings() {
     //       issue, just not necessary. Could be limited to update once a
     //       second.
     bq.getCellVoltage(cellVoltage, totalVoltage, voltageInfo);
+    bq.makeDirectRead(0x3a, reinterpret_cast<uint16_t*>(&current));
 }
 
 void BMS::updateThermistorReading() {

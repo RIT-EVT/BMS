@@ -311,15 +311,92 @@ void getVoltages(IO::UART& uart, BMS::DEV::BQ76952& bq) {
     uart.printf("Total: %d.%d", tot / 1000, tot % 1000);
 }
 
+void transferSettings(IO::UART& uart, BMS::DEV::BQ76952& bq, EVT::core::DEV::M24C32 eeprom) {
+    uart.printf("Really transfer settings? (y/n): ");
+    uart.gets(inputBuffer, MAX_BUFF);
+    uart.printf("\r\n");
+
+    if (inputBuffer[0] == 'y') {
+        uart.printf("Transferring settings...\r\n");
+        BMS::BQSettingsStorage settingsStorage(eeprom, bq);
+        bool isComplete = false;
+        settingsStorage.resetTransfer();
+        while (!isComplete) {
+            auto status = settingsStorage.transferSetting(isComplete);
+
+            switch (status) {
+            case BMS::DEV::BQ76952::Status::ERROR:
+                uart.printf("FAILED: BQ specific error\r\n");
+                break;
+            case BMS::DEV::BQ76952::Status::I2C_ERROR:
+                uart.printf("FAILED: I2C error\r\n");
+                break;
+            case BMS::DEV::BQ76952::Status::TIMEOUT:
+                uart.printf("FAILED: Timeout waiting for BQ\r\n");
+                break;
+            case BMS::DEV::BQ76952::Status::OK:
+                uart.printf("SUCCESS\r\n");
+                break;
+            default:
+                uart.printf("FAILED: Unknown error\r\n");
+                break;
+            }
+        }
+        uart.printf("All settings transferred");
+    } else {
+        uart.printf("Settings transfer cancelled");
+    }
+}
+
+void getTemperatures(IO::UART& uart, BMS::DEV::BQ76952& bq, BMS::DEV::ThermistorMux tMux) {
+    for (uint8_t i = 0; i < 6; i++) {
+        uart.printf("Thermistor %d ADC counts: %d\r\n", i, tMux.getTemp(i));
+    }
+    uint16_t result;
+    bq.makeDirectRead(0x68, &result);
+    result -= 2732;
+    uart.printf("BQ Internal Temp: %d.%01d\r\n", result / 10, result % 10);
+    bq.makeDirectRead(0x70, &result);
+    result -= 2732;
+    uart.printf("BQ Board Temp 1: %d.%01d\r\n", result / 10, result % 10);
+    bq.makeDirectRead(0x74, &result);
+    result -= 2732;
+    uart.printf("BQ Board Temp 2: %d.%01d\r\n", result / 10, result % 10);
+}
+
+void getInterlock(IO::UART& uart, BMS::DEV::Interlock interlock) {
+    uart.printf("Interlock Detected: %s\r\n", interlock.isDetected() ? "true" : "false");
+}
+
+void getAlarm(IO::UART& uart, IO::GPIO& alarm) {
+    uart.printf("Alarm Set: %s\r\n", alarm.readPin() == IO::GPIO::State::HIGH ? "true" : "false");
+}
+
 int main() {
     EVT::core::platform::init();
 
     IO::I2C& i2c = IO::getI2C<BMS::BMS::I2C_SCL_PIN, BMS::BMS::I2C_SDA_PIN>();
     BMS::DEV::BQ76952 bq(i2c, 0x08);
+    EVT::core::DEV::M24C32 eeprom(0x57, i2c);
 
     IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(115200, true);
     log::LOGGER.setUART(&uart);
     log::LOGGER.setLogLevel(log::Logger::LogLevel::DEBUG);
+
+
+    IO::ADC& adc = IO::getADC<BMS::BMS::TEMP_INPUT_PIN>();
+
+    IO::GPIO& muxs1 = IO::getGPIO<BMS::BMS::MUX_S1_PIN>();
+    IO::GPIO& muxs2 = IO::getGPIO<BMS::BMS::MUX_S2_PIN>();
+    IO::GPIO& muxs3 = IO::getGPIO<BMS::BMS::MUX_S3_PIN>();
+    IO::GPIO* muxPinArr[3] = { &muxs1, &muxs2, &muxs3 };
+
+    BMS::DEV::ThermistorMux tmux(muxPinArr, adc);
+
+    IO::GPIO& interlockGPIO = IO::getGPIO<BMS::BMS::INTERLOCK_PIN>(IO::GPIO::Direction::INPUT);
+    BMS::DEV::Interlock interlock(interlockGPIO);
+
+    IO::GPIO& alarm = IO::getGPIO<BMS::BMS::ALARM_PIN>(IO::GPIO::Direction::INPUT);
 
     time::wait(500);
 
@@ -358,7 +435,7 @@ int main() {
         case 'c':
             enterConfigMode(uart, bq);
             break;
-        // Exist config mode
+        // Exit config mode
         case 'x':
             exitConfigMode(uart, bq);
             break;
@@ -373,6 +450,18 @@ int main() {
             break;
         case 'v':
             getVoltages(uart, bq);
+            break;
+        case 't':
+            transferSettings(uart, bq, eeprom);
+            break;
+        case 'T':
+            getTemperatures(uart, bq, tmux);
+            break;
+        case 'i':
+            getInterlock(uart, interlock);
+            break;
+        case 'a':
+            getAlarm(uart, alarm);
             break;
         }
     }
