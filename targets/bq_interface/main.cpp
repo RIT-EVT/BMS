@@ -372,6 +372,19 @@ void getAlarm(IO::UART& uart, IO::GPIO& alarm) {
     uart.printf("Alarm Set: %s\r\n", alarm.readPin() == IO::GPIO::State::HIGH ? "true" : "false");
 }
 
+void setOK(IO::UART& uart, IO::GPIO& bmsOK) {
+    uart.printf("Set OK pin (0/1): ");
+    uart.printf("\r\n");
+    uart.gets(inputBuffer, MAX_BUFF);
+    if (inputBuffer[0] == '1') {
+        bmsOK.writePin(IO::GPIO::State::HIGH);
+        uart.printf("Set BMS OK high\r\n");
+    } else {
+        bmsOK.writePin(IO::GPIO::State::LOW);
+        uart.printf("Set BMS OK low\r\n");
+    }
+}
+
 int main() {
     EVT::core::platform::init();
 
@@ -397,6 +410,8 @@ int main() {
     BMS::DEV::Interlock interlock(interlockGPIO);
 
     IO::GPIO& alarm = IO::getGPIO<BMS::BMS::ALARM_PIN>(IO::GPIO::Direction::INPUT);
+
+    IO::GPIO& bmsOK = IO::getGPIO<BMS::BMS::OK_PIN>(IO::GPIO::Direction::OUTPUT);
 
     time::wait(500);
 
@@ -462,6 +477,9 @@ int main() {
             break;
         case 'a':
             getAlarm(uart, alarm);
+            break;
+        case 'o':
+            setOK(uart, bmsOK);
             break;
         }
     }
