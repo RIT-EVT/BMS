@@ -12,10 +12,10 @@ namespace BMS {
 BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
          DEV::Interlock& interlock, IO::GPIO& alarm,
          DEV::SystemDetect& systemDetect, IO::GPIO& bmsOK,
-         DEV::ThermistorMux thermMux) : bqSettingsStorage(bqSettingsStorage),
+         DEV::ThermistorMux& thermMux, DEV::ResetHandler& resetHandler) : bqSettingsStorage(bqSettingsStorage),
                                         bq(bq), state(State::START), interlock(interlock),
-                                        alarm(alarm), systemDetect(systemDetect), bmsOK(bmsOK),
-                                        thermistorMux(thermMux), stateChanged(true) {
+                                        alarm(alarm), systemDetect(systemDetect), resetHandler(resetHandler),
+                                        bmsOK(bmsOK), thermistorMux(thermMux), stateChanged(true) {
     bmsOK.writePin(IO::GPIO::State::LOW);
 
     updateVoltageReadings();
@@ -151,6 +151,13 @@ void BMS::initializationErrorState() {
         clearVoltageReadings();
         log::LOGGER.log(log::Logger::LogLevel::INFO, "Entering initialization error state");
     }
+
+    updateThermistorReading();
+
+    if (resetHandler.shouldReset()) {
+        state = State::START;
+        stateChanged = true;
+    }
 }
 
 void BMS::factoryInitState() {
@@ -253,6 +260,11 @@ void BMS::unsafeConditionsError() {
 
     updateVoltageReadings();
     updateThermistorReading();
+
+    if (resetHandler.shouldReset()) {
+        state = State::START;
+        stateChanged = true;
+    }
 }
 
 void BMS::powerDeliveryState() {

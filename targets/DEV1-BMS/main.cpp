@@ -35,6 +35,7 @@ namespace log = EVT::core::log;
 struct CANInterruptParams {
     EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>* queue;
     BMS::DEV::SystemDetect* systemDetect;
+    BMS::DEV::ResetHandler* resetHandler;
 };
 
 /**
@@ -48,8 +49,11 @@ void canInterruptHandler(IO::CANMessage& message, void* priv) {
     EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>* queue =
         params->queue;
     BMS::DEV::SystemDetect* systemDetect = params->systemDetect;
+    BMS::DEV::ResetHandler* resetHandler = params->resetHandler;
 
     systemDetect->processHeartbeat(message.getId());
+
+    resetHandler->registerInput(message);
 
     if (queue == nullptr)
         return;
@@ -99,10 +103,13 @@ int main() {
     BMS::DEV::SystemDetect systemDetect(BIKE_HEART_BEAT, CHARGER_HEART_BEAT,
                                         DETECT_TIMEOUT);
 
+    BMS::DEV::ResetHandler resetHandler;
+
     // Create struct that will hold CAN interrupt parameters
     struct CANInterruptParams canParams = {
         .queue = &canOpenQueue,
         .systemDetect = &systemDetect,
+        .resetHandler = &resetHandler,
     };
 
     // Initialize IO
@@ -146,7 +153,7 @@ int main() {
     BMS::DEV::ThermistorMux thermMux(muxSelectArr, thermAdc);
 
     // Initialize the BMS itself
-    BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect, bmsOK, thermMux);
+    BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect, bmsOK, thermMux, resetHandler);
 
     // Reserved memory for CANopen stack usage
     uint8_t sdoBuffer[1][CO_SDO_BUF_BYTE];

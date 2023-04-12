@@ -9,6 +9,7 @@
 #include <EVT/io/pin.hpp>
 #include <dev/Interlock.hpp>
 #include <dev/SystemDetect.hpp>
+#include <dev/ResetHandler.hpp>
 
 namespace IO = EVT::core::IO;
 
@@ -70,10 +71,11 @@ public:
      * @param systemDetect Object used to detect what system the BMS is connected to
      * @param bmsOK GPIO used to output the OK signal from the BMS
      * @param thermMux
+     * @param resetHandler
      */
-    BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
-        DEV::Interlock& interlock, IO::GPIO& alarm,
-        DEV::SystemDetect& systemDetect, IO::GPIO& bmsOK, DEV::ThermistorMux thermMux);
+    BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq, DEV::Interlock& interlock,
+        IO::GPIO& alarm, DEV::SystemDetect& systemDetect, IO::GPIO& bmsOK,
+        DEV::ThermistorMux& thermMux, DEV::ResetHandler& resetHandler);
 
     /**
      * The node ID used to identify the device on the CAN network.
@@ -176,6 +178,11 @@ private:
      * This determines which system the BMS is attached to.
      */
     DEV::SystemDetect& systemDetect;
+
+    /**
+     *
+     */
+    DEV::ResetHandler& resetHandler;
 
     /**
      * This GPIO is used to represent when the system is ok. When this pin
