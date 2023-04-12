@@ -55,6 +55,7 @@ target_sources(${PROJECT_NAME} PRIVATE
     src/BQSetting.cpp
     src/dev/BQ76952.cpp
     src/dev/Interlock.cpp
+    src/dev/ResetHandler.cpp
     src/dev/SystemDetect.cpp
     src/dev/ThermistorMux.cpp
 )
