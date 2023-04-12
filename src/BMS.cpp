@@ -18,7 +18,7 @@ BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
                                         bmsOK(bmsOK), thermistorMux(thermMux), stateChanged(true) {
     bmsOK.writePin(IO::GPIO::State::LOW);
 
-    updateVoltageReadings();
+    updateBQData();
 }
 
 CO_OBJ_T* BMS::getObjectDictionary() {
@@ -102,7 +102,22 @@ void BMS::startState() {
         bmsOK.writePin(BMS_NOT_OK);
         numAttemptsMade = 0;
         stateChanged = false;
+
+        // Reset all data
+        numAttemptsMade = 0;
+        lastAttemptTime = 0;
         clearVoltageReadings();
+        current = 0;
+        batteryPackMinTemp = 0;
+        batteryPackMaxTemp = 0;
+        SOC = 0;
+        recapActualAllowed = 0;
+        dischargeActualAllowed = 0;
+        memset(thermistorTemperature, 0, DEV::BQ76952::NUM_CELLS * sizeof(uint16_t));
+        memset(bqStatusArr, 0, sizeof(uint8_t) * 3);
+        errorRegister = 0;
+        lastCheckedThermNum = -1;
+
         log::LOGGER.log(log::Logger::LogLevel::INFO, "Entering start state");
     }
 
@@ -117,7 +132,8 @@ void BMS::startState() {
     }
 
     // Check to see if communication is possible with the BQ chip
-    if (bq.communicationStatus() != DEV::BQ76952::Status::OK) {
+    DEV::BQ76952::Status status = bq.communicationStatus();
+    if (status != DEV::BQ76952::Status::OK) {
 
         // Increment the number of errors that have taken place
         numAttemptsMade++;
@@ -127,8 +143,8 @@ void BMS::startState() {
 
         if (numAttemptsMade >= MAX_BQ_COMM_ATTEMPTS) {
             // If communication could not be handled, transition to error state
-            // TODO: Update error mapping with error information
             state = State::INITIALIZATION_ERROR;
+            errorRegister |= BQ_COMM_ERROR | static_cast<uint8_t>(status);
             stateChanged = true;
         }
     }
@@ -204,8 +220,8 @@ void BMS::transferSettingsState() {
         if (numAttemptsMade >= MAX_BQ_COMM_ATTEMPTS) {
             // If the settings did not transfer successfully, transition to
             // error state
-            // TODO: Update error mapping with error information
             state = State::INITIALIZATION_ERROR;
+            errorRegister |= BQ_COMM_ERROR | static_cast<uint8_t>(result);
             stateChanged = true;
         }
 
@@ -247,7 +263,7 @@ void BMS::systemReadyState() {
         }
     }
 
-    updateVoltageReadings();
+    updateBQData();
     updateThermistorReading();
 }
 
@@ -258,7 +274,7 @@ void BMS::unsafeConditionsError() {
         log::LOGGER.log(log::Logger::LogLevel::INFO, "Entering unsafe conditions state");
     }
 
-    updateVoltageReadings();
+    updateBQData();
     updateThermistorReading();
 
     if (resetHandler.shouldReset()) {
@@ -287,7 +303,7 @@ void BMS::powerDeliveryState() {
         return;
     }
 
-    updateVoltageReadings();
+    updateBQData();
     updateThermistorReading();
 }
 
@@ -311,23 +327,59 @@ void BMS::chargingState() {
         return;
     }
 
-    updateVoltageReadings();
+    updateBQData();
     updateThermistorReading();
 }
 
 bool BMS::isHealthy() {
-    return alarm.readPin() != ALARM_ACTIVE_STATE;
+    if (alarm.readPin() != ALARM_ACTIVE_STATE) {
+        errorRegister |= BQ_ALARM_ERROR;
+    } else if ((errorRegister & 0xF0) > 0) {
+        errorRegister |= BQ_COMM_ERROR;
+    } // TODO: else if (over temp)
+
+    return errorRegister != 0;
 }
 
-void BMS::updateVoltageReadings() {
-    // TODO: Handle when an error has taken place
+void BMS::updateBQData() {
     // TODO: Limit the number of times this is called, currently this
     //       `updateVoltageReadings` is called every run of the loop
     //       which results in a lot of I2C calls. This isn't directly an
     //       issue, just not necessary. Could be limited to update once a
     //       second.
-    bq.getCellVoltage(cellVoltage, totalVoltage, voltageInfo);
-    bq.makeDirectRead(0x3a, reinterpret_cast<uint16_t*>(&current));
+
+
+    // Check if an error has taken place, and if so, check to make sure
+    // a certain delay time has taken place before making another attempt
+    if (numAttemptsMade > 0) {
+        // If there has not been enough time between attempts, skip this run
+        // of the state and try again later
+        if ((time::millis() - lastAttemptTime) < ERROR_TIME_DELAY) {
+            return;
+        }
+    }
+
+    DEV::BQ76952::Status result = bq.getCellVoltage(cellVoltage, totalVoltage, voltageInfo);
+
+    if (result == DEV::BQ76952::Status::OK) {
+        bq.getCurrent(current);
+    }
+
+    if (result == DEV::BQ76952::Status::OK) {
+        bq.getBQStatus(bqStatusArr);
+    }
+
+    if (result != DEV::BQ76952::Status::OK) {
+        numAttemptsMade++;
+
+        // If the number of errors are over the max
+        if (numAttemptsMade >= MAX_BQ_COMM_ATTEMPTS) {
+            errorRegister |= static_cast<uint8_t>(result);
+            return;
+        }
+
+        lastAttemptTime = time::millis();
+    }
 }
 
 void BMS::updateThermistorReading() {
@@ -337,6 +389,8 @@ void BMS::updateThermistorReading() {
 
 void BMS::clearVoltageReadings() {
     totalVoltage = 0;
+    batteryVoltage = 0;
+    voltageInfo = { 0, 0, 0, 0 };
 
     // Zero out all cell voltages
     memset(cellVoltage, 0, DEV::BQ76952::NUM_CELLS * sizeof(uint16_t));

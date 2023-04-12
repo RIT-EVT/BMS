@@ -441,4 +441,25 @@ BQ76952::Status BQ76952::setBalancing(uint8_t targetCell, uint8_t enable) {
     return Status::OK;
 }
 
+BQ76952::Status BQ76952::getCurrent(int16_t& current) {
+    return makeDirectRead(0x3a, reinterpret_cast<uint16_t*>(&current));
+}
+
+BQ76952::Status BQ76952::getBQStatus(uint8_t bqStatusArr[7]) {
+    uint16_t buf;
+
+    for (uint8_t i = 0; i < 3; i++) {
+        RETURN_IF_ERR(makeDirectRead(0x02 + i * 2, &buf));
+        bqStatusArr[i] = buf % 256;
+    }
+    RETURN_IF_ERR(makeDirectRead(0x62, &buf));
+    bqStatusArr[3] = buf % 256;
+    bqStatusArr[4] = buf / 256;
+    RETURN_IF_ERR(makeDirectRead(0x12, &buf));
+    bqStatusArr[5] = buf % 256;
+    bqStatusArr[6] = buf / 256;
+
+    return BQ76952::Status::OK;
+}
+
 }// namespace BMS::DEV

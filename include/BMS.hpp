@@ -11,6 +11,10 @@
 #include <dev/SystemDetect.hpp>
 #include <dev/ResetHandler.hpp>
 
+#define BQ_COMM_ERROR 0x01
+#define BQ_ALARM_ERROR 0x02
+#define OVER_TEMP_ERROR 0x04
+
 namespace IO = EVT::core::IO;
 
 namespace BMS {
@@ -114,7 +118,7 @@ private:
      * Have to know the size of the object dictionary for initialization
      * process.
      */
-    static constexpr uint16_t OBJECT_DICTIONARY_SIZE = 139;
+    static constexpr uint16_t OBJECT_DICTIONARY_SIZE = 149;
 
     /**
      * The active state of the alarm. When the alarm is in this state,
@@ -287,6 +291,16 @@ private:
     /**
      *
      */
+    uint8_t bqStatusArr[7] = {};
+
+    /**
+     *
+     */
+    uint8_t errorRegister = 0;
+
+    /**
+     *
+     */
     uint8_t lastCheckedThermNum = -1;
 
     /**
@@ -361,6 +375,7 @@ private:
     bool isHealthy();
 
     /**
+     * TODO: Update this documentation
      * Update the local voltage variables with the values from the BQ chip.
      * This will iterate over all the voltage values of interest and update
      * each value. These values will then be able to be read over CANopen.
@@ -369,7 +384,7 @@ private:
      * to read voltage. In other states, a call to this function should not
      * be present.
      */
-    void updateVoltageReadings();
+    void updateBQData();
 
     /**
      *
@@ -963,31 +978,55 @@ private:
         {
             .Key = CO_KEY(0x1A07, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = (uintptr_t) 4,
+            .Data = (uintptr_t) 8,
         },
         {
             // thermistorTemperature[8]
             .Key = CO_KEY(0x1A07, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = CO_LINK(0x2100, 33, 16),
+            .Data = CO_LINK(0x2100, 33, 8),
         },
         {
             // thermistorTemperature[9]
             .Key = CO_KEY(0x1A07, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = CO_LINK(0x2100, 34, 16),
+            .Data = CO_LINK(0x2100, 34, 8),
         },
         {
             // thermistorTemperature[10]
             .Key = CO_KEY(0x1A07, 3, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = CO_LINK(0x2100, 35, 16),
+            .Data = CO_LINK(0x2100, 35, 8),
         },
         {
             // thermistorTemperature[11]
             .Key = CO_KEY(0x1A07, 4, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = CO_LINK(0x2100, 36, 16),
+            .Data = CO_LINK(0x2100, 36, 8),
+        },
+        {
+            // thermistorTemperature[8]
+            .Key = CO_KEY(0x1A07, 5, CO_UNSIGNED32 | CO_OBJ_D__R_),
+            .Type = nullptr,
+            .Data = CO_LINK(0x2100, 37, 8),
+        },
+        {
+            // thermistorTemperature[9]
+            .Key = CO_KEY(0x1A07, 6, CO_UNSIGNED32 | CO_OBJ_D__R_),
+            .Type = nullptr,
+            .Data = CO_LINK(0x2100, 38, 8),
+        },
+        {
+            // thermistorTemperature[10]
+            .Key = CO_KEY(0x1A07, 7, CO_UNSIGNED32 | CO_OBJ_D__R_),
+            .Type = nullptr,
+            .Data = CO_LINK(0x2100, 39, 8),
+        },
+        {
+            // thermistorTemperature[11]
+            .Key = CO_KEY(0x1A07, 8, CO_UNSIGNED32 | CO_OBJ_D__R_),
+            .Type = nullptr,
+            .Data = CO_LINK(0x2100, 40, 8),
         },
 
         // User defined data, this will be where we put elements that can be
@@ -1151,26 +1190,45 @@ private:
             .Key = CO_KEY(0x2100, 32, CO_UNSIGNED16 | CO_OBJ___PR_),
             .Type = nullptr,
             .Data = (uintptr_t) &thermistorTemperature[7],
+        },        {
+            .Key = CO_KEY(0x2100, 33, CO_UNSIGNED8 | CO_OBJ___PR_),
+            .Type = nullptr,
+            .Data = (uintptr_t) &errorRegister,
         },
         {
-            .Key = CO_KEY(0x2100, 33, CO_UNSIGNED16 | CO_OBJ___PR_),
+            .Key = CO_KEY(0x2100, 34, CO_UNSIGNED8 | CO_OBJ___PR_),
             .Type = nullptr,
-            .Data = (uintptr_t) &thermistorTemperature[8],
+            .Data = (uintptr_t) &bqStatusArr[0],
         },
         {
-            .Key = CO_KEY(0x2100, 34, CO_UNSIGNED16 | CO_OBJ___PR_),
+            .Key = CO_KEY(0x2100, 35, CO_UNSIGNED8 | CO_OBJ___PR_),
             .Type = nullptr,
-            .Data = (uintptr_t) &thermistorTemperature[9],
+            .Data = (uintptr_t) &bqStatusArr[1],
         },
         {
-            .Key = CO_KEY(0x2100, 35, CO_UNSIGNED16 | CO_OBJ___PR_),
+            .Key = CO_KEY(0x2100, 36, CO_UNSIGNED8 | CO_OBJ___PR_),
             .Type = nullptr,
-            .Data = (uintptr_t) &thermistorTemperature[10],
+            .Data = (uintptr_t) &bqStatusArr[2],
         },
         {
-            .Key = CO_KEY(0x2100, 36, CO_UNSIGNED16 | CO_OBJ___PR_),
+            .Key = CO_KEY(0x2100, 37, CO_UNSIGNED8 | CO_OBJ___PR_),
             .Type = nullptr,
-            .Data = (uintptr_t) &thermistorTemperature[11],
+            .Data = (uintptr_t) &bqStatusArr[3],
+        },
+        {
+            .Key = CO_KEY(0x2100, 38, CO_UNSIGNED8 | CO_OBJ___PR_),
+            .Type = nullptr,
+            .Data = (uintptr_t) &bqStatusArr[4],
+        },
+        {
+            .Key = CO_KEY(0x2100, 39, CO_UNSIGNED8 | CO_OBJ___PR_),
+            .Type = nullptr,
+            .Data = (uintptr_t) &bqStatusArr[5],
+        },
+        {
+            .Key = CO_KEY(0x2100, 40, CO_UNSIGNED8 | CO_OBJ___PR_),
+            .Type = nullptr,
+            .Data = (uintptr_t) &bqStatusArr[6],
         },
 
         /// Expose information on the balancing of the target cells. Per
