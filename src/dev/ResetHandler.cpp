@@ -13,8 +13,7 @@ void ResetHandler::registerInput(IO::CANMessage msg) {
 bool ResetHandler::shouldReset() {
     uint8_t resetArr[RESET_ARR_LEN] = RESET_ARR;
     for (IO::CANMessage msg : msgHistory) {
-        if (msg.isCANExtended() || msg.getId() != RESET_ID
-            || msg.getDataLength() != RESET_ARR_LEN) {
+        if (msg.getId() != RESET_ID || msg.getDataLength() != RESET_ARR_LEN) {
             return false;
         }
         uint8_t* payload = msg.getPayload();

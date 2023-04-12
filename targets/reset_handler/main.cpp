@@ -40,6 +40,14 @@ int main() {
     IO::CAN& can = IO::getCAN<BMS::BMS::CAN_TX_PIN, BMS::BMS::CAN_RX_PIN>();
     can.addIRQHandler(canInterruptHandler, &resetHandler);
 
+    // Attempt to join the CAN network
+    IO::CAN::CANStatus result = can.connect();
+
+    if (result != IO::CAN::CANStatus::OK) {
+        uart.printf("Failed to connect to the CAN network\r\n");
+        return 1;
+    }
+
     while (1) {
         if (resetHandler.shouldReset()) {
             log::LOGGER.log(log::Logger::LogLevel::INFO, "Reset triggered");
