@@ -350,7 +350,8 @@ void transferSettings(IO::UART& uart, BMS::DEV::BQ76952& bq, EVT::core::DEV::M24
 
 void getTemperatures(IO::UART& uart, BMS::DEV::BQ76952& bq, BMS::DEV::ThermistorMux tMux) {
     for (uint8_t i = 0; i < 6; i++) {
-        uart.printf("Thermistor %d ADC counts: %d\r\n", i, tMux.getTemp(i));
+        uint16_t temp = tMux.getTemp(i);
+        uart.printf("Thermistor %d: %d.%03d\r\n", i, temp / 1000, temp % 1000);
     }
     uint16_t result;
     bq.makeDirectRead(0x68, &result);

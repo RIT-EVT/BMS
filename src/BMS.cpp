@@ -100,12 +100,13 @@ void BMS::process() {
 void BMS::startState() {
     if (stateChanged) {
         bmsOK.writePin(BMS_NOT_OK);
-        numAttemptsMade = 0;
         stateChanged = false;
 
         // Reset all data
         numAttemptsMade = 0;
+        numThermAttemptsMade = 0;
         lastAttemptTime = 0;
+        lastThermAttemptTime = 0;
         clearVoltageReadings();
         current = 0;
         batteryPackMinTemp = 0;
@@ -379,12 +380,37 @@ void BMS::updateBQData() {
         }
 
         lastAttemptTime = time::millis();
+    } else {
+        numAttemptsMade = 0;
     }
 }
 
 void BMS::updateThermistorReading() {
+    // Check if an error has taken place, and if so, check to make sure
+    // a certain delay time has taken place before making another attempt
+    if (numThermAttemptsMade > 0) {
+        // If there has not been enough time between attempts, skip this run
+        // of the state and try again later
+        if ((time::millis() - lastThermAttemptTime) < ERROR_TIME_DELAY) {
+            return;
+        }
+    }
+
     lastCheckedThermNum = (lastCheckedThermNum + 1) % DEV::ThermistorMux::NUM_THERMISTORS;
     thermistorTemperature[lastCheckedThermNum] = thermistorMux.getTemp(lastCheckedThermNum);
+    if (thermistorTemperature[lastCheckedThermNum] > MAX_THERM_TEMP) {
+        numThermAttemptsMade++;
+
+        if(numThermAttemptsMade >= MAX_THERM_READ_ATTEMPTS) {
+            errorRegister |= OVER_TEMP_ERROR;
+            return;
+        }
+
+        lastThermAttemptTime = time::millis();
+        lastCheckedThermNum--;
+    } else {
+        numThermAttemptsMade = 0;
+    }
 }
 
 void BMS::clearVoltageReadings() {

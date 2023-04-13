@@ -143,12 +143,22 @@ private:
      * Number of attempts that will be made to communicate with the BQ
      * before failing
      */
-    static constexpr uint16_t MAX_BQ_COMM_ATTEMPTS = 3;
+    static constexpr uint8_t MAX_BQ_COMM_ATTEMPTS = 3;
 
     /**
      * Time in milliseconds between attempting a previously failed operation
      */
     static constexpr uint32_t ERROR_TIME_DELAY = 5000;
+
+    /**
+     *
+     */
+    static constexpr uint8_t MAX_THERM_READ_ATTEMPTS = 3;
+
+    /**
+     *
+     */
+    static constexpr uint16_t MAX_THERM_TEMP = 40000;
 
     /**
      * The interface for storing and retrieving BQ Settings.
@@ -214,7 +224,12 @@ private:
      * For example, this is used for trying to communicate with the BQ N
      * number of times before failing
      */
-    uint16_t numAttemptsMade = 0;
+    uint8_t numAttemptsMade = 0;
+
+    /**
+     *
+     */
+     uint8_t numThermAttemptsMade = 0;
 
     /**
      * Keeps track of the last time an attempt was made. This is used in
@@ -222,6 +237,11 @@ private:
      * number of times with delay in attempts
      */
     uint32_t lastAttemptTime = 0;
+
+    /**
+     *
+     */
+    uint32_t lastThermAttemptTime = 0;
 
     /**
      * Represents the total voltage read by the BQ chip. This value is updated
