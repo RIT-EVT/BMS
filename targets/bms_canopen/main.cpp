@@ -99,6 +99,8 @@ int main() {
     BMS::DEV::SystemDetect systemDetect(BIKE_HEART_BEAT, CHARGER_HEART_BEAT,
                                         DETECT_TIMEOUT);
 
+    BMS::DEV::ResetHandler resetHandler;
+
     // Create struct that will hold CAN interrupt parameters
     struct CANInterruptParams canParams = {
         .queue = &canOpenQueue,
@@ -108,7 +110,7 @@ int main() {
     // Initialize IO
     IO::CAN& can = IO::getCAN<BMS::BMS::CAN_TX_PIN, BMS::BMS::CAN_RX_PIN>();
     can.addIRQHandler(canInterruptHandler, reinterpret_cast<void*>(&canParams));
-    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_TX_PIN>(115200, true);
+    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(115200, true);
     IO::I2C& i2c = IO::getI2C<BMS::BMS::I2C_SCL_PIN, BMS::BMS::I2C_SDA_PIN>();
 
     // Initialize the timer
@@ -133,10 +135,21 @@ int main() {
     IO::GPIO& alarm = IO::getGPIO<BMS::BMS::ALARM_PIN>(IO::GPIO::Direction::INPUT);
 
     // Initialize the system OK pin
-    IO::GPIO& bmsOK = IO::getGPIO<IO::Pin::PB_3>(IO::GPIO::Direction::OUTPUT);
+    IO::GPIO& bmsOK = IO::getGPIO<BMS::BMS::OK_PIN>(IO::GPIO::Direction::OUTPUT);
+
+    // Initialize the thermistor MUX
+    IO::GPIO* muxSelectArr[3] = {
+        &IO::getGPIO<BMS::BMS::MUX_S1_PIN>(),
+        &IO::getGPIO<BMS::BMS::MUX_S2_PIN>(),
+        &IO::getGPIO<BMS::BMS::MUX_S3_PIN>(),
+    };
+    IO::ADC& thermAdc = IO::getADC<BMS::BMS::TEMP_INPUT_PIN>();
+
+    BMS::DEV::ThermistorMux thermMux(muxSelectArr, thermAdc);
 
     // Initialize the BMS itself
-    BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect, bmsOK);
+    BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect, bmsOK, thermMux, resetHandler);
+
 
     // Reserved memory for CANopen stack usage
     uint8_t sdoBuffer[1][CO_SDO_BUF_BYTE];

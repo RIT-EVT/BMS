@@ -37,30 +37,48 @@ void BMS::canTest() {
         (int16_t) 0xcdab,
         0xef,
     };
+
     current = 0x2301;
-    batteryPackMinTemp = 0x45;
-    batteryPackMaxTemp = 0x67;
-    SOC = 0x89;
-    state = static_cast<State>(0xab);
-    recapActualAllowed = 0xcd;
-    dischargeActualAllowed = 0xef;
+    packTempInfo = {
+        .minPackTemp = 0x45,
+        .minPackTempId = 0x67,
+        .maxPackTemp = 0x89,
+        .maxPackTempId = 0xab,
+    };
+    bqTempInfo.internalTemp = 0xcd;
+    state = static_cast<State>(0xef);
+
+    thermistorTemperature[0] = 0x01;
+    thermistorTemperature[1] = 0x23;
+    thermistorTemperature[2] = 0x45;
+    thermistorTemperature[3] = 0x67;
+    thermistorTemperature[4] = 0x89;
+    thermistorTemperature[5] = 0xab;
+    bqTempInfo.temp1 = 0xcd;
+    bqTempInfo.temp2 = 0xef;
+
+    errorRegister = 0x01;
+    bqStatusArr[0] = 0x23;
+    bqStatusArr[1] = 0x45;
+    bqStatusArr[2] = 0x67;
+    bqStatusArr[3] = 0x89;
+    bqStatusArr[4] = 0xab;
+    bqStatusArr[5] = 0xcd;
+    bqStatusArr[6] = 0xef;
+
     for (uint8_t i = 0; i < 12; i++) {
         switch (i % 4) {
         case 0:
             cellVoltage[i] = 0x2301;
-            thermistorTemperature[i] = 0x2301;
             break;
         case 1:
             cellVoltage[i] = 0x6745;
-            thermistorTemperature[i] = 0x6745;
             break;
         case 2:
             cellVoltage[i] = 0xab89;
-            thermistorTemperature[i] = 0xab89;
             break;
         case 3:
             cellVoltage[i] = 0xefcd;
-            thermistorTemperature[i] = 0xefcd;
             break;
         }
     }
@@ -109,11 +127,17 @@ void BMS::startState() {
         lastThermAttemptTime = 0;
         clearVoltageReadings();
         current = 0;
-        batteryPackMinTemp = 0;
-        batteryPackMaxTemp = 0;
-        SOC = 0;
-        recapActualAllowed = 0;
-        dischargeActualAllowed = 0;
+        packTempInfo = {
+            .minPackTemp = 0,
+            .minPackTempId = 0,
+            .maxPackTemp = 0,
+            .maxPackTempId = 0,
+        };
+        bqTempInfo = {
+            .internalTemp = 0,
+            .temp1 = 0,
+            .temp2 = 0,
+        };
         memset(thermistorTemperature, 0, DEV::BQ76952::NUM_CELLS * sizeof(uint16_t));
         memset(bqStatusArr, 0, sizeof(uint8_t) * 3);
         errorRegister = 0;
@@ -333,13 +357,13 @@ void BMS::chargingState() {
 }
 
 bool BMS::isHealthy() {
-    if (alarm.readPin() != ALARM_ACTIVE_STATE) {
+    if (alarm.readPin() == ALARM_ACTIVE_STATE) {
         errorRegister |= BQ_ALARM_ERROR;
     } else if ((errorRegister & 0xF0) > 0) {
         errorRegister |= BQ_COMM_ERROR;
-    } // TODO: else if (over temp)
+    }
 
-    return errorRegister != 0;
+    return errorRegister == 0;
 }
 
 void BMS::updateBQData() {
@@ -363,11 +387,19 @@ void BMS::updateBQData() {
     DEV::BQ76952::Status result = bq.getCellVoltage(cellVoltage, totalVoltage, voltageInfo);
 
     if (result == DEV::BQ76952::Status::OK) {
-        bq.getCurrent(current);
+        result = bq.getVoltage(batteryVoltage);
     }
 
     if (result == DEV::BQ76952::Status::OK) {
-        bq.getBQStatus(bqStatusArr);
+        result = bq.getCurrent(current);
+    }
+
+    if (result == DEV::BQ76952::Status::OK) {
+        result = bq.getTemps(bqTempInfo);
+    }
+
+    if (result == DEV::BQ76952::Status::OK) {
+        result = bq.getBQStatus(bqStatusArr);
     }
 
     if (result != DEV::BQ76952::Status::OK) {
@@ -396,12 +428,29 @@ void BMS::updateThermistorReading() {
         }
     }
 
-    lastCheckedThermNum = (lastCheckedThermNum + 1) % DEV::ThermistorMux::NUM_THERMISTORS;
+    lastCheckedThermNum = (lastCheckedThermNum + 1) % NUM_THERMISTORS;
     thermistorTemperature[lastCheckedThermNum] = thermistorMux.getTemp(lastCheckedThermNum);
+
+    packTempInfo.maxPackTempId = 0;
+    packTempInfo.minPackTempId = 0;
+    packTempInfo.maxPackTemp = thermistorTemperature[0];
+    packTempInfo.minPackTemp = thermistorTemperature[0];
+    for (uint8_t i = 1; i < NUM_THERMISTORS; i++) {
+        if (thermistorTemperature[i] < packTempInfo.minPackTemp) {
+            packTempInfo.minPackTemp = thermistorTemperature[i];
+            packTempInfo.minPackTempId = i;
+        } else if (thermistorTemperature[i] > packTempInfo.maxPackTemp) {
+            packTempInfo.maxPackTemp = thermistorTemperature[i];
+            packTempInfo.maxPackTempId = i;
+        }
+    }
+
     if (thermistorTemperature[lastCheckedThermNum] > MAX_THERM_TEMP) {
         numThermAttemptsMade++;
 
         if(numThermAttemptsMade >= MAX_THERM_READ_ATTEMPTS) {
+            log::LOGGER.log(log::Logger::LogLevel::ERROR, "Thermistor %d over max temp: %d", lastCheckedThermNum, thermistorTemperature[lastCheckedThermNum]);
+
             errorRegister |= OVER_TEMP_ERROR;
             return;
         }

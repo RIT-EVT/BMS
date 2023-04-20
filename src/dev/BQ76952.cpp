@@ -368,7 +368,7 @@ BQ76952::Status BQ76952::getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32
     uint8_t cellVoltageReg = CELL_VOLTAGE_BASE_ADDR;
     //Must use temporary storage variables or else the values reported over CAN will be inaccurate from regular changes.
     uint32_t tempVoltage = 0;
-    uint16_t tempMinVoltage = 4;
+    uint16_t tempMinVoltage = 65535;
     uint16_t tempMaxVoltage = 0;
     uint8_t tempMinCellID;
     uint8_t tempMaxCellID;
@@ -444,6 +444,26 @@ BQ76952::Status BQ76952::setBalancing(uint8_t targetCell, uint8_t enable) {
 BQ76952::Status BQ76952::getCurrent(int16_t& current) {
     return makeDirectRead(0x3a, reinterpret_cast<uint16_t*>(&current));
 }
+
+BQ76952::Status BQ76952::getVoltage(uint16_t& voltage) {
+    uint16_t voltageBuf;
+    RETURN_IF_ERR(makeDirectRead(0x34, &voltageBuf));
+    voltage = voltageBuf * 10;
+    return BQ76952::Status::OK;
+}
+
+BQ76952::Status BQ76952::getTemps(BqTempInfo& bqTempInfo) {
+    uint16_t buf;
+    RETURN_IF_ERR(makeDirectRead(0x68, &buf));
+    bqTempInfo.internalTemp = (buf - 2732) / 10;
+    RETURN_IF_ERR(makeDirectRead(0x70, &buf));
+    bqTempInfo.temp1 = (buf - 2732) / 10;
+    RETURN_IF_ERR(makeDirectRead(0x74, &buf));
+    bqTempInfo.temp2 = (buf - 2732) / 10;
+
+    return BQ76952::Status::OK;
+}
+
 
 BQ76952::Status BQ76952::getBQStatus(uint8_t bqStatusArr[7]) {
     uint16_t buf;

@@ -207,6 +207,20 @@ public:
 
     /**
      *
+     * @param voltage
+     * @return
+     */
+    Status getVoltage(uint16_t& voltage);
+
+    /**
+     *
+     * @param bqTempInfo
+     * @return
+     */
+    Status getTemps(BqTempInfo& bqTempInfo);
+
+    /**
+     *
      * @param bqStatusArr
      * @return
      */

@@ -43,7 +43,7 @@ private:
 
     /**
      * T(x) = 0.00000375688x^2 + 0.0121347x - 15.9911
-     * Returns value in milliCelsius
+     * Returns value in Celsius
      *
      * @param adcCounts
      * @return
@@ -51,7 +51,7 @@ private:
     static uint32_t convert(uint32_t adcCounts) {
         uint16_t temp;
 
-        temp = (((uint64_t) adcCounts * adcCounts) * 375688 + ((uint64_t)adcCounts) * 1213470000 - 1599110000000) / 100000000;
+        temp = (((uint64_t) adcCounts * adcCounts) * 375688 + ((uint64_t)adcCounts) * 1213470000 - 1599110000000) / 100000000000;
 
         return temp;
     }
