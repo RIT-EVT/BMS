@@ -156,7 +156,6 @@ BQSettingsStorage::BQSettingsStorage(EVT::core::DEV::M24C32& eeprom, DEV::BQ7695
     // the EEPROM. This may or may not be an issue.
     numSettings = eeprom.readHalfWord(startAddress);
     numSettingsWritten = numSettings;
-    log::LOGGER.log(log::Logger::LogLevel::ERROR, "numSettings = %d", numSettings);
 }
 
 uint32_t BQSettingsStorage::getNumSettings() {
