@@ -25,8 +25,8 @@ namespace DEV = EVT::core::DEV;
 namespace time = EVT::core::time;
 namespace log = EVT::core::log;
 
-#define BIKE_HEART_BEAT 0x715
-#define CHARGER_HEART_BEAT 0x716
+#define BIKE_HEART_BEAT 0x70A // NODE_ID = 10
+#define CHARGER_HEART_BEAT 0x710 // NODE_ID = 16
 #define TIMEOUT 1000
 
 /**
