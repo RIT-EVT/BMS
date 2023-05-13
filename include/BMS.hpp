@@ -160,7 +160,7 @@ private:
     /**
      *
      */
-    static constexpr uint8_t MAX_THERM_TEMP = 40;
+    static constexpr uint8_t MAX_THERM_TEMP = 50;
 
     /**
      * The interface for storing and retrieving BQ Settings.
