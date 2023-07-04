@@ -1,7 +1,7 @@
 API
 ###
 
-This documentation outlines the library for BMS.
+This documentation outlines the library created for the BMS.
 
 DEV
 ***

@@ -10,11 +10,11 @@ Purpose
 -------
 
 The purpose of this document is to detail the software requirements and
-constraints for the firmware of the Dirt Electric Vehicle Battery Management
+constraints for the firmware of the Dirt Electric Vehicle 1 Battery Management
 System (DEV1 BMS). This document will go into detail on the requirements
 necessary for the system as well as detailing the constraints that the system
 will be under. The intention is that this document will provide a means to
-holistically express the needs to the DEV1 BMS system.
+holistically express the needs of the DEV1 BMS system.
 
 Document Conventions
 --------------------
@@ -30,7 +30,7 @@ Intended Audience and Reading Suggestions
 The intention is that this document will be accessible across engineering
 disciplines. The DEV1 BMS represents a highly inter-disciplinary project
 on the RIT Electric Vehicle Team and as such this document should be
-accessible to all involved. Below is a break down of the intended audiences
+accessible to all involved. Below is a breakdown of the intended audiences
 and how they may use the document. This list is not exhaustive, but intended
 to guide common readers of this document.
 
@@ -50,7 +50,7 @@ to guide common readers of this document.
 
 The document is laid out where it is not strictly necessary to read all
 sections in their entirety. Instead each section should be self-contained
-and self-entirety within its scope. As such audience members are encouraged
+and comprehensive within its scope. As such audience members are encouraged
 to read the sections that most pertain to their needs. Additionally, the
 glossary in the Appendix may prove useful in situations where phrases may
 be used in specific ways within this document.
@@ -59,36 +59,37 @@ Product Scope
 -------------
 
 The DEV1 BMS handles the battery management of the system. The DEV1 BMS will
-interact directly with the twin battery packs that will be present in the
-DEV1 architecture. As such, the DEV1 BMS scope will include battery pack
+provide an interface for each of the twin battery packs that will be present in
+the DEV1 architecture. As such, the DEV1 BMS scope will include battery pack
 health and safety, sharing battery statistics on the DEV1 CAN network,
 handling cell balancing, and providing a general interface to the battery
 packs. A noteworthy exclusion to the scope is the power distribution logic
-which will not be handled by the DEV1 BMS. The power distribution is not
-in the scope of the DEV1 BMS and instead is handled by the DEV1 APM.
+which will not be handled by the DEV1 BMS. Power distribution is not
+in the scope of the DEV1 BMS and instead is handled by the DEV1 Powertrain
+Voltage Controller (PVC).
 
 Safety
 ~~~~~~
 
-The DEV1 BMS will handle safety critical functionality that relates to the
-health of the battery pack. These range in levels from low priority to
-safety critical events. Below are the features that fall under the scope
-of the safety aspect of the DEV1 BMS.
+The DEV1 BMS will handle safety-related functionality that ensures the health
+of the battery pack. These range in levels from low priority to safety-critical
+events. Below are the features that fall under the scope of the safety aspect
+of the DEV1 BMS.
 
-* Control of the flow of current
+* Indicating overall battery safety
 * Notification of thermal issues
 * Notification of cell voltage issues
-* Notification of BQ76952 state
+* Notification of BQ76952 errors
 * Detection of battery connector
 
 Diagnostics
 ~~~~~~~~~~~
 
-The DEV1 BMS will be the main point-of-contact with the battery pack and
-the cells contained and as such will have to have functionality to extract
+The DEV1 BMS will be the main point-of-contact for the battery pack and
+the cells contained within. As such, it must be able to detect and report
 information on the battery pack itself. Functionality that falls under this
 scope is not safety critical and is intended to be used for data collection
-and decision making during the usage of the motorcycle. This information
+and decision-making during the usage of the motorcycle. This information
 will be exposed on the CAN network and the DEV1 BMS will also expose means
 of directly requesting data from the BQ76952 battery monitoring IC.
 
@@ -109,15 +110,14 @@ features will need to be included.
 
 * Performance of handshake with charge controller
 * Reporting of health of battery pack
-* Control of the flow of current
 
 Overview
 --------
 
 The rest of this software design document will go further into the specifics
 of the requirements while also looking at the constraints of the system. The
-goal is to clarify the use cases of the DEV1 BMS and specifying what the DEV1
-BMS will do in those use cases. Design considerations will not be discussed,
+goal is to clarify the use cases of the DEV1 BMS and to specify what the DEV1
+BMS will do in those cases. Design considerations will not be discussed,
 however notable design constraints will be covered.
 
 Overall Description
@@ -128,7 +128,7 @@ Product Perspective
 
 The DEV1 motorcycle will make use of custom battery packs which will provide
 power to the entirety of the DEV1 architecture during normal operation.
-The target event for the DEV1 motorcycle is a 24 hour endurance race. With
+The target event for the DEV1 motorcycle is a 24-hour endurance race. With
 these considerations in mind, the DEV1 BMS is critical to the success and
 safety of the DEV1 project. A critical component is the safety of the
 battery cells within the battery packs. As such, the DEV1 BMS will need
@@ -139,27 +139,26 @@ Each DEV1 BMS will operate independently and will handle the safety of
 the individual pack. This includes both during normal operation when the pack
 is on the motorcycle as well as when the pack is being charged.
 
-The DEV1 BMS itself is made up of two major configurable components. The
-ST microcontroller which handles programmable logic and exposes the DEV1 BMS
-on the CANopen network. As well as the BQ76952 battery monitor and protector
-IC which handles the battery safety and monitoring logic.
+The DEV1 BMS itself is made up of two major configurable components. The first
+is the ST microcontroller which handles programmable logic and exposes the DEV1
+BMS on the CANopen network. The second is the BQ76952 battery monitor and
+protector IC which handles the battery safety and monitoring logic.
 
 User Interfaces
 ~~~~~~~~~~~~~~~
 
 Users will rarely interact directly with the DEV1 BMS software. The DEV1 BMS
 software will mainly be interfaced with via CANopen and thus will require
-additional tools to interact with the DEV1 BMS. An external tool will be
-needed to interact with the DEV1 BMS and will not be in the scope of the
-DEV1 BMS software.
+additional tools to interact with the DEV1 BMS. There is no current plan for a
+team-developed tool to provide an interface for interaction with the DEV1 BMS.
 
 Hardware Interfaces
 ~~~~~~~~~~~~~~~~~~~
 
 The DEV1 BMS will be exposed on the CANopen network which is made up of
-a two-wire differential pair. The connector will be standardized and be
-handled by the DEV1 system team. The software on the ST microcontroller
-will be connected directly to the I2C lines of the BQ76952 chip.
+a two-wire differential pair. The connector pinout is similar to the EVT
+standard but includes the OK signal in addition to CAN and power. The battery
+packs also have integrated 14-pin JTAG connectors that expose SWD and UART.
 
 Software Interfaces
 ~~~~~~~~~~~~~~~~~~~
@@ -168,7 +167,8 @@ The main software interface will be the expose of the BQ76952 chip over
 the CAN network. The DEV1 BMS will need a software interface for acting as
 a bridge between the external actor and the BQ76952 chip. The DEV1 BMS will
 need to be flexible to expose all functionality of the BQ76952 so that the
-BQ76952 can be configured.
+BQ76952 can be configured. While this is still in development, a UART interface
+is used to achieve this functionality.
 
 Communication Interfaces
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -187,7 +187,7 @@ Memory Constraints
 ~~~~~~~~~~~~~~~~~~
 
 The produced software is limited to the 64KB of flash memory that is
-available on the STM32F302r8. Therefore the resulting binary must fit within
+available on the STM32F334r8. Therefore the resulting binary must fit within
 this size.
 
 Operations
