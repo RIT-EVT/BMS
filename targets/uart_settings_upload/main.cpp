@@ -3,9 +3,6 @@
  * transferred to the BQ chip
 */
 
-// Overwrite UART timeout to allow time to start running the transfer script
-#define EVT_UART_TIMEOUT 10000
-
 #include <BMS.hpp>
 #include <EVT/dev/storage/M24C32.hpp>
 #include <EVT/manager.hpp>
