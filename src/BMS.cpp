@@ -12,10 +12,10 @@ namespace BMS {
 BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
          DEV::Interlock& interlock, IO::GPIO& alarm,
          DEV::SystemDetect& systemDetect, IO::GPIO& bmsOK,
-         DEV::ThermistorMux& thermMux, DEV::ResetHandler& resetHandler) : bqSettingsStorage(bqSettingsStorage),
+         DEV::ThermistorMux& thermMux, DEV::ResetHandler& resetHandler, EVT::core::DEV::IWDG& iwdg) : bqSettingsStorage(bqSettingsStorage),
                                         bq(bq), state(State::START), interlock(interlock),
                                         alarm(alarm), systemDetect(systemDetect), resetHandler(resetHandler),
-                                        bmsOK(bmsOK), thermistorMux(thermMux), stateChanged(true) {
+                                        bmsOK(bmsOK), thermistorMux(thermMux), iwdg(iwdg), stateChanged(true) {
     bmsOK.writePin(IO::GPIO::State::LOW);
 
     updateBQData();
@@ -85,6 +85,8 @@ void BMS::canTest() {
 }
 
 void BMS::process() {
+    iwdg.refresh();
+
     switch (state) {
     case State::START:
         startState();
@@ -255,6 +257,7 @@ void BMS::transferSettingsState() {
         bqSettingsStorage.resetTransfer();
 
     } else if (isComplete) {
+        iwdg.init();
         state = State::SYSTEM_READY;
         stateChanged = true;
     }

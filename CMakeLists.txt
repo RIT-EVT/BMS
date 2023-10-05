@@ -16,6 +16,9 @@ add_compile_definitions(CANOPEN_QUEUE_SIZE=50)
 #TODO: Replace the function in uart_settings_upload so this isn't necessary
 add_compile_definitions(EVT_UART_TIMEOUT=10000)
 
+#TODO: Fix EVT-core so this isn't necessary
+add_compile_definitions(EVT_CAN_TIMEOUT=0)
+
 add_compile_definitions(USE_HAL_DRIVER)
 
 # Handle Selection of the target device

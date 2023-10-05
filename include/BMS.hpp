@@ -10,6 +10,7 @@
 #include <dev/Interlock.hpp>
 #include <dev/SystemDetect.hpp>
 #include <dev/ResetHandler.hpp>
+#include <EVT/dev/IWDG.hpp>
 
 #define BQ_COMM_ERROR 0x01
 #define BQ_ALARM_ERROR 0x02
@@ -81,7 +82,7 @@ public:
      */
     BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq, DEV::Interlock& interlock,
         IO::GPIO& alarm, DEV::SystemDetect& systemDetect, IO::GPIO& bmsOK,
-        DEV::ThermistorMux& thermMux, DEV::ResetHandler& resetHandler);
+        DEV::ThermistorMux& thermMux, DEV::ResetHandler& resetHandler, EVT::core::DEV::IWDG& iwdg);
 
     /**
      * The node ID used to identify the device on the CAN network.
@@ -211,6 +212,11 @@ private:
      *
      */
     DEV::ThermistorMux thermistorMux;
+
+    /**
+     * Internal watchdog to detect STM hang
+     */
+    EVT::core::DEV::IWDG& iwdg;
 
     /**
      * Boolean flag that represents a state has just changed, this is useful

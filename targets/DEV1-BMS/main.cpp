@@ -113,6 +113,7 @@ int main() {
     };
 
     // Initialize IO
+    // TODO: Investigate adding CAN filters
     IO::CAN& can = IO::getCAN<BMS::BMS::CAN_TX_PIN, BMS::BMS::CAN_RX_PIN>();
     can.addIRQHandler(canInterruptHandler, reinterpret_cast<void*>(&canParams));
     IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(115200, true);
@@ -152,8 +153,10 @@ int main() {
 
     BMS::DEV::ThermistorMux thermMux(muxSelectArr, thermAdc);
 
+    DEV::IWDG& iwdg = DEV::getIWDG(500);
+
     // Initialize the BMS itself
-    BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect, bmsOK, thermMux, resetHandler);
+    BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect, bmsOK, thermMux, resetHandler, iwdg);
 
     // Reserved memory for CANopen stack usage
     uint8_t sdoBuffer[1][CO_SDO_BUF_BYTE];
@@ -202,8 +205,6 @@ int main() {
     CONodeStart(&canNode);
     CONmtSetMode(&canNode.Nmt, CO_OPERATIONAL);
 
-    // Start watchdog
-    DEV::IWDG& iwdg = DEV::getIWDG(500);
 
     log::LOGGER.log(log::Logger::LogLevel::INFO, "Initialization complete");
 
@@ -220,8 +221,6 @@ int main() {
         COTmrProcess(&canNode.Tmr);
         // Update the state of the BMS
         bms.process();
-        // Pet the watchdog
-        iwdg.refresh();
         // Wait for new data to come in
         time::wait(10);
     }
