@@ -147,8 +147,10 @@ int main() {
 
     BMS::DEV::ThermistorMux thermMux(muxSelectArr, thermAdc);
 
+    DEV::IWDG& iwdg = DEV::getIWDG(500);
+
     // Initialize the BMS itself
-    BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect, bmsOK, thermMux, resetHandler);
+    BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect, bmsOK, thermMux, resetHandler, iwdg);
 
 
     // Reserved memory for CANopen stack usage
