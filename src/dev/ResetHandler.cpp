@@ -32,4 +32,4 @@ bool ResetHandler::shouldReset() {
     return true;
 }
 
-}
+}// namespace BMS::DEV

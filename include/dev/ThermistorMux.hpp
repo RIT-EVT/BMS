@@ -1,7 +1,7 @@
 #pragma once
 
-#include <EVT/io/GPIO.hpp>
 #include <EVT/dev/Thermistor.hpp>
+#include <EVT/io/GPIO.hpp>
 #include <EVT/utils/time.hpp>
 
 namespace IO = EVT::core::IO;
@@ -51,11 +51,10 @@ private:
     static uint32_t convert(uint32_t adcCounts) {
         uint16_t temp;
 
-        temp = (((uint64_t) adcCounts * adcCounts) * 375688 + ((uint64_t)adcCounts) * 1213470000 - 1599110000000) / 100000000000;
+        temp = (((uint64_t) adcCounts * adcCounts) * 375688 + ((uint64_t) adcCounts) * 1213470000 - 1599110000000) / 100000000000;
 
         return temp;
     }
 };
 
 }// namespace BMS::DEV
-

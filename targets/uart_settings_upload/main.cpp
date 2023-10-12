@@ -21,7 +21,7 @@ int main() {
     uart.printf("Test start\r\n");
     uint8_t buf[2];
     uart.readBytes(buf, 2);
-    uint16_t numSettings = (((uint16_t)buf[1]) << 8) + buf[0];
+    uint16_t numSettings = (((uint16_t) buf[1]) << 8) + buf[0];
     eeprom.writeHalfWord(0, numSettings);
     uart.write(0);
 

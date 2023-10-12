@@ -2,19 +2,18 @@
 * Tests the
 */
 
+#include <EVT/dev/Thermistor.hpp>
 #include <EVT/io/ADC.hpp>
 #include <EVT/io/GPIO.hpp>
 #include <EVT/manager.hpp>
 #include <EVT/utils/time.hpp>
-#include <EVT/dev/Thermistor.hpp>
 
-#include <dev/ThermistorMux.hpp>
 #include <BMS.hpp>
+#include <dev/ThermistorMux.hpp>
 
 namespace IO = EVT::core::IO;
 
 namespace time = EVT::core::time;
-
 
 void switchMux(IO::GPIO* muxArr[3], uint8_t inputNum) {
     for (uint8_t i = 0; i < 3; i++) {
@@ -36,7 +35,7 @@ int main() {
     IO::GPIO& muxs2 = IO::getGPIO<BMS::BMS::MUX_S2_PIN>();
     IO::GPIO& muxs3 = IO::getGPIO<BMS::BMS::MUX_S3_PIN>();
 
-    IO::GPIO* muxPinArr[3] = { &muxs1, &muxs2, &muxs3 };
+    IO::GPIO* muxPinArr[3] = {&muxs1, &muxs2, &muxs3};
 
     BMS::DEV::ThermistorMux tmux(muxPinArr, adc);
 

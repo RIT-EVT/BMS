@@ -4,13 +4,13 @@
 
 #include <Canopen/co_core.h>
 
-#include <dev/ThermistorMux.hpp>
 #include <BQSettingStorage.hpp>
+#include <EVT/dev/IWDG.hpp>
 #include <EVT/io/pin.hpp>
 #include <dev/Interlock.hpp>
-#include <dev/SystemDetect.hpp>
 #include <dev/ResetHandler.hpp>
-#include <EVT/dev/IWDG.hpp>
+#include <dev/SystemDetect.hpp>
+#include <dev/ThermistorMux.hpp>
 
 #define BQ_COMM_ERROR 0x01
 #define BQ_ALARM_ERROR 0x02
@@ -237,7 +237,7 @@ private:
     /**
      *
      */
-     uint8_t numThermAttemptsMade = 0;
+    uint8_t numThermAttemptsMade = 0;
 
     /**
      * Keeps track of the last time an attempt was made. This is used in
@@ -276,7 +276,7 @@ private:
     /**
      *
      */
-    PackTempInfo packTempInfo {
+    PackTempInfo packTempInfo{
         .minPackTemp = 0,
         .minPackTempId = 0,
         .maxPackTemp = 0,
@@ -286,7 +286,7 @@ private:
     /**
      *
      */
-    BqTempInfo bqTempInfo {
+    BqTempInfo bqTempInfo{
         .internalTemp = 0,
         .temp1 = 0,
         .temp2 = 0,
@@ -303,7 +303,7 @@ private:
      * Used to store values which the BMS updates.
      * Holds information about the minimum and maximum cell's voltages and Ids.
      */
-    cellVoltageInfo voltageInfo {
+    cellVoltageInfo voltageInfo{
         .minCellVoltage = 0,
         .minCellVoltageId = 0,
         .maxCellVoltage = 0,
@@ -848,7 +848,6 @@ private:
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 20, 8),
         },
-
 
         // TPDO3 mapping, determines the PDO messages to send when TPDO3 is triggered
         // 0: The number of PDO messages associated with the TPDO

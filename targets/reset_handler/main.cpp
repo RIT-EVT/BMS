@@ -3,9 +3,9 @@
 */
 
 #include <BMS.hpp>
-#include <dev/ResetHandler.hpp>
 #include <EVT/manager.hpp>
 #include <EVT/utils/log.hpp>
+#include <dev/ResetHandler.hpp>
 
 namespace DEV = EVT::core::DEV;
 namespace IO = EVT::core::IO;
@@ -23,7 +23,6 @@ void canInterruptHandler(IO::CANMessage& message, void* priv) {
 
     log::LOGGER.log(log::Logger::LogLevel::INFO, "Message received");
 }
-
 
 int main() {
     EVT::core::platform::init();

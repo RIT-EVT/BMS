@@ -13,9 +13,9 @@ BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
          DEV::Interlock& interlock, IO::GPIO& alarm,
          DEV::SystemDetect& systemDetect, IO::GPIO& bmsOK,
          DEV::ThermistorMux& thermMux, DEV::ResetHandler& resetHandler, EVT::core::DEV::IWDG& iwdg) : bqSettingsStorage(bqSettingsStorage),
-                                        bq(bq), state(State::START), interlock(interlock),
-                                        alarm(alarm), systemDetect(systemDetect), resetHandler(resetHandler),
-                                        bmsOK(bmsOK), thermistorMux(thermMux), iwdg(iwdg), stateChanged(true) {
+                                                                                                      bq(bq), state(State::START), interlock(interlock),
+                                                                                                      alarm(alarm), systemDetect(systemDetect), resetHandler(resetHandler),
+                                                                                                      bmsOK(bmsOK), thermistorMux(thermMux), iwdg(iwdg), stateChanged(true) {
     bmsOK.writePin(IO::GPIO::State::LOW);
 
     updateBQData();
@@ -376,7 +376,6 @@ void BMS::updateBQData() {
     //       issue, just not necessary. Could be limited to update once a
     //       second.
 
-
     // Check if an error has taken place, and if so, check to make sure
     // a certain delay time has taken place before making another attempt
     if (numAttemptsMade > 0) {
@@ -451,7 +450,7 @@ void BMS::updateThermistorReading() {
     if (thermistorTemperature[lastCheckedThermNum] > MAX_THERM_TEMP) {
         numThermAttemptsMade++;
 
-        if(numThermAttemptsMade >= MAX_THERM_READ_ATTEMPTS) {
+        if (numThermAttemptsMade >= MAX_THERM_READ_ATTEMPTS) {
             log::LOGGER.log(log::Logger::LogLevel::ERROR, "Thermistor %d over max temp: %d", lastCheckedThermNum, thermistorTemperature[lastCheckedThermNum]);
 
             errorRegister |= OVER_TEMP_ERROR;
@@ -468,7 +467,7 @@ void BMS::updateThermistorReading() {
 void BMS::clearVoltageReadings() {
     totalVoltage = 0;
     batteryVoltage = 0;
-    voltageInfo = { 0, 0, 0, 0 };
+    voltageInfo = {0, 0, 0, 0};
 
     // Zero out all cell voltages
     memset(cellVoltage, 0, DEV::BQ76952::NUM_CELLS * sizeof(uint16_t));

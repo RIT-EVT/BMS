@@ -4,9 +4,9 @@
 
 #include <EVT/io/CANopen.hpp>
 #include <EVT/io/UART.hpp>
-#include <EVT/manager.hpp>
 #include <EVT/io/pin.hpp>
 #include <EVT/io/types/CANMessage.hpp>
+#include <EVT/manager.hpp>
 
 #include <EVT/dev/storage/EEPROM.hpp>
 #include <EVT/dev/storage/M24C32.hpp>
@@ -23,8 +23,8 @@ namespace DEV = EVT::core::DEV;
 namespace time = EVT::core::time;
 namespace log = EVT::core::log;
 
-#define BIKE_HEART_BEAT 0x70A // NODE_ID = 10
-#define CHARGER_HEART_BEAT 0x710 // NODE_ID = 16
+#define BIKE_HEART_BEAT 0x70A   // NODE_ID = 10
+#define CHARGER_HEART_BEAT 0x710// NODE_ID = 16
 #define DETECT_TIMEOUT 1000
 
 /**
@@ -151,7 +151,6 @@ int main() {
 
     // Initialize the BMS itself
     BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect, bmsOK, thermMux, resetHandler, iwdg);
-
 
     // Reserved memory for CANopen stack usage
     uint8_t sdoBuffer[1][CO_SDO_BUF_BYTE];
