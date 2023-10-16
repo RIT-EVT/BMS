@@ -28,8 +28,8 @@ public:
     enum class BQSettingType {
         UNINITIALIZED = 0u,
         DIRECT = 1u,
-        SUBCOMMAND = 2u,
-        RAM = 3u,
+        RAM = 2u,
+        SUBCOMMAND = 3u,
     };
 
     /**

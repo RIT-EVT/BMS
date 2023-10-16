@@ -11,6 +11,16 @@ endif()
 # Allow for up to 8 CANopen TPDOs
 add_compile_definitions(CO_TPDO_N=8)
 
+add_compile_definitions(CANOPEN_QUEUE_SIZE=50)
+
+#TODO: Replace the function in uart_settings_upload so this isn't necessary
+add_compile_definitions(EVT_UART_TIMEOUT=10000)
+
+#TODO: Fix EVT-core so this isn't necessary
+add_compile_definitions(EVT_CAN_TIMEOUT=0)
+
+add_compile_definitions(USE_HAL_DRIVER)
+
 # Handle Selection of the target device
 option(TARGET_DEV "Target device" "STM32F302x8")
 if(NOT TARGET_DEV)
@@ -51,7 +61,9 @@ target_sources(${PROJECT_NAME} PRIVATE
     src/BQSetting.cpp
     src/dev/BQ76952.cpp
     src/dev/Interlock.cpp
+    src/dev/ResetHandler.cpp
     src/dev/SystemDetect.cpp
+    src/dev/ThermistorMux.cpp
 )
 
 ###############################################################################

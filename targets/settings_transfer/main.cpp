@@ -4,7 +4,7 @@
  */
 
 #include <EVT/dev/storage/M24C32.hpp>
-#include <EVT/io/manager.hpp>
+#include <EVT/manager.hpp>
 #include <EVT/utils/log.hpp>
 #include <EVT/utils/time.hpp>
 
@@ -19,9 +19,9 @@ namespace log = EVT::core::log;
 constexpr uint8_t BQ_I2C_ADDR = 0x08;
 
 int main() {
-    IO::init();
+    EVT::core::platform::init();
 
-    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(9600);
+    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(115200, true);
     IO::I2C& i2c = IO::getI2C<BMS::BMS::I2C_SCL_PIN, BMS::BMS::I2C_SDA_PIN>();
     EVT::core::DEV::M24C32 eeprom(0x57, i2c);
 

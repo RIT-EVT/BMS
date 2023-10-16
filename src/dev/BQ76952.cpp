@@ -1,5 +1,6 @@
 #include <dev/BQ76952.hpp>
 
+#include <EVT/utils/log.hpp>
 #include <EVT/utils/time.hpp>
 
 // (void)0 is added to the end of each macro to force users to follow the macro with a ';'
@@ -11,13 +12,15 @@
     (void) 0
 
 /// Macro to pass along errors that may have been generated
-#define RETURN_IF_ERR(func)          \
-    {                                \
-        Status result_ = func;       \
-        if (result_ != Status::OK) { \
-            return result_;          \
-        }                            \
-    }                                \
+#define RETURN_IF_ERR(func)                                                                     \
+    {                                                                                           \
+        Status result_ = func;                                                                  \
+        if (result_ != Status::OK) {                                                            \
+            EVT::core::log::LOGGER.log(EVT::core::log::Logger::LogLevel::ERROR, "BQ ERROR: %d", \
+                                       (uint8_t) result_);                                      \
+            return result_;                                                                     \
+        }                                                                                       \
+    }                                                                                           \
     (void) 0
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -143,6 +146,7 @@ BQ76952::BQ76952(EVT::core::IO::I2C& i2c, uint8_t i2cAddress)
 BQ76952::Status BQ76952::writeSetting(BMS::BQSetting& setting) {
     // Right now, the BQ only accepts settings made into RAM
     if (setting.getSettingType() != BMS::BQSetting::BQSettingType::RAM) {
+        EVT::core::log::LOGGER.log(EVT::core::log::Logger::LogLevel::ERROR, "Setting type is incorrect");
         return Status::ERROR;
     }
     return writeRAMSetting(setting);
@@ -364,7 +368,7 @@ BQ76952::Status BQ76952::getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32
     uint8_t cellVoltageReg = CELL_VOLTAGE_BASE_ADDR;
     //Must use temporary storage variables or else the values reported over CAN will be inaccurate from regular changes.
     uint32_t tempVoltage = 0;
-    uint16_t tempMinVoltage = 4;
+    uint16_t tempMinVoltage = 65535;
     uint16_t tempMaxVoltage = 0;
     uint8_t tempMinCellID;
     uint8_t tempMaxCellID;
@@ -435,6 +439,46 @@ BQ76952::Status BQ76952::setBalancing(uint8_t targetCell, uint8_t enable) {
     RETURN_IF_ERR(writeRAMSetting(setting));
 
     return Status::OK;
+}
+
+BQ76952::Status BQ76952::getCurrent(int16_t& current) {
+    return makeDirectRead(0x3a, reinterpret_cast<uint16_t*>(&current));
+}
+
+BQ76952::Status BQ76952::getVoltage(uint16_t& voltage) {
+    uint16_t voltageBuf;
+    RETURN_IF_ERR(makeDirectRead(0x34, &voltageBuf));
+    voltage = voltageBuf * 10;
+    return BQ76952::Status::OK;
+}
+
+BQ76952::Status BQ76952::getTemps(BqTempInfo& bqTempInfo) {
+    uint16_t buf;
+    RETURN_IF_ERR(makeDirectRead(0x68, &buf));
+    bqTempInfo.internalTemp = (buf - 2732) / 10;
+    RETURN_IF_ERR(makeDirectRead(0x70, &buf));
+    bqTempInfo.temp1 = (buf - 2732) / 10;
+    RETURN_IF_ERR(makeDirectRead(0x74, &buf));
+    bqTempInfo.temp2 = (buf - 2732) / 10;
+
+    return BQ76952::Status::OK;
+}
+
+BQ76952::Status BQ76952::getBQStatus(uint8_t bqStatusArr[7]) {
+    uint16_t buf;
+
+    for (uint8_t i = 0; i < 3; i++) {
+        RETURN_IF_ERR(makeDirectRead(0x02 + i * 2, &buf));
+        bqStatusArr[i] = buf % 256;
+    }
+    RETURN_IF_ERR(makeDirectRead(0x62, &buf));
+    bqStatusArr[3] = buf % 256;
+    bqStatusArr[4] = buf / 256;
+    RETURN_IF_ERR(makeDirectRead(0x12, &buf));
+    bqStatusArr[5] = buf % 256;
+    bqStatusArr[6] = buf / 256;
+
+    return BQ76952::Status::OK;
 }
 
 }// namespace BMS::DEV

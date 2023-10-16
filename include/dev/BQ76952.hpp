@@ -38,10 +38,10 @@ public:
      * ERROR => Failed the specific BQ operation (not I2C related)
      */
     enum class Status {
-        OK = 0,
-        TIMEOUT = 1,
-        I2C_ERROR = 2,
-        ERROR = 3,
+        OK = 0x00,
+        TIMEOUT = 0x10,
+        I2C_ERROR = 0x20,
+        ERROR = 0x40,
     };
 
     /**
@@ -197,6 +197,34 @@ public:
      * @return The state of the write attempt
      */
     Status setBalancing(uint8_t targetCell, uint8_t enable);
+
+    /**
+     *
+     * @param current
+     * @return
+     */
+    Status getCurrent(int16_t& current);
+
+    /**
+     *
+     * @param voltage
+     * @return
+     */
+    Status getVoltage(uint16_t& voltage);
+
+    /**
+     *
+     * @param bqTempInfo
+     * @return
+     */
+    Status getTemps(BqTempInfo& bqTempInfo);
+
+    /**
+     *
+     * @param bqStatusArr
+     * @return
+     */
+    Status getBQStatus(uint8_t bqStatusArr[7]);
 
     /** Total voltage read by the BQ chip (measured in milliVolts) */
     uint32_t totalVoltage = 0;

@@ -5,7 +5,7 @@
  */
 
 #include <EVT/dev/storage/M24C32.hpp>
-#include <EVT/io/manager.hpp>
+#include <EVT/manager.hpp>
 #include <EVT/utils/log.hpp>
 
 #include <BMS.hpp>
@@ -17,7 +17,9 @@ namespace IO = EVT::core::IO;
 namespace log = EVT::core::log;
 
 int main() {
-    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(9600);
+    EVT::core::platform::init();
+
+    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(115200, true);
 
     uart.printf("\r\n\r\nEEPROM Dump\r\n");
 

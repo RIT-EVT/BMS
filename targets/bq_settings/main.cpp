@@ -4,7 +4,7 @@
  * correctly.
  */
 
-#include <EVT/io/manager.hpp>
+#include <EVT/manager.hpp>
 
 #include <BMS.hpp>
 #include <BQSetting.hpp>
@@ -138,7 +138,9 @@ void serializeDeserializeTest(IO::UART& uart) {
 }
 
 int main() {
-    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(9600);
+    EVT::core::platform::init();
+
+    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(115200, true);
 
     uart.printf("\r\n\r\nBQ SETTING TEST\r\n");
 
