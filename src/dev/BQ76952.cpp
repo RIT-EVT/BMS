@@ -1,7 +1,7 @@
 #include <dev/BQ76952.hpp>
 
-#include <EVT/utils/time.hpp>
 #include <EVT/utils/log.hpp>
+#include <EVT/utils/time.hpp>
 
 // (void)0 is added to the end of each macro to force users to follow the macro with a ';'
 /// Macro to make an I2C transfer and return an error on failure
@@ -13,14 +13,14 @@
 
 /// Macro to pass along errors that may have been generated
 #define RETURN_IF_ERR(func)                                                                     \
-{                                                                                               \
-    Status result_ = func;                                                                      \
-    if (result_ != Status::OK) {                                                                \
+    {                                                                                           \
+        Status result_ = func;                                                                  \
+        if (result_ != Status::OK) {                                                            \
             EVT::core::log::LOGGER.log(EVT::core::log::Logger::LogLevel::ERROR, "BQ ERROR: %d", \
-                                       (uint8_t)result_);                                       \
+                                       (uint8_t) result_);                                      \
             return result_;                                                                     \
+        }                                                                                       \
     }                                                                                           \
-}                                                                                               \
     (void) 0
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -463,7 +463,6 @@ BQ76952::Status BQ76952::getTemps(BqTempInfo& bqTempInfo) {
 
     return BQ76952::Status::OK;
 }
-
 
 BQ76952::Status BQ76952::getBQStatus(uint8_t bqStatusArr[7]) {
     uint16_t buf;

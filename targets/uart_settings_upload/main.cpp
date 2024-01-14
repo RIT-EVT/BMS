@@ -3,9 +3,6 @@
  * transferred to the BQ chip
 */
 
-// Overwrite UART timeout to allow time to start running the transfer script
-#define EVT_UART_TIMEOUT 10000
-
 #include <BMS.hpp>
 #include <EVT/dev/storage/M24C32.hpp>
 #include <EVT/manager.hpp>
@@ -24,7 +21,7 @@ int main() {
     uart.printf("Test start\r\n");
     uint8_t buf[2];
     uart.readBytes(buf, 2);
-    uint16_t numSettings = (((uint16_t)buf[1]) << 8) + buf[0];
+    uint16_t numSettings = (((uint16_t) buf[1]) << 8) + buf[0];
     eeprom.writeHalfWord(0, numSettings);
     uart.write(0);
 

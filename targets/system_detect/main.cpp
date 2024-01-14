@@ -6,9 +6,9 @@
 
 #include <EVT/io/CANopen.hpp>
 #include <EVT/io/UART.hpp>
-#include <EVT/manager.hpp>
 #include <EVT/io/pin.hpp>
 #include <EVT/io/types/CANMessage.hpp>
+#include <EVT/manager.hpp>
 
 #include <EVT/dev/storage/EEPROM.hpp>
 #include <EVT/dev/storage/M24C32.hpp>
@@ -25,20 +25,38 @@ namespace DEV = EVT::core::DEV;
 namespace time = EVT::core::time;
 namespace log = EVT::core::log;
 
-#define BIKE_HEART_BEAT 0x70A // NODE_ID = 10
-#define CHARGER_HEART_BEAT 0x710 // NODE_ID = 16
-#define TIMEOUT 1000
+#define BIKE_HEART_BEAT 0x70A   // NODE_ID = 10
+#define CHARGER_HEART_BEAT 0x710// NODE_ID = 16
+#define DETECT_TIMEOUT 1000
 
 /**
- * Interrupt handler for incoming CAN messages.
- *
- * This will just update the state of the system detect for testing
- * purposes
- */
+* This struct is a catchall for data that is needed by the CAN interrupt
+* handler. An instance of this struct will be provided as the parameter
+* to the interrupt handler.
+*/
+struct CANInterruptParams {
+    EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>* queue;
+    BMS::DEV::SystemDetect* systemDetect;
+};
+
+/**
+* Interrupt handler for incoming CAN messages.
+*
+* @param priv[in] The private data (FixedQueue<CANOPEN_QUEUE_SIZE, CANMessage>)
+*/
 void canInterruptHandler(IO::CANMessage& message, void* priv) {
-    auto* systemDetect = (BMS::DEV::SystemDetect*) priv;
+    struct CANInterruptParams* params = (CANInterruptParams*) priv;
+
+    EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>* queue =
+        params->queue;
+    BMS::DEV::SystemDetect* systemDetect = params->systemDetect;
 
     systemDetect->processHeartbeat(message.getId());
+
+    if (queue == nullptr)
+        return;
+    if (!message.isCANExtended())
+        queue->append(message);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -75,14 +93,26 @@ int main() {
     // Initialize system
     EVT::core::platform::init();
 
+    // Queue that will store CANopen messages
+    EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage> canOpenQueue;
+
     // Initialize the system detect
-    BMS::DEV::SystemDetect systemDetect(BIKE_HEART_BEAT, CHARGER_HEART_BEAT, TIMEOUT);
+    BMS::DEV::SystemDetect systemDetect(BIKE_HEART_BEAT, CHARGER_HEART_BEAT,
+                                        DETECT_TIMEOUT);
+
+    BMS::DEV::ResetHandler resetHandler;
+
+    // Create struct that will hold CAN interrupt parameters
+    struct CANInterruptParams canParams = {
+        .queue = &canOpenQueue,
+        .systemDetect = &systemDetect,
+    };
 
     // Initialize IO
     IO::CAN& can = IO::getCAN<BMS::BMS::CAN_TX_PIN, BMS::BMS::CAN_RX_PIN>();
-    can.addIRQHandler(canInterruptHandler, reinterpret_cast<void*>(&systemDetect));
+    can.addIRQHandler(canInterruptHandler, reinterpret_cast<void*>(&canParams));
     IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(115200, true);
-    EVT::core::IO::I2C& i2c = EVT::core::IO::getI2C<BMS::BMS::I2C_SCL_PIN, BMS::BMS::I2C_SDA_PIN>();
+    IO::I2C& i2c = IO::getI2C<BMS::BMS::I2C_SCL_PIN, BMS::BMS::I2C_SDA_PIN>();
 
     // Initialize the timer
     DEV::Timer& timer = DEV::getTimer<DEV::MCUTimer::Timer2>(100);
@@ -110,15 +140,24 @@ int main() {
     // TODO: Determine actual system ok pin
     IO::GPIO& bmsOK = IO::getGPIO<BMS::BMS::OK_PIN>(IO::GPIO::Direction::OUTPUT);
 
+    // Initialize the thermistor MUX
+    IO::GPIO* muxSelectArr[3] = {
+        &IO::getGPIO<BMS::BMS::MUX_S1_PIN>(),
+        &IO::getGPIO<BMS::BMS::MUX_S2_PIN>(),
+        &IO::getGPIO<BMS::BMS::MUX_S3_PIN>(),
+    };
+    IO::ADC& thermAdc = IO::getADC<BMS::BMS::TEMP_INPUT_PIN>();
+
+    BMS::DEV::ThermistorMux thermMux(muxSelectArr, thermAdc);
+
+    DEV::IWDG& iwdg = DEV::getIWDG(500);
+
     // Initialize the BMS itself
-    BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect, bmsOK);
+    BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect, bmsOK, thermMux, resetHandler, iwdg);
 
     // Reserved memory for CANopen stack usage
     uint8_t sdoBuffer[1][CO_SDO_BUF_BYTE];
     CO_TMR_MEM appTmrMem[4];
-
-    // Queue that will store CANopen messages
-    EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage> canOpenQueue;
 
     // Initialize the CANopen drivers
     CO_IF_DRV canStackDriver;

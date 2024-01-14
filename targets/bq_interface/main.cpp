@@ -397,13 +397,12 @@ int main() {
     log::LOGGER.setUART(&uart);
     log::LOGGER.setLogLevel(log::Logger::LogLevel::DEBUG);
 
-
     IO::ADC& adc = IO::getADC<BMS::BMS::TEMP_INPUT_PIN>();
 
     IO::GPIO& muxs1 = IO::getGPIO<BMS::BMS::MUX_S1_PIN>();
     IO::GPIO& muxs2 = IO::getGPIO<BMS::BMS::MUX_S2_PIN>();
     IO::GPIO& muxs3 = IO::getGPIO<BMS::BMS::MUX_S3_PIN>();
-    IO::GPIO* muxPinArr[3] = { &muxs1, &muxs2, &muxs3 };
+    IO::GPIO* muxPinArr[3] = {&muxs1, &muxs2, &muxs3};
 
     BMS::DEV::ThermistorMux tmux(muxPinArr, adc);
 
