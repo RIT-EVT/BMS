@@ -20,7 +20,7 @@ Document Conventions
 --------------------
 
 This document was created based on the IEEE template for software requirements
-specifications. As such it will mainly adhere to the verbage and style
+specifications. As such it will mainly adhere to the verbiage and style
 set by IEEE convention. Additionally, a glossary has been provided in the
 Appendix which covers common phrases that will be used in this document.
 
@@ -223,13 +223,6 @@ Safety
 Control of the BMS OK Signal
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The DEV1 BMS will need the ability to control the flow of
-current into and out of the battery pack. This will be a shutoff that will
-stop the flow of charge that will be used both during normal operation and
-during safety critical events. As such, the DEV1 BMS will need a programmable
-means to control that flow so that the system can respond to a range of
-stimuli.
-
 The DEV1 BMS will need the ability to detect and respond to a number of
 unsafe situations that can arise during use, including over- or
 under-voltage cells, high temperatures, loose connections, and more. To
@@ -270,7 +263,7 @@ Notification of Cell Voltage Issues
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The DEV1 battery pack will need to have constant health check on the
-state-of-charge of the cells. As such, the DEV1 BMS will handle collecting
+voltage of the cells. As such, the DEV1 BMS will handle collecting
 and broadcasting the state of the cell voltages on the CANopen network so
 that other systems can respond accordingly.
 
@@ -290,8 +283,8 @@ Detection of Battery Connector
 The DEV1 battery pack is equipped with an interlock which can be used to
 detect the presence of a connector attached to the battery pack. Use of this
 interlock is critical for battery operator safety. The contact points of the
-battery should only be active when a valid connector is present. Otherwise,
-the battery contact points should not be active.
+battery should only be electrically connected when a valid connector is
+present. Otherwise, the battery contact points should not be connected.
 
 Diagnostics
 ~~~~~~~~~~~
@@ -301,38 +294,24 @@ Transmission of Thermal State of the Battery Pack
 
 The DEV1 BMS will continually monitor the temperature readings from inside
 of the battery pack and report the temperature on the CANopen network. The
-temperature data will be reported at a fixed rate interval.
+temperature data will be reported at a fixed interval.
 
 Transmission of Battery Pack Voltage
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The DEV1 BMS will poll the battery pack to collect the voltage of the whole
-pack. This data will then be packaged and published on the CANopen network.
-
-Transmission of Average Cell Voltage
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-The DEV1 BMS will have the ability to collect cell voltage data for sets of
-cells that are in series with each other. From there the average cell voltage
-can be estimated across the battery pack. This average should be exposed on
-the CANopen network for diagnostic applications.
-
-Transmission of Standard Deviation of Cell Voltage
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-For safety and battery pack longevity, the cells of the battery pack should be
-maintained to very similar levels. The standard deviation of the cell
-voltages should be calculated by the DEV1 BMS and presented on the CANopen
-network.
+The DEV1 BMS will poll the BQ76952 chip to collect the voltage of the whole
+pack and each of the cells individually. This data will then be published on
+the CANopen network.
 
 Exposure of BQ76952 Chip
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-The BQ76952 chip is the most important component in the DEV1 BMS and is used
-for allowing for all abilities of the DEV1 BMS. Additionally, the BQ76952
-is configured for operation externally and should thus have a means to expose
-the chip from the DEV1 BMS. The DEV1 BMS will have a means for the BQ76952
-to be configured over the CANopen network.
+The BQ76952 chip is the most important component in the DEV1 BMS, as it is
+responsible for monitoring current and voltage during charging and discharging
+of the packs. The BQ76952 is controlled primarily by configuring a large set of
+parameters. As we optimize the DEV1 system, we should continuously refine this
+configuration. Therefore, the BMS will need to expose those configuration
+parameters over the CANopen network.
 
 Charging
 ~~~~~~~~
@@ -340,15 +319,15 @@ Charging
 Performance of Handshake with Charge Controller
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The DEV1 BMS will control the flow of charge both into and out of the
-battery pack and as such, the DEV1 BMS must have a handshake with the
+Before charging can begin, the DEV1 BMS will need to enable the OK signal. As
+part of the process to enable this, the BMS will perform a handshake with the
 Charge Controller. The DEV1 BMS will handle making a series of health checks
-that will follow the same logic as the "Control of the Flow of Current".
-If the DEV1 BMS determines that the battery pack is in a safe state for
-charging, then the DEV1 BMS will notify the Charge Controller and charging
-can start to take place. At any time during the charging logic, the DEV1 BMS
-can determine as safety event has taken place and stop the flow
-of charge.
+that will follow the same logic as the "Control of the BMS OK Signal". If the
+BMS detects the interlock and Charge Controller heartbeat and determines that
+the battery pack is in a safe state for charging, it will enable the OK signal,
+indicating to the Charge Controller that charging may begin. At any time during
+charging, the BMS can determine that charging is no longer safe and disable the
+OK signal.
 
 Reporting of Health of Battery Pack
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -357,15 +336,6 @@ During the charging process, the DEV1 BMS will continue to output health
 information on the battery pack. The data that will be sent out will follow
 the specifications of the "Diagnostics" section.
 
-Control of the Flow of Current
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-While the charging is taking place. The DEV1 BMS will have the final decision
-if charge will flow. This decision will be made on safety decisions as well
-as the presence of the interlock detection signal. At any point during
-charging, if the DEV1 BMS detects a safety critical situation, the flow of
-current can be disabled.
-
 User Classes and Characteristics
 --------------------------------
 
@@ -373,13 +343,13 @@ Those who interact with the DEV1 BMS will be expected to have a high level
 of understanding of the electrical system as well as having a high level
 of knowledge on battery safety. Human interaction with the DEV1 BMS will
 only take place during charging, data collection, and BQ76952 configuration.
-For the charging it is expected that at least one person who worked directly
-on DEV1 BMS design will be present.
+For charging it is expected that at least one person familiar with the DEV1 BMS
+software and hardware is present.
 
-For data collection, less technical experience will be required as safety
-critical systems should not be interacted with during data collection. During
-this time an external device can be used to collect the diagnostic messages
-from the DEV1 BMS.
+For data collection, less technical experience will be required as the user
+should not need to interact with any safety-critical systems. During this time
+an external device can be used to collect the diagnostic messages from the BMS
+over the CAN network.
 
 During configuration of the BQ76952. The users who are interacting with the
 DEV1 BMS will need to be 1 firmware team member and 1 electrical member who
@@ -401,7 +371,7 @@ The DEV1 BMS software will exist in an embedded environment and as such,
 all design considerations will require the software to be runnable on an
 embedded system.
 
-Additionally, for the low level interactions with the ST microcontroller,
+Additionally, for the low-level interactions with the ST microcontroller,
 the EVT-core software library will be used. Any additional required
 functionality will need to be considered and added into the EVT-core library
 itself.
@@ -411,7 +381,7 @@ CANopen. Design of the communication system will need to revolve around
 CANopen and adhere to CANopen standards.
 
 The hardware has already been determined and the software must be designed to
-support the existing hardware. The microcontroller will be a STM32F302r8 chip
+support the existing hardware. The microcontroller will be a STM32F334r8 chip
 and the battery monitor chip will be a BQ76952. Software design will revolve
 around the limitations of those chips.
 
@@ -429,6 +399,12 @@ expose the BQ76952. Exposure of the BQ76952 will take place over CANopen
 and proper documentation will need to exist for users to be able to
 configure the BQ76952.
 
+There should also be documentation for any further debugging or maintenance
+procedures used with the BMS. As one of the most complex boards our team has
+developed, it will take time for new members to ramp up to working on it. If we
+are able to provide more documentation, it will take new members less time to
+ramp up on this project.
+
 Constraints
 -----------
 
@@ -438,30 +414,26 @@ the system.
 * Development must be in C/C++
 * Communication will take place using CANopen
 * EVT-core will be used for low level microcontroller interfacing
-* Must be developed for the STM32F302r8
+* Must be developed for the STM32F334r8
 * Battery monitoring will take place through the BQ76952
 
 Assumptions and Dependencies
 ----------------------------
 
-It will be assumed that all hardware will operate as designed. This includes
-proper communication present between the BQ76952 and the ST microcontroller.
-Part of the communication assumes that the BQ76952 can properly manage each
-of the groupings of cells in series. Another large safety based assumption is
-that the BQ76952 will be able to stop the flow of charge into and out of
-the battery pack.
+It will be assumed that all systems interacting with the DEV1 BMS will read and
+react properly to the BMS OK signal. It is also assumed that the BQ76952 chip
+will behave exactly as described by its datasheet, detecting and reporting all
+voltages, currents, temperatures, and errors accurately, unless communication
+between the BQ chip and ST microcontroller fails.
 
 Apportioning of Requirements
 ----------------------------
 
-Not all requirements are know at this time as the DEV1 system continues to
-develop. These un-restricted requirements will need to be finalized before
-the implementation of the DEV1 BMS software.
-
-* The CAN messages to capture from the DEV1 system
-* Scope of emergency cases to stop flow of current from the battery pack
-* Specific CAN network IDs
-* Format of CANopen messages that the DEV1 BMS will produce for sharing data
+At this point in the life cycle of the DEV1 BMS project, deployment has begun.
+Due to the nature of student-run teams, it is unlikely that there will be
+further revision to this system, as new students will likely start new projects.
+As a result, there are no future requirements planned to be added to this
+system.
 
 Specific Requirements
 =====================
@@ -474,16 +446,16 @@ BQ76952 CAN Control
 
 The BQ76952 CAN interface is an exposed ability to communicate with the
 BQ76952. The CAN interface will actually expose the I2C interface that the
-STM32F302r8 has with the BQ76952. This will limit software complexity and
+STM32F334r8 has with the BQ76952. This will limit software complexity and
 will ensure that all the features of the BQ76952 are correctly exposed. These
 messages will come across the network realistically at any point from the
 perspective of the DEV1 BMS, but practically these messages will be received
-when the battery pack is not on the motorcycle.
+only when the battery pack is not on the vehicle.
 
 Read Request Message Format
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Externally, a CAN message can be sent to the STM32F302r8 which will be
+Externally, a CAN message can be sent to the STM32F334r8 which will be
 interpreted as a request to interact with the BQ76952. Messages with
 a data length of 1 will be interpreted as a read request.
 
@@ -549,7 +521,6 @@ Glossary
 ===========   ===========================================
 Term          Definition
 -----------   -------------------------------------------
-APM           Auxiliary Power Module
 BMS           Battery Management System
 BQ76952       Battery monitor IC
 CAN           Controller Area Network
@@ -558,7 +529,7 @@ DEV1          Dirt Electric Vehicle 1
 EVT           Electric Vehicle Team
 I2C           Inter-Integrated Circuit
 KB            Kilo-bytes
-STM32F302r8   ST Microcontroller selected for this project
+STM32F334r8   ST Microcontroller selected for this project
 TMS           Temperature Management System
 ===========   ===========================================
 
@@ -568,13 +539,14 @@ References
 * `BQ76952 3-s to 16-s high-accuracy battery monitor and protector for Li-ion, Li-polymer and LiFePO4 <https://www.ti.com/product/BQ76952>`_
 * `CANopen - The standardized embedded network <https://www.can-cia.org/canopen/>`_
 * `EVT-core <https://evt-core.readthedocs.io/en/latest/>`_
-* `STM32f302r8 Mainstream Mixed signals MCUs Arm Cortex-M4 core with DSP and FPU, 64 Kbytes of Flash memory, 72 MHz CPU, 12-bit ADC 5 MSPS, Comparator, Op-Amp <https://www.st.com/en/microcontrollers-microprocessors/stm32f302r8.html>`_
+* `STM32f334r8 Mainstream Mixed signals MCUs Arm Cortex-M4 core with DSP and FPU, 64 Kbytes of Flash memory, 72 MHz CPU, 12-bit ADC 5 MSPS, Comparator, Op-Amp <https://www.st.com/en/microcontrollers-microprocessors/stm32f302r8.html>`_
 
 Revision
 --------
 
-========    ======================          ==========
-Revision    Description                     Date
---------    ----------------------          ----------
-1           Initial documentation.          10/19/2021
-========    ======================          ==========
+========    ============================          ==========
+Revision    Description                           Date
+--------    ----------------------------          ----------
+1           Initial documentation.                10/19/2021
+2           Update after initial release          01/15/2024
+========    ============================          ==========
