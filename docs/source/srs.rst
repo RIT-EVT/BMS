@@ -97,7 +97,6 @@ of directly requesting data from the BQ76952 battery monitoring IC.
 * Transmission of thermal state of battery pack
 * Transmission of battery pack voltage
 * Transmission of average cell voltage
-* Transmission of standard deviation of cell voltage
 * Exposure of BQ76952 chip
 
 Charging
@@ -174,14 +173,14 @@ Communication Interfaces
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 The main communication interface for the DEV1 BMS will be CANopen. CANopen
-is build on top of the hardware and data layer specifications of CAN. The
-majority of the CAN based network communication that will be used will
-conform to CANopen including how the DEV1 BMS will expose information on
-the DEV1 system network. The BQ76952 chip expose logic may or may not
-conform to CANopen depending on the final implementation.
+is built on top of the hardware and data layer specifications of CAN. The
+majority of the CAN-based network communication that will be used will
+conform to CANopen, including how the DEV1 BMS will expose information on
+the DEV1 system network. The exposed BQ76952 chip logic may or may not
+conform to CANopen, depending on the final implementation.
 
 Communication between the ST microcontroller and the BQ7695 will be handled
-via I2C. The BQ7695 contains the specifications of the I2C interface.
+via I2C. The BQ76952 contains the specifications of the I2C interface.
 
 Memory Constraints
 ~~~~~~~~~~~~~~~~~~
@@ -193,22 +192,20 @@ this size.
 Operations
 ~~~~~~~~~~
 
-The DEV1 BMS will operate in four main states during operation. The main
-output from the states is the current flow control. When flow is enabled,
-current is able to flow into and out of the battery, when flow is disabled,
-current cannot flow. The interlock positioned on the battery connector
-is what triggers the initial mode transition on system startup. The diagram
-below follows the logic that will need to be implemented.
+From an operational perspective, the DEV1 BMS has one main output to the rest
+of the vehicle: the BMS OK signal. During storage and when not in use, this
+signal will be low, indicating that the BMS should not be used. When the BMS
+detects that it is on the vehicle or charger and is safe to use, it will
+change this signal to high, indicating that it's ready for use. If, at any
+point during use, the BMS detects that its conditions for use are no longer
+safe, it will disable this OK signal, indicating that the vehicle or charger
+should stop running current through it. More detail on the BMS OK signal can
+be found in the safety section below.
 
-.. image:: _static/images/bms_state.png
-   :width: 200
-   :align: center
-
-Note, when an critical error takes place, the system cannot directly
-recover from the error. This is done intentially. The reasoning is that if
-a critical error takes place with the battery pack the system should first
-be manually inspected and probed for the issue. Then after the issue is
-resolved, the system can be power cycled restarting the state machine logic.
+The other major output of the DEV1 BMS is data reported over the CAN network.
+This data includes pack temperatures, cell voltages, current, error values,
+and more. The latest EDS file for the board can be found in the EVT CAN tools
+repository.
 
 Site Adaptation
 ~~~~~~~~~~~~~~~
@@ -223,7 +220,7 @@ Product Functions
 Safety
 ~~~~~~
 
-Control of the Flow of Current
+Control of the BMS OK Signal
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The DEV1 BMS will need the ability to control the flow of
@@ -231,26 +228,43 @@ current into and out of the battery pack. This will be a shutoff that will
 stop the flow of charge that will be used both during normal operation and
 during safety critical events. As such, the DEV1 BMS will need a programmable
 means to control that flow so that the system can respond to a range of
-stimuli. Below are listed out the situations that could cause the DEV1 BMS
-to stop the flow of current.
+stimuli.
 
-* Thermal situation where battery pack as passed a configurable threshold
-  temperature
-* Interlock does not detect the presence of a battery connector
-* BQ76952 chip has detected one of many configurable safety critical events
-  such as a thermal runaway event
+The DEV1 BMS will need the ability to detect and respond to a number of
+unsafe situations that can arise during use, including over- or
+under-voltage cells, high temperatures, loose connections, and more. To
+ensure the vehicle and charger are safe to operate, the BMS regularly runs
+several checks to verify the health of the system. It checks for
+
+* I2C communication failures with the BQ chip
+* Alarm signals from the BQ chip
+* Dangerously high temperatures in the pack or on the PCB
+
+If these checks fail at any point, the BMS will enter an error state, which
+requires a specific series of CAN messages to escape. During testing, this
+allows us to debug the system while it's experiencing the error. During a
+race, the rider will need to put in special inputs to reset a BMS, which
+makes it very clear to them that an error has occurred.
+
+In addition to being in a healthy state, before enabling the OK signal each
+time the battery is put on a vehicle or charger, the BMS checks two things:
+
+* The high voltage connector interlock is detected
+* The CANopen heartbeat of either the PVC or charge controller is detected
+
+Assuming no health issues arise, the BMS will keep the OK signal enabled
+until the interlock is no longer detected.
 
 Notification of Thermal Issues
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The DEV1 BMS will contain temperature sensing units. These units will be used
-both for determining if a thermal safety critical event has taken place
-as well as for notification to the greater DEV1 system of the current thermal
-situation of the battery pack. This is intended for providing a means for
-the DEV1 thermal management system to determine the amount of heat energy that
-will need to be removed from the battery pack and to plan accordingly. The
-notification process will take place via the CANopen network which will be
-discussed in greater detail in the section "External Interface Requirements".
+The DEV1 BMS will contain thermistors for temperature sensing. They will be
+used both for determining if a thermal safety critical event has taken place
+and for reporting the current temperatures of the pack to the rest of the network.
+This will allow other systems to react to issues with high battery temperatures
+before they reach the level that the BMS disables the OK signal. Data will be
+reported via the CANopen network which will be discussed in greater detail in the
+section "External Interface Requirements".
 
 Notification of Cell Voltage Issues
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
