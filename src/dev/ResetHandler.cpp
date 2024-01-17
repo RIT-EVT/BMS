@@ -17,7 +17,7 @@ bool ResetHandler::shouldReset() {
             return false;
         }
         uint8_t* payload = msg.getPayload();
-        for (uint8_t i = 0; i < MSG_HIST_LEN; i++) {
+        for (uint8_t i = 0; i < RESET_ARR_LEN; i++) {
             if (payload[i] != resetArr[i]) {
                 return false;
             }
