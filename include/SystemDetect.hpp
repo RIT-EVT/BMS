@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace BMS::DEV {
+namespace BMS {
 
 /**
  * Device which has the ability to determine if the BMS system is

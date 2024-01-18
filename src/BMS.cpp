@@ -10,12 +10,12 @@ namespace log = EVT::core::log;
 namespace BMS {
 
 BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
-         DEV::Interlock& interlock, IO::GPIO& alarm,
-         DEV::SystemDetect& systemDetect, IO::GPIO& bmsOK,
-         DEV::ThermistorMux& thermMux, DEV::ResetHandler& resetHandler, EVT::core::DEV::IWDG& iwdg) : bqSettingsStorage(bqSettingsStorage),
-                                                                                                      bq(bq), state(State::START), interlock(interlock),
-                                                                                                      alarm(alarm), systemDetect(systemDetect), resetHandler(resetHandler),
-                                                                                                      bmsOK(bmsOK), thermistorMux(thermMux), iwdg(iwdg), stateChanged(true) {
+         DEV::Interlock& interlock, IO::GPIO& alarm, SystemDetect& systemDetect,
+         IO::GPIO& bmsOK, DEV::ThermistorMux& thermMux,
+         ResetHandler& resetHandler, EVT::core::DEV::IWDG& iwdg) : bqSettingsStorage(bqSettingsStorage),
+                                                                   bq(bq), state(State::START), interlock(interlock),
+                                                                   alarm(alarm), systemDetect(systemDetect), resetHandler(resetHandler),
+                                                                   bmsOK(bmsOK), thermistorMux(thermMux), iwdg(iwdg), stateChanged(true) {
     bmsOK.writePin(IO::GPIO::State::LOW);
 
     updateBQData();
@@ -280,11 +280,11 @@ void BMS::systemReadyState() {
     }
 
     if (interlock.isDetected()) {
-        if (systemDetect.getIdentifiedSystem() == DEV::SystemDetect::System::BIKE) {
+        if (systemDetect.getIdentifiedSystem() == SystemDetect::System::BIKE) {
             state = State::POWER_DELIVERY;
             stateChanged = true;
             return;
-        } else if (systemDetect.getIdentifiedSystem() == DEV::SystemDetect::System::CHARGER) {
+        } else if (systemDetect.getIdentifiedSystem() == SystemDetect::System::CHARGER) {
             state = State::CHARGING;
             stateChanged = true;
             return;

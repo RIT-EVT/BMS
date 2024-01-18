@@ -1,7 +1,7 @@
 #include "ResetHandler.hpp"
 #include <cstring>
 
-namespace BMS::DEV {
+namespace BMS {
 
 ResetHandler::ResetHandler() = default;
 

@@ -81,8 +81,8 @@ public:
      * @param resetHandler
      */
     BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq, DEV::Interlock& interlock,
-        IO::GPIO& alarm, DEV::SystemDetect& systemDetect, IO::GPIO& bmsOK,
-        DEV::ThermistorMux& thermMux, DEV::ResetHandler& resetHandler, EVT::core::DEV::IWDG& iwdg);
+        IO::GPIO& alarm, SystemDetect& systemDetect, IO::GPIO& bmsOK,
+        DEV::ThermistorMux& thermMux, ResetHandler& resetHandler, EVT::core::DEV::IWDG& iwdg);
 
     /**
      * The node ID used to identify the device on the CAN network.
@@ -194,12 +194,12 @@ private:
     /**
      * This determines which system the BMS is attached to.
      */
-    DEV::SystemDetect& systemDetect;
+    SystemDetect& systemDetect;
 
     /**
      *
      */
-    DEV::ResetHandler& resetHandler;
+    ResetHandler& resetHandler;
 
     /**
      * This GPIO is used to represent when the system is ok. When this pin

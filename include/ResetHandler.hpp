@@ -10,7 +10,7 @@
 
 namespace IO = EVT::core::IO;
 
-namespace BMS::DEV {
+namespace BMS{
 
 /**
  *

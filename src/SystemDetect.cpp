@@ -4,7 +4,7 @@
 
 namespace time = EVT::core::time;
 
-namespace BMS::DEV {
+namespace BMS {
 
 SystemDetect::SystemDetect(uint32_t bikeHeartbeat, uint32_t chargeHeartbeat,
                            uint32_t timeout) {
