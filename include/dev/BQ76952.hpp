@@ -2,8 +2,8 @@
 
 #include <EVT/io/I2C.hpp>
 
+#include "BMSInfo.hpp"
 #include <BQSetting.hpp>
-#include <dev/BMSInfo.hpp>
 
 #include <Canopen/co_obj.h>
 

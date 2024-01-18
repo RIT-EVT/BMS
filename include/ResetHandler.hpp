@@ -1,6 +1,6 @@
 #pragma once
 
-#include <EVT/io/types/CANMessage.hpp>
+#include "EVT/io/types/CANMessage.hpp"
 
 #define MSG_HIST_LEN 5
 #define RESET_ID 0x7FF

@@ -4,12 +4,12 @@
 
 #include <Canopen/co_core.h>
 
+#include "ResetHandler.hpp"
+#include "SystemDetect.hpp"
 #include <BQSettingStorage.hpp>
 #include <EVT/dev/IWDG.hpp>
 #include <EVT/io/pin.hpp>
 #include <dev/Interlock.hpp>
-#include <dev/ResetHandler.hpp>
-#include <dev/SystemDetect.hpp>
 #include <dev/ThermistorMux.hpp>
 
 #define BQ_COMM_ERROR 0x01

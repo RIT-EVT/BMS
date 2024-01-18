@@ -1,5 +1,5 @@
+#include "ResetHandler.hpp"
 #include <cstring>
-#include <dev/ResetHandler.hpp>
 
 namespace BMS::DEV {
 

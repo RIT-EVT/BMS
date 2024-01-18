@@ -1,6 +1,6 @@
-#include <dev/SystemDetect.hpp>
+#include "SystemDetect.hpp"
 
-#include <EVT/utils/time.hpp>
+#include "EVT/utils/time.hpp"
 
 namespace time = EVT::core::time;
 
