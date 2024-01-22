@@ -363,7 +363,7 @@ BQ76952::Status BQ76952::communicationStatus() {
     return BQ76952::Status::ERROR;
 }
 
-BQ76952::Status BQ76952::getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32_t& sum, cellVoltageInfo& voltageInfo) {
+BQ76952::Status BQ76952::getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32_t& sum, CellVoltageInfo& voltageInfo) {
     Status status = Status::OK;
     uint8_t cellVoltageReg = CELL_VOLTAGE_BASE_ADDR;
     //Must use temporary storage variables or else the values reported over CAN will be inaccurate from regular changes.

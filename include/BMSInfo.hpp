@@ -2,10 +2,12 @@
 
 #include <cstdint>
 
+namespace BMS {
+
 /*
  * Holds closely-related information about battery voltages to pass into methods more concisely
  */
-struct cellVoltageInfo {
+struct CellVoltageInfo {
     int16_t minCellVoltage;
     uint8_t minCellVoltageId;
     int16_t maxCellVoltage;
@@ -24,3 +26,5 @@ struct BqTempInfo {
     uint8_t temp1;
     uint8_t temp2;
 };
+
+}// namespace BMS

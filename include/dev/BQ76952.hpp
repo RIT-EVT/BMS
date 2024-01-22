@@ -176,7 +176,7 @@ public:
      * @param[out] voltageInfo A struct containing the values below.
      * @return The status of the read attempt
      */
-    Status getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32_t& sum, cellVoltageInfo& voltageInfo);
+    Status getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32_t& sum, CellVoltageInfo& voltageInfo);
 
     /**
      * Determine the state of balancing on a given cell. This will read the

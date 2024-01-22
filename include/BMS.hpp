@@ -303,7 +303,7 @@ private:
      * Used to store values which the BMS updates.
      * Holds information about the minimum and maximum cell's voltages and Ids.
      */
-    cellVoltageInfo voltageInfo{
+    CellVoltageInfo voltageInfo{
         .minCellVoltage = 0,
         .minCellVoltageId = 0,
         .maxCellVoltage = 0,
