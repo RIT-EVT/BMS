@@ -33,4 +33,4 @@ SystemDetect::System SystemDetect::getIdentifiedSystem() {
     return identifiedSystem;
 }
 
-}// namespace BMS::DEV
+}// namespace BMS

@@ -97,7 +97,7 @@ int main() {
 
     // Initialize the system detect
     BMS::SystemDetect systemDetect(BIKE_HEART_BEAT, CHARGER_HEART_BEAT,
-                                        DETECT_TIMEOUT);
+                                   DETECT_TIMEOUT);
 
     BMS::ResetHandler resetHandler;
 

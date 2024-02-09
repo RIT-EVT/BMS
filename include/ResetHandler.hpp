@@ -10,7 +10,7 @@
 
 namespace IO = EVT::core::IO;
 
-namespace BMS{
+namespace BMS {
 
 /**
  *
@@ -39,4 +39,4 @@ private:
     uint8_t lastLoadedMsg = 0;
 };
 
-}// namespace BMS::DEV
+}// namespace BMS
