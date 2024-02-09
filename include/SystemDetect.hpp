@@ -77,4 +77,4 @@ private:
     System identifiedSystem;
 };
 
-}// namespace BMS::DEV
+}// namespace BMS
