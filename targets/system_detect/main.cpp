@@ -100,7 +100,7 @@ int main() {
     BMS::SystemDetect systemDetect(BIKE_HEART_BEAT, CHARGER_HEART_BEAT,
                                         DETECT_TIMEOUT);
 
-    BMS::DEV::ResetHandler resetHandler;
+    BMS::ResetHandler resetHandler;
 
     // Create struct that will hold CAN interrupt parameters
     struct CANInterruptParams canParams = {
