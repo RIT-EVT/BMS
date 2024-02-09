@@ -40,8 +40,9 @@ def main():
     transfer_parser = subparsers.add_parser('transfer')
     transfer_parser.add_argument('input', action='store', help='''The binary
                                  file containing the settings to transfer''')
-    transfer_parser.add_argument('port', action='store', help='''Port of the
-                                 SLcan device to send settings to''')
+    transfer_parser.add_argument('port', action='store', help='''Serial port 
+                                 connected to the SLcan device to send settings 
+                                 to''')
     transfer_parser.add_argument('bms_node', action='store', type=int,
                                  help='The CANopen node of the BMS')
 
@@ -49,8 +50,8 @@ def main():
     transfer_parser = subparsers.add_parser('convert_transfer')
     transfer_parser.add_argument('input', action='store', help='''The TI file 
                                  containing the settings to transfer''')
-    transfer_parser.add_argument('serial_port', action='store', help='''Serial port to
-                                 send settings out of''')
+    transfer_parser.add_argument('port', action='store', help='''Serial port
+                                 connected to the BMS''')
 
     args = argparser.parse_args()
 

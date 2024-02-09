@@ -61,4 +61,4 @@ def convert_transfer(args: argparse.Namespace):
         exit(1)
 
     # Check the conversion type (csv or binary) and execute the conversion
-    ti_to_uart(args.input, args.serial_port)
+    ti_to_uart(args.input, args.port)
