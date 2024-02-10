@@ -33,12 +33,14 @@ private:
     /** Number of reset message frames required to trigger a reset */
     static constexpr uint8_t MSG_HIST_LEN = 5;
     /** Reset message ID */
-    static constexpr uint16_t RESET_ID = 0x7FF;;
+    static constexpr uint16_t RESET_ID = 0x7FF;
+    ;
     /** Reset message array length */
-    static constexpr uint8_t RESET_ARR_LEN = 8;;
+    static constexpr uint8_t RESET_ARR_LEN = 8;
+    ;
     /** Reset message array */
     static constexpr uint8_t const RESET_ARR[8] =
-        { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+        {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
 
     /** Array of last MSG_HIST_LEN messages received */
     EVT::core::IO::CANMessage msgHistory[MSG_HIST_LEN] = {};

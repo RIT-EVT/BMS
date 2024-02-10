@@ -16,8 +16,8 @@
 #include <EVT/utils/log.hpp>
 #include <EVT/utils/types/FixedQueue.hpp>
 
-#include <SystemDetect.hpp>
 #include <BMS.hpp>
+#include <SystemDetect.hpp>
 #include <dev/BQ76952.hpp>
 
 namespace IO = EVT::core::IO;

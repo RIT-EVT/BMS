@@ -4,10 +4,10 @@
  * messages.
  */
 
-#include <ResetHandler.hpp>
 #include <BMS.hpp>
 #include <EVT/manager.hpp>
 #include <EVT/utils/log.hpp>
+#include <ResetHandler.hpp>
 
 namespace DEV = EVT::core::DEV;
 namespace IO = EVT::core::IO;
