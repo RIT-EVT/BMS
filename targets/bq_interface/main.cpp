@@ -1,5 +1,6 @@
 /**
- * This target is used for testing the functionality of the BQ chip
+ * This target provides a UART interface for testing all functionality of the
+ * BMS
  */
 
 #include <cstdlib>
@@ -20,6 +21,30 @@ namespace log = EVT::core::log;
 constexpr size_t MAX_BUFF = 100;
 
 char inputBuffer[MAX_BUFF];
+
+void printHelp(IO::UART& uart) {
+    uart.printf("Available commands:\r\n");
+    uart.printf(" h - Print this help message\r\n");
+    uart.printf(" d - Direct read\r\n");
+    uart.printf(" D - Direct write\r\n");
+    uart.printf(" s - Subcommand read\r\n");
+    uart.printf(" S - Subcommand write\r\n");
+    uart.printf(" f - Command-only subcommand\r\n");
+    uart.printf(" r - RAM read\r\n");
+    uart.printf(" R - RAM write\r\n");
+    uart.printf(" b - Read balancing state\r\n");
+    uart.printf(" B - Write balancing state\r\n");
+    uart.printf(" c - Enter config mode\r\n");
+    uart.printf(" x - Exit config mode\r\n");
+    uart.printf(" T - Get temperatures\r\n");
+    uart.printf(" i - Get interlock state\r\n");
+    uart.printf(" a - Get alarm state\r\n");
+    uart.printf(" o - Set OK signal output\r\n");
+    uart.printf(" v - Read voltages\r\n");
+    uart.printf(" t - Transfer settings\r\n");
+
+    uart.printf("\r\n");
+}
 
 /**
  * Function for making a direct read request
@@ -48,6 +73,20 @@ void directRead(IO::UART& uart, BMS::DEV::BQ76952& bq) {
 }
 
 /**
+ * Function for making a direct write request
+ *
+ * @param[in] uart The UART interface to write in from
+ */
+void directWrite(IO::UART& uart) {}
+
+/**
+ * Function for making an indirect write request
+ *
+ * @param[in] uart The UART interface to write in from
+ */
+void indirectWrite(IO::UART& uart) {}
+
+/**
  * Function for making a subcommand request
  *
  * @param[in] uart The UART interface to read from
@@ -72,6 +111,26 @@ void subcommandRead(IO::UART& uart, BMS::DEV::BQ76952& bq) {
     }
 
     uart.printf("Register 0x%x: 0x%08X\r\n", reg, subcommandValue);
+}
+
+void commandOnlySub(IO::UART& uart, BMS::DEV::BQ76952& bq) {
+    uart.printf("Enter the command-only subcommand address in hex: 0x");
+    uart.gets(inputBuffer, MAX_BUFF);
+    uart.printf("\r\n");
+
+    // Determine the target subcommand register
+    uint16_t reg = strtol(inputBuffer, nullptr, 16);
+
+    // Run the command
+    auto result = bq.commandOnlySubcommand(reg);
+
+    // Make sure the read was successful
+    if (result != BMS::DEV::BQ76952::Status::OK) {
+        uart.printf("Failed to read register: 0x%x\r\n", reg);
+        return;
+    }
+
+    uart.printf("Register 0x%x run\r\n", reg);
 }
 
 /**
@@ -100,65 +159,6 @@ void ramRead(IO::UART& uart, BMS::DEV::BQ76952& bq) {
 
     uart.printf("Register 0x%x: 0x%08X\r\n", reg, ramValue);
 }
-
-/**
- * Read the balancing state for a specific cell
- *
- * @param[in] uart The UART interface to read in from
- * @param[in] bq The BQ interface to use
- */
-void readBalancing(IO::UART& uart, BMS::DEV::BQ76952& bq) {
-    uart.printf("Enter the cell to read balancing of: ");
-    uart.gets(inputBuffer, MAX_BUFF);
-    uart.printf("\r\n");
-
-    uint8_t targetCell = strtol(inputBuffer, nullptr, 10);
-
-    bool isBalancing;
-    if (bq.isBalancing(targetCell, &isBalancing) != BMS::DEV::BQ76952::Status::OK) {
-        uart.printf("Failed to read balancing state\r\n");
-    }
-
-    uart.printf("%d balancing state: %d\r\n", targetCell, isBalancing);
-}
-
-/**
- * Set the balancing state for the specific cell
- *
- * @param[in] uart The UART interface to read from
- * @param[in] bq The BQ interface to use
- */
-void setBalancing(IO::UART& uart, BMS::DEV::BQ76952& bq) {
-    uart.printf("Enter the cell to set balancing of: ");
-    uart.gets(inputBuffer, MAX_BUFF);
-    uart.printf("\r\n");
-
-    uint8_t targetCell = strtol(inputBuffer, nullptr, 10);
-
-    uart.printf("Enter the target state (0 or 1): ");
-    uart.gets(inputBuffer, MAX_BUFF);
-    uart.printf("\r\n");
-
-    uint8_t targetState = strtol(inputBuffer, nullptr, 10);
-
-    if (bq.setBalancing(targetCell, targetState) != BMS::DEV::BQ76952::Status::OK) {
-        uart.printf("Failed to set the state of balancing\r\n");
-    }
-}
-
-/**
- * Function for making a direct write request
- *
- * @param[in] uart The UART interface to write in from
- */
-void directWrite(IO::UART& uart) {}
-
-/**
- * Function for making an indirect write request
- *
- * @param[in] uart The UART interface to write in from
- */
-void indirectWrite(IO::UART& uart) {}
 
 /**
  * Function for making a RAM write request
@@ -234,6 +234,51 @@ void ramWrite(IO::UART& uart, BMS::DEV::BQ76952& bq) {
 }
 
 /**
+ * Read the balancing state for a specific cell
+ *
+ * @param[in] uart The UART interface to read in from
+ * @param[in] bq The BQ interface to use
+ */
+void readBalancing(IO::UART& uart, BMS::DEV::BQ76952& bq) {
+    uart.printf("Enter the cell to read balancing of: ");
+    uart.gets(inputBuffer, MAX_BUFF);
+    uart.printf("\r\n");
+
+    uint8_t targetCell = strtol(inputBuffer, nullptr, 10);
+
+    bool isBalancing;
+    if (bq.isBalancing(targetCell, &isBalancing) != BMS::DEV::BQ76952::Status::OK) {
+        uart.printf("Failed to read balancing state\r\n");
+    }
+
+    uart.printf("%d balancing state: %d\r\n", targetCell, isBalancing);
+}
+
+/**
+ * Set the balancing state for the specific cell
+ *
+ * @param[in] uart The UART interface to read from
+ * @param[in] bq The BQ interface to use
+ */
+void setBalancing(IO::UART& uart, BMS::DEV::BQ76952& bq) {
+    uart.printf("Enter the cell to set balancing of: ");
+    uart.gets(inputBuffer, MAX_BUFF);
+    uart.printf("\r\n");
+
+    uint8_t targetCell = strtol(inputBuffer, nullptr, 10);
+
+    uart.printf("Enter the target state (0 or 1): ");
+    uart.gets(inputBuffer, MAX_BUFF);
+    uart.printf("\r\n");
+
+    uint8_t targetState = strtol(inputBuffer, nullptr, 10);
+
+    if (bq.setBalancing(targetCell, targetState) != BMS::DEV::BQ76952::Status::OK) {
+        uart.printf("Failed to set the state of balancing\r\n");
+    }
+}
+
+/**
  * Put the BQ chip into config mode and check the status
  *
  * @param[in] uart The interface to print status messages to
@@ -271,24 +316,42 @@ void exitConfigMode(IO::UART& uart, BMS::DEV::BQ76952& bq) {
     uart.printf("BQ not in config mode\r\n");
 }
 
-void commandOnlySub(IO::UART& uart, BMS::DEV::BQ76952& bq) {
-    uart.printf("Enter the command-only subcommand address in hex: 0x");
-    uart.gets(inputBuffer, MAX_BUFF);
-    uart.printf("\r\n");
-
-    // Determine the target subcommand register
-    uint16_t reg = strtol(inputBuffer, nullptr, 16);
-
-    // Run the command
-    auto result = bq.commandOnlySubcommand(reg);
-
-    // Make sure the read was successful
-    if (result != BMS::DEV::BQ76952::Status::OK) {
-        uart.printf("Failed to read register: 0x%x\r\n", reg);
-        return;
+void getTemperatures(IO::UART& uart, BMS::DEV::BQ76952& bq, BMS::DEV::ThermistorMux tMux) {
+    for (uint8_t i = 0; i < 6; i++) {
+        uint16_t temp = tMux.getTemp(i);
+        uart.printf("Thermistor %d: %d.%03d\r\n", i, temp / 1000, temp % 1000);
     }
+    uint16_t result;
+    bq.makeDirectRead(0x68, &result);
+    result -= 2732;
+    uart.printf("BQ Internal Temp: %d.%01d\r\n", result / 10, result % 10);
+    bq.makeDirectRead(0x70, &result);
+    result -= 2732;
+    uart.printf("BQ Board Temp 1: %d.%01d\r\n", result / 10, result % 10);
+    bq.makeDirectRead(0x74, &result);
+    result -= 2732;
+    uart.printf("BQ Board Temp 2: %d.%01d\r\n", result / 10, result % 10);
+}
 
-    uart.printf("Register 0x%x run\r\n", reg);
+void getInterlock(IO::UART& uart, BMS::DEV::Interlock interlock) {
+    uart.printf("Interlock Detected: %s\r\n", interlock.isDetected() ? "true" : "false");
+}
+
+void getAlarm(IO::UART& uart, IO::GPIO& alarm) {
+    uart.printf("Alarm Set: %s\r\n", alarm.readPin() == IO::GPIO::State::HIGH ? "true" : "false");
+}
+
+void setOK(IO::UART& uart, IO::GPIO& bmsOK) {
+    uart.printf("Set OK pin (0/1): ");
+    uart.printf("\r\n");
+    uart.gets(inputBuffer, MAX_BUFF);
+    if (inputBuffer[0] == '1') {
+        bmsOK.writePin(IO::GPIO::State::HIGH);
+        uart.printf("Set BMS OK high\r\n");
+    } else {
+        bmsOK.writePin(IO::GPIO::State::LOW);
+        uart.printf("Set BMS OK low\r\n");
+    }
 }
 
 void getVoltages(IO::UART& uart, BMS::DEV::BQ76952& bq) {
@@ -348,44 +411,6 @@ void transferSettings(IO::UART& uart, BMS::DEV::BQ76952& bq, EVT::core::DEV::M24
     }
 }
 
-void getTemperatures(IO::UART& uart, BMS::DEV::BQ76952& bq, BMS::DEV::ThermistorMux tMux) {
-    for (uint8_t i = 0; i < 6; i++) {
-        uint16_t temp = tMux.getTemp(i);
-        uart.printf("Thermistor %d: %d.%03d\r\n", i, temp / 1000, temp % 1000);
-    }
-    uint16_t result;
-    bq.makeDirectRead(0x68, &result);
-    result -= 2732;
-    uart.printf("BQ Internal Temp: %d.%01d\r\n", result / 10, result % 10);
-    bq.makeDirectRead(0x70, &result);
-    result -= 2732;
-    uart.printf("BQ Board Temp 1: %d.%01d\r\n", result / 10, result % 10);
-    bq.makeDirectRead(0x74, &result);
-    result -= 2732;
-    uart.printf("BQ Board Temp 2: %d.%01d\r\n", result / 10, result % 10);
-}
-
-void getInterlock(IO::UART& uart, BMS::DEV::Interlock interlock) {
-    uart.printf("Interlock Detected: %s\r\n", interlock.isDetected() ? "true" : "false");
-}
-
-void getAlarm(IO::UART& uart, IO::GPIO& alarm) {
-    uart.printf("Alarm Set: %s\r\n", alarm.readPin() == IO::GPIO::State::HIGH ? "true" : "false");
-}
-
-void setOK(IO::UART& uart, IO::GPIO& bmsOK) {
-    uart.printf("Set OK pin (0/1): ");
-    uart.printf("\r\n");
-    uart.gets(inputBuffer, MAX_BUFF);
-    if (inputBuffer[0] == '1') {
-        bmsOK.writePin(IO::GPIO::State::HIGH);
-        uart.printf("Set BMS OK high\r\n");
-    } else {
-        bmsOK.writePin(IO::GPIO::State::LOW);
-        uart.printf("Set BMS OK low\r\n");
-    }
-}
-
 int main() {
     EVT::core::platform::init();
 
@@ -423,6 +448,10 @@ int main() {
         uart.printf("\r\n");
 
         switch (command) {
+        // Help
+        case 'h':
+            printHelp(uart);
+            break;
         // Direct read
         case 'd':
             directRead(uart, bq);
@@ -454,30 +483,39 @@ int main() {
         case 'x':
             exitConfigMode(uart, bq);
             break;
+        // Read balancing state
         case 'b':
             readBalancing(uart, bq);
             break;
+        // Set balancing state
         case 'B':
             setBalancing(uart, bq);
             break;
+        // Command-only subcommand write
         case 'f':
             commandOnlySub(uart, bq);
             break;
+        // Read voltages
         case 'v':
             getVoltages(uart, bq);
             break;
+        // Transfer settings from EEPROM to BQ chip
         case 't':
             transferSettings(uart, bq, eeprom);
             break;
+        // Get temperatures
         case 'T':
             getTemperatures(uart, bq, tmux);
             break;
+        // Get interlock state
         case 'i':
             getInterlock(uart, interlock);
             break;
+        // Get BQ alarm pin state
         case 'a':
             getAlarm(uart, alarm);
             break;
+        // Set OK signal output
         case 'o':
             setOK(uart, bmsOK);
             break;
