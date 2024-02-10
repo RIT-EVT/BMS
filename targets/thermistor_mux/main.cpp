@@ -1,6 +1,6 @@
 /**
-* Tests the
-*/
+ * This test demonstrates the functionality of the ThermistorMux class.
+ */
 
 #include <EVT/io/ADC.hpp>
 #include <EVT/io/GPIO.hpp>

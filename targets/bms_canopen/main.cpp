@@ -1,5 +1,5 @@
 /**
-* This is the main target to be used for the BMS in the DEV1 battery packs
+* This is a target used for testing BMS CANopen output
 */
 
 #include <EVT/io/CANopen.hpp>

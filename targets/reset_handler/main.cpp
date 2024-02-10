@@ -1,8 +1,10 @@
 /**
-*
-*/
+ * This test demonstrates the functionality of the ResetHandler class. To fully
+ * test this, you will need to connect it to a CAN network and send it reset
+ * messages.
+ */
 
-#include "ResetHandler.hpp"
+#include <ResetHandler.hpp>
 #include <BMS.hpp>
 #include <EVT/manager.hpp>
 #include <EVT/utils/log.hpp>

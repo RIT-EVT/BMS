@@ -1,7 +1,7 @@
 /**
- * For this test, BQSettings will be serialized and deserialized to ensure
- * the data is properly formatter and verify that the data is parsed
- * correctly.
+ * This is a utility that will read in the settings from EEPROM and print them
+ * out over UART. The number of settings and offset into EEPROM are defined in
+ * the target.
  */
 
 #include <EVT/dev/storage/M24C32.hpp>

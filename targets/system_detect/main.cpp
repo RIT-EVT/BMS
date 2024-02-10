@@ -1,7 +1,7 @@
 /**
- * This is a basic sample of using the UART module. The program provides a
- * basic echo functionality where the uart will write back whatever the user
- * enters.
+ * This test demonstrates the functionality of the SystemDetect class. To fully
+ * test this, you will need to connect it to a CAN network and send it heartbeat
+ * messages.
  */
 
 #include <EVT/io/CANopen.hpp>
@@ -16,7 +16,7 @@
 #include <EVT/utils/log.hpp>
 #include <EVT/utils/types/FixedQueue.hpp>
 
-#include "SystemDetect.hpp"
+#include <SystemDetect.hpp>
 #include <BMS.hpp>
 #include <dev/BQ76952.hpp>
 
