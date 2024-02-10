@@ -21,9 +21,10 @@ namespace BMS {
 class SystemDetect {
 public:
     /**
-     * The different systems that could be detected. If no heartbeat
-     * has been processed within a given timeout, the system is left as
-     * unknown.
+     * The different systems that could be detected
+     *
+     * If no heartbeat has been processed within a given timeout, the system is
+     * left as unknown.
      */
     enum class System {
         BIKE = 0,
@@ -33,7 +34,7 @@ public:
 
     /**
      * Create the system detect device which will work to identify the
-     * provided  beat CANopen IDs.
+     * provided  beat CANopen IDs
      *
      * @param[in] bikeHeartbeat The heartbeat CANopen ID associated with the
      *                          bike.
@@ -51,14 +52,14 @@ public:
 
     /**
      * Check the given CAN ID to see if it represents a system detect
-     * heartbeat.
+     * heartbeat
      *
      * @param[in] heartbeatID The ID to potentially identify as a system detect
      */
     void processHeartbeat(uint32_t heartbeatID);
 
     /**
-     * Get the currently detected system, could be unknown.
+     * Get the currently detected system, could be unknown
      *
      * @return The current identified system
      */

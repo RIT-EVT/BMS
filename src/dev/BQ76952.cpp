@@ -375,7 +375,8 @@ BQ76952::Status BQ76952::getCellVoltage(uint16_t cellVoltages[NUM_CELLS], uint32
 
     // Loop over all the cells and update the corresponding voltage
     for (uint8_t i = 0; i < NUM_CELLS; i++) {
-        status = makeDirectRead(CELL_REG(i), &cellVoltages[i]);
+        uint8_t cellReg = CELL_BALANCE_MAPPING[i] * 2 + 0x14;
+        status = makeDirectRead(cellReg, &cellVoltages[i]);
         if (status != Status::OK) {
             return status;
         }
@@ -445,10 +446,10 @@ BQ76952::Status BQ76952::getCurrent(int16_t& current) {
     return makeDirectRead(0x3a, reinterpret_cast<uint16_t*>(&current));
 }
 
-BQ76952::Status BQ76952::getVoltage(uint16_t& voltage) {
+BQ76952::Status BQ76952::getTotalVoltage(uint16_t& totalVoltage) {
     uint16_t voltageBuf;
     RETURN_IF_ERR(makeDirectRead(0x34, &voltageBuf));
-    voltage = voltageBuf * 10;
+    totalVoltage = voltageBuf * 10;
     return BQ76952::Status::OK;
 }
 
