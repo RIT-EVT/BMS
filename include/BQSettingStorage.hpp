@@ -126,6 +126,7 @@ public:
      * \endcode
      *
      * @param[out] isComplete Flag that represents all settings have been transferred
+     * @return The resulting status of the transfer operation
      */
     BMS::DEV::BQ76952::Status transferSetting(bool& isComplete);
 
@@ -134,6 +135,8 @@ public:
      *
      * This includes checking to see if there are settings stored, and also
      * checks to make sure settings are not actively being written to.
+     *
+     * @return Whether there are stored settings to use
      */
     bool hasSettings();
 
