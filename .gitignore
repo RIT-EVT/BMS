@@ -16,5 +16,5 @@ coc-settings.json
 .DS_Store
 
 # Generated documentation files
-/docs/srs.rtc
-/docs/srs.stylelog
+/docs/*.rtc
+/docs/*.stylelog

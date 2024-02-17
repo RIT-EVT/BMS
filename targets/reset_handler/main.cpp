@@ -1,11 +1,13 @@
 /**
-*
-*/
+ * This test demonstrates the functionality of the ResetHandler class. To fully
+ * test this, you will need to connect it to a CAN network and send it reset
+ * messages.
+ */
 
 #include <BMS.hpp>
 #include <EVT/manager.hpp>
 #include <EVT/utils/log.hpp>
-#include <dev/ResetHandler.hpp>
+#include <ResetHandler.hpp>
 
 namespace DEV = EVT::core::DEV;
 namespace IO = EVT::core::IO;
@@ -17,7 +19,7 @@ namespace log = EVT::core::log;
  * @param priv[in] The private data (FixedQueue<CANOPEN_QUEUE_SIZE, CANMessage>)
  */
 void canInterruptHandler(IO::CANMessage& message, void* priv) {
-    auto* resetHandler = (BMS::DEV::ResetHandler*) priv;
+    auto* resetHandler = (BMS::ResetHandler*) priv;
 
     resetHandler->registerInput(message);
 
@@ -34,7 +36,7 @@ int main() {
     log::LOGGER.setUART(&uart);
     log::LOGGER.setLogLevel(log::Logger::LogLevel::DEBUG);
 
-    BMS::DEV::ResetHandler resetHandler;
+    BMS::ResetHandler resetHandler;
 
     IO::CAN& can = IO::getCAN<BMS::BMS::CAN_TX_PIN, BMS::BMS::CAN_RX_PIN>();
     can.addIRQHandler(canInterruptHandler, &resetHandler);

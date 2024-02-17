@@ -42,12 +42,16 @@ public:
      */
     BQSetting(BQSettingType settingType, uint8_t numBytes, uint16_t address, uint32_t data);
 
+    /**
+     * Constructor for an uninitialized BQ setting
+     */
     BQSetting();
 
     /**
      * Populate the content of the object with the values parsed from the
-     * provided array. The array is in the format below.
+     * provided array
      *
+     * The array is in the format below:
      * Byte 0:
      *      Bit 0 and Bit 1: Command type
      *          00 -> Direct
@@ -66,7 +70,8 @@ public:
     void fromArray(const uint8_t buffer[ARRAY_SIZE]);
 
     /**
-     * Populate an array with the bit representation of the BQSettings.
+     * Populate an array with the bit representation of the BQSettings
+     *
      * This follows the form shown on BQSetting::fromArray.
      *
      * @param buffer[out] The array to populate with parsed data
@@ -74,45 +79,51 @@ public:
     void toArray(uint8_t buffer[ARRAY_SIZE]);
 
     /**
-     * Get the setting type.
+     * Get the setting type
      *
      * @return The setting type
      */
     BQSettingType getSettingType();
 
     /**
-     * Get the address. For direct commands the address is 8 bits in size,
-     * for subcommand and RAM it is 16 bits.
+     * Get the address of the setting
+     *
+     * For direct commands the address is 8 bits in size; for subcommand and RAM
+     * it is 16 bits.
      *
      * @return The address of the setting
      */
     uint16_t getAddress();
 
     /**
-     * Get the contained data as a 32 bit value.
+     * Get the contained data as a 32-bit value
      *
-     * @return The data as a 32 bit value
+     * @return The data as a 32-bit value
      */
     uint32_t getData();
 
     /**
      * Get the number of bytes stored in the data
      *
-     * @return The number of bytes of data stored.
+     * @return The number of bytes of data stored
      */
     uint8_t getNumBytes();
 
 private:
-    /** The type of the command */
+    /** The type of the setting */
     BQSettingType settingType;
     /**
-     * The address to write to for the setting. When the setting type is
-     * direct, the address is 8 bits. Otherwise it is 16 bits.
+     * The address to write to for the setting
+     *
+     * When the setting type is direct, the address is 8 bits. Otherwise it is
+     * 16 bits.
      */
     uint16_t address;
     /**
-     * The data for the setting. When the setting type is direct, the value
-     * is 8 bits in size. Otherwise it can be up to 32 bits in size.
+     * The data for the setting
+     *
+     * When the setting type is direct, the value is 8 bits in size. Otherwise,
+     * it can be up to 32 bits in size.
      */
     uint32_t data;
     /**

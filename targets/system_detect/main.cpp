@@ -1,7 +1,7 @@
 /**
- * This is a basic sample of using the UART module. The program provides a
- * basic echo functionality where the uart will write back whatever the user
- * enters.
+ * This test demonstrates the functionality of the SystemDetect class. To fully
+ * test this, you will need to connect it to a CAN network and send it heartbeat
+ * messages.
  */
 
 #include <EVT/io/CANopen.hpp>
@@ -17,8 +17,8 @@
 #include <EVT/utils/types/FixedQueue.hpp>
 
 #include <BMS.hpp>
+#include <SystemDetect.hpp>
 #include <dev/BQ76952.hpp>
-#include <dev/SystemDetect.hpp>
 
 namespace IO = EVT::core::IO;
 namespace DEV = EVT::core::DEV;
@@ -36,7 +36,7 @@ namespace log = EVT::core::log;
 */
 struct CANInterruptParams {
     EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>* queue;
-    BMS::DEV::SystemDetect* systemDetect;
+    BMS::SystemDetect* systemDetect;
 };
 
 /**
@@ -49,7 +49,7 @@ void canInterruptHandler(IO::CANMessage& message, void* priv) {
 
     EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>* queue =
         params->queue;
-    BMS::DEV::SystemDetect* systemDetect = params->systemDetect;
+    BMS::SystemDetect* systemDetect = params->systemDetect;
 
     systemDetect->processHeartbeat(message.getId());
 
@@ -97,10 +97,10 @@ int main() {
     EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage> canOpenQueue;
 
     // Initialize the system detect
-    BMS::DEV::SystemDetect systemDetect(BIKE_HEART_BEAT, CHARGER_HEART_BEAT,
-                                        DETECT_TIMEOUT);
+    BMS::SystemDetect systemDetect(BIKE_HEART_BEAT, CHARGER_HEART_BEAT,
+                                   DETECT_TIMEOUT);
 
-    BMS::DEV::ResetHandler resetHandler;
+    BMS::ResetHandler resetHandler;
 
     // Create struct that will hold CAN interrupt parameters
     struct CANInterruptParams canParams = {

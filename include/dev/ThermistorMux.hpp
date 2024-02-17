@@ -10,28 +10,23 @@ namespace time = EVT::core::time;
 namespace BMS::DEV {
 
 /**
- *
+ * Multiplexer connected to thermistors
  */
 class ThermistorMux {
 public:
     /**
-     * The number of thermistors connected to the mux
-     */
-    static constexpr uint8_t NUM_THERMISTORS = 6;
-
-    /**
+     * Create a ThermistorMux instance
      *
-     *
-     * @param muxSelectArr
-     * @param adc
+     * @param[in] muxSelectArr MUX select pins
+     * @param[in] adc ADC instance to read
      */
     ThermistorMux(IO::GPIO* muxSelectArr[3], IO::ADC& adc);
 
     /**
+     * Get temperature from one thermistor
      *
-     *
-     * @param thermNum
-     * @return
+     * @param[in] thermNum Number of thermistor to read
+     * @return Thermistor temperature
      */
     uint16_t getTemp(uint8_t thermNum);
 
@@ -42,11 +37,13 @@ private:
     EVT::core::DEV::Thermistor therm;
 
     /**
+     * Conversion equation from ADC counts to temperature in Celsius
+     *
      * T(x) = 0.00000375688x^2 + 0.0121347x - 15.9911
      * Returns value in Celsius
      *
-     * @param adcCounts
-     * @return
+     * @param adcCounts ADC reading to convert
+     * @return Thermistor temperature in Celsius
      */
     static uint32_t convert(uint32_t adcCounts) {
         uint16_t temp;

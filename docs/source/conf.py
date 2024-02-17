@@ -20,7 +20,7 @@ BOARD_NAME = 'BMS'
 # -- Project information -----------------------------------------------------
 
 project = BOARD_NAME
-copyright = '2021, EVT'
+copyright = '2024, EVT'
 author = 'EVT'
 
 # The full version, including alpha/beta/rc tags

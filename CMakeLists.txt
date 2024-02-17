@@ -59,10 +59,10 @@ target_sources(${PROJECT_NAME} PRIVATE
     src/BMS.cpp
     src/BQSettingStorage.cpp
     src/BQSetting.cpp
+    src/ResetHandler.cpp
+    src/SystemDetect.cpp
     src/dev/BQ76952.cpp
     src/dev/Interlock.cpp
-    src/dev/ResetHandler.cpp
-    src/dev/SystemDetect.cpp
     src/dev/ThermistorMux.cpp
 )
 

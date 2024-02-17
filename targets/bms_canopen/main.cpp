@@ -1,5 +1,5 @@
 /**
-* This is the main target to be used for the BMS in the DEV1 battery packs
+* This is a target used for testing BMS CANopen output
 */
 
 #include <EVT/io/CANopen.hpp>
@@ -14,9 +14,9 @@
 #include <EVT/utils/log.hpp>
 #include <EVT/utils/types/FixedQueue.hpp>
 
+#include "SystemDetect.hpp"
 #include <BMS.hpp>
 #include <dev/BQ76952.hpp>
-#include <dev/SystemDetect.hpp>
 
 namespace IO = EVT::core::IO;
 namespace DEV = EVT::core::DEV;
@@ -34,7 +34,7 @@ namespace log = EVT::core::log;
 */
 struct CANInterruptParams {
     EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>* queue;
-    BMS::DEV::SystemDetect* systemDetect;
+    BMS::SystemDetect* systemDetect;
 };
 
 /**
@@ -47,7 +47,7 @@ void canInterruptHandler(IO::CANMessage& message, void* priv) {
 
     EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>* queue =
         params->queue;
-    BMS::DEV::SystemDetect* systemDetect = params->systemDetect;
+    BMS::SystemDetect* systemDetect = params->systemDetect;
 
     systemDetect->processHeartbeat(message.getId());
 
@@ -96,10 +96,10 @@ int main() {
     EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage> canOpenQueue;
 
     // Initialize the system detect
-    BMS::DEV::SystemDetect systemDetect(BIKE_HEART_BEAT, CHARGER_HEART_BEAT,
-                                        DETECT_TIMEOUT);
+    BMS::SystemDetect systemDetect(BIKE_HEART_BEAT, CHARGER_HEART_BEAT,
+                                   DETECT_TIMEOUT);
 
-    BMS::DEV::ResetHandler resetHandler;
+    BMS::ResetHandler resetHandler;
 
     // Create struct that will hold CAN interrupt parameters
     struct CANInterruptParams canParams = {

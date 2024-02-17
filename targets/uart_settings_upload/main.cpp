@@ -1,6 +1,6 @@
 /**
- * This utility target is used to upload settings to the BMS EEPROM via UART, so they can then be
- * transferred to the BQ chip
+ * This utility target is used to upload settings to the BMS EEPROM via UART, so
+ * they can then be transferred to the BQ chip.
 */
 
 #include <BMS.hpp>

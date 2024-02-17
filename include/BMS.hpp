@@ -7,16 +7,10 @@
 #include <BQSettingStorage.hpp>
 #include <EVT/dev/IWDG.hpp>
 #include <EVT/io/pin.hpp>
+#include <ResetHandler.hpp>
+#include <SystemDetect.hpp>
 #include <dev/Interlock.hpp>
-#include <dev/ResetHandler.hpp>
-#include <dev/SystemDetect.hpp>
 #include <dev/ThermistorMux.hpp>
-
-#define BQ_COMM_ERROR 0x01
-#define BQ_ALARM_ERROR 0x02
-#define OVER_TEMP_ERROR 0x04
-
-#define NUM_THERMISTORS 6
 
 namespace IO = EVT::core::IO;
 
@@ -24,32 +18,31 @@ namespace BMS {
 
 /**
  * Interface to the BMS board. Includes the CANopen object dictionary that
- * defined the features that are exposed by the BMS on the CANopen network.
+ * defines the features that are exposed by the BMS on the CANopen network.
  */
 class BMS {
 public:
     /**
-     * Represents the different states the BMS can be in. At any point,
-     * it will be in one of these states
+     * Represents the different states the BMS can be in
      */
     enum class State {
-        /// When the BMS is powered on
+        /** When the BMS is powered on */
         START = 0,
-        /// When the BMS fails startup sequence
+        /** When the BMS fails startup sequence */
         INITIALIZATION_ERROR = 1,
-        /// When the system is waiting for settings to be sent to the BMS
+        /** When the system is waiting for settings to be sent to the BMS */
         FACTORY_INIT = 2,
-        /// When the BMS is actively sending settings over to the BQ
+        /** When the BMS is actively sending settings over to the BQ */
         TRANSFER_SETTINGS = 3,
-        /// When the BMS is ready for charging / discharging
+        /** When the BMS is ready for charging / discharging */
         SYSTEM_READY = 4,
-        /// When the system is running in a low power mode
+        /** When the system is running in a low power mode */
         DEEP_SLEEP = 5,
-        /// When a fault is detected during normal operation
+        /** When a fault is detected during normal operation */
         UNSAFE_CONDITIONS_ERROR = 6,
-        /// When the BMS is on the bike and delivering power
+        /** When the BMS is on the bike and delivering power */
         POWER_DELIVERY = 7,
-        /// When the BMS is handling charging the battery pack
+        /** When the BMS is handling charging the battery pack */
         CHARGING = 8
     };
 
@@ -68,6 +61,11 @@ public:
     static constexpr IO::Pin MUX_S2_PIN = IO::Pin::PB_4;
     static constexpr IO::Pin MUX_S3_PIN = IO::Pin::PA_8;
 
+    /** Error values */
+    static constexpr uint8_t BQ_COMM_ERROR = 0x01;
+    static constexpr uint8_t BQ_ALARM_ERROR = 0x02;
+    static constexpr uint8_t OVER_TEMP_ERROR = 0x04;
+
     /**
      * Make a new instance of the BMS with the given devices
      *
@@ -77,12 +75,12 @@ public:
      * @param alarm GPIO used to check the BQ alarm status
      * @param systemDetect Object used to detect what system the BMS is connected to
      * @param bmsOK GPIO used to output the OK signal from the BMS
-     * @param thermMux
-     * @param resetHandler
+     * @param thermMux MUX for pack thermistors
+     * @param resetHandler Handler for reset messages
      */
     BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq, DEV::Interlock& interlock,
-        IO::GPIO& alarm, DEV::SystemDetect& systemDetect, IO::GPIO& bmsOK,
-        DEV::ThermistorMux& thermMux, DEV::ResetHandler& resetHandler, EVT::core::DEV::IWDG& iwdg);
+        IO::GPIO& alarm, SystemDetect& systemDetect, IO::GPIO& bmsOK,
+        DEV::ThermistorMux& thermMux, ResetHandler& resetHandler, EVT::core::DEV::IWDG& iwdg);
 
     /**
      * The node ID used to identify the device on the CAN network.
@@ -154,22 +152,28 @@ private:
     static constexpr uint32_t ERROR_TIME_DELAY = 5000;
 
     /**
-     *
+     * Maximum number of attempts to read a safe thermistor temperature before
+     * throwing an error
      */
     static constexpr uint8_t MAX_THERM_READ_ATTEMPTS = 3;
 
     /**
-     *
+     * Maximum thermistor temperature considered safe
      */
     static constexpr uint8_t MAX_THERM_TEMP = 50;
 
     /**
-     * The interface for storing and retrieving BQ Settings.
+     * Number of thermistors in the pack
+     */
+    static constexpr uint8_t NUM_THERMISTORS = 6;
+
+    /**
+     * The interface for storing and retrieving BQ Settings
      */
     BQSettingsStorage& bqSettingsStorage;
 
     /**
-     * Interface to the BQ chip.
+     * Interface to the BQ chip
      */
     DEV::BQ76952 bq;
 
@@ -184,22 +188,23 @@ private:
     DEV::Interlock& interlock;
 
     /**
-     * This GPIO is connected to the ALARM pin of the BQ. The BQ can be
-     * configured to toggle the ALARM pin based on certain safety parameters.
-     * If the alarm pin is in it's active state, should assume it is unsafe
-     * to charge/discharge
+     * This GPIO is connected to the ALARM pin of the BQ
+     *
+     * The BQ can be configured to toggle the ALARM pin based on certain safety
+     * parameters. If the alarm pin is in it's active state, should assume it is
+     * unsafe to charge/discharge.
      */
     IO::GPIO& alarm;
 
     /**
-     * This determines which system the BMS is attached to.
+     * This determines which system the BMS is attached to
      */
-    DEV::SystemDetect& systemDetect;
+    SystemDetect& systemDetect;
 
     /**
-     *
+     * Handler for reset CAN messages
      */
-    DEV::ResetHandler& resetHandler;
+    ResetHandler& resetHandler;
 
     /**
      * This GPIO is used to represent when the system is ok. When this pin
@@ -209,7 +214,7 @@ private:
     IO::GPIO& bmsOK;
 
     /**
-     *
+     * Multiplexer to handle pack thermistors
      */
     DEV::ThermistorMux thermistorMux;
 
@@ -219,42 +224,48 @@ private:
     EVT::core::DEV::IWDG& iwdg;
 
     /**
-     * Boolean flag that represents a state has just changed, this is useful
-     * for determining when operations should take place that only take place
-     * once per state change.
+     * Boolean flag which represents that a state has just changed
+     *
+     * Useful for determining when operations that only take place once per
+     * state change should take place.
      */
     bool stateChanged = false;
 
     /**
-     * Utility variable which can be used to count the number of attempts that
-     * was made to complete a certain actions.
-     *
-     * For example, this is used for trying to communicate with the BQ N
-     * number of times before failing
+     * Utility variable that tracks the number of attempts made to read from the
+     * BQ chip
      */
-    uint8_t numAttemptsMade = 0;
+    uint8_t numBqAttemptsMade = 0;
 
     /**
-     *
+     * Utility variable that tracks the number of attempts made to read safe
+     * thermistor temperatures
      */
     uint8_t numThermAttemptsMade = 0;
 
     /**
-     * Keeps track of the last time an attempt was made. This is used in
-     * combination with BMS::numAttemptsMade to attempt a task a certain
-     * number of times with delay in attempts
+     * Keeps track of the last time an attempt was made to communicate with the
+     * BQ chip
+     *
+     * This is used in combination with BMS::numBqAttemptsMade to attempt BQ
+     * communication a certain number of times with delay in attempts
      */
-    uint32_t lastAttemptTime = 0;
+    uint32_t lastBqAttemptTime = 0;
 
     /**
+     * Keeps track of the last time an attempt was made to read safe thermistor
+     * temperatures
      *
+     * This is used in combination with BMS::numThermAttemptsMade to read
+     * thermistor temperatures a certain number of times with delay in attempts
      */
     uint32_t lastThermAttemptTime = 0;
 
     /**
-     * Represents the total voltage read by the BQ chip. This value is updated
-     * by reading the voltage from the BQ chip and is then exposed over
-     * CANopen.
+     * Represents the total voltage read by the BQ chip
+     *
+     * This value is updated by reading the voltage from the BQ chip and is then
+     * exposed over CANopen.
      */
     uint32_t totalVoltage = 0;
 
@@ -274,7 +285,7 @@ private:
     uint8_t thermistorTemperature[NUM_THERMISTORS] = {};
 
     /**
-     *
+     * Stores important information about pack thermistor temperatures
      */
     PackTempInfo packTempInfo{
         .minPackTemp = 0,
@@ -284,7 +295,7 @@ private:
     };
 
     /**
-     *
+     * Stores temperature information measured by the BQ
      */
     BqTempInfo bqTempInfo{
         .internalTemp = 0,
@@ -303,7 +314,7 @@ private:
      * Used to store values which the BMS updates.
      * Holds information about the minimum and maximum cell's voltages and Ids.
      */
-    cellVoltageInfo voltageInfo{
+    CellVoltageInfo voltageInfo{
         .minCellVoltage = 0,
         .minCellVoltageId = 0,
         .maxCellVoltage = 0,
@@ -311,96 +322,98 @@ private:
     };
 
     /**
-     *
+     * Array that stores status information pulled from the BQ
      */
     uint8_t bqStatusArr[7] = {};
 
     /**
-     *
+     * Value representing what errors have occurred on the BMS
      */
     uint8_t errorRegister = 0;
 
     /**
-     *
+     * Value that tracks the ID of the last thermistor that was read
      */
     uint8_t lastCheckedThermNum = -1;
 
     /**
-     * Handles the start of the state machine logic. This considers the health
-     * of the system, and the existence of BQ settings.
+     * Handle the start of the state machine logic
+     *
+     * This considers the health of the system, and the existence of BQ
+     * settings.
      *
      * State: State::START
      */
     void startState();
 
     /**
-     * Handles holding the BMS in the initialization error state.
+     * Handle holding the BMS in the initialization error state
      *
      * State: State::INITIALIZATION_ERROR
      */
     void initializationErrorState();
 
     /**
-     * Handles the factory init state. This will check for the presence of
-     * settings having arrived over CANopen.
+     * Handle the factory init state
+     * This will check for the presence of settings having arrived over CANopen.
      *
      * State: State::FACTORY_INIT
      */
     void factoryInitState();
 
     /**
-     * Handles the state where settings are actively being sent from
-     * the BMS to the BQ chip.
+     * Handle the state where settings are actively being sent from the BMS to
+     * the BQ chip
      *
      * State: State::TRANSFER_SETTINGS
      */
     void transferSettingsState();
 
     /**
-     * Handles when the system is ready for charging/discharging. Will
-     * poll health data and sensor information while waiting for input.
+     * Handle when the system is ready for charging/discharging
+     *
+     * Will poll health data and sensor information while waiting for input.
      *
      * State: State::SYSTEM_READY
      */
     void systemReadyState();
 
     /**
-     * Handles when an unsafe condition is detected during normal
-     * operations.
+     * Handle when an unsafe condition is detected during normal operations
      *
      * State: State::UNSAFE_CONDITIONS_ERROR
      */
     void unsafeConditionsError();
 
     /**
-     * Handles when the BMS is actively delivering power to the bike
-     * system.
+     * Handle when the BMS is actively delivering power to the bike system
      *
      * State: State::POWER_DELIVERY
      */
     void powerDeliveryState();
 
     /**
-     * Handles when the BMS is handling taking in charge.
+     * Handle when the BMS is handling taking in charge
      *
      * State: State::CHARGING
      */
     void chargingState();
 
     /**
-     * Check to see if the system is healthy. This involves checking the
-     * ALARM pin, other status registers on the BQ, and keeping track of the
-     * rest of the system.
+     * Check to see if the system is healthy
+     *
+     * This involves checking the ALARM pin, other status registers on the BQ,
+     * and keeping track of the rest of the system.
      *
      * @return True if the system is healthy, false otherwise
      */
     bool isHealthy();
 
     /**
-     * TODO: Update this documentation
-     * Update the local voltage variables with the values from the BQ chip.
-     * This will iterate over all the voltage values of interest and update
-     * each value. These values will then be able to be read over CANopen.
+     * Update the local voltage variables with the values from the BQ chip
+     *
+     * This will iterate over all the values of interest and update them. These
+     * values will then be able to be read over CANopen.
      *
      * This should be called when in a state where the BQ is ready and able
      * to read voltage. In other states, a call to this function should not
@@ -409,25 +422,26 @@ private:
     void updateBQData();
 
     /**
-     *
+     * Read one thermistor value and report an over-temperature error if
+     * necessary
      */
     void updateThermistorReading();
 
     /**
-     * Will clear the local voltage values (set to 0). This is to represent
-     * that the voltage readings are either not accurate or not current. For
-     * states where the voltage read from the BQ is not expected to be
-     * accurate or stable, this should be called so that the data sent out
-     * over CANopen reflect that.
+     * Clear the local voltage values (set to 0)
+     *
+     * This is to represent that the voltage readings are either not accurate or
+     * not current. For states where the voltage read from the BQ is not
+     * expected to be accurate or stable, this should be called so that the data
+     * sent out over CANopen reflects that.
      */
     void clearVoltageReadings();
 
     /**
-     * The object dictionary of the BMS. Includes settings that determine
-     * how the BMS functions on the CANopen network as well as the data
-     * that is exposed on the network.
+     * The object dictionary of the BMS
      *
-     * Array of CANopen objects. +1 for the special "end-of-array" marker
+     * Includes settings that determine how the BMS functions on the CANopen
+     * network as well as the data that is exposed on the network.
      */
     CO_OBJ_T objectDictionary[OBJECT_DICTIONARY_SIZE + 1] = {
         // Sync ID, defaults to 0x80

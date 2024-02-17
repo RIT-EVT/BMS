@@ -10,12 +10,12 @@ namespace log = EVT::core::log;
 namespace BMS {
 
 BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
-         DEV::Interlock& interlock, IO::GPIO& alarm,
-         DEV::SystemDetect& systemDetect, IO::GPIO& bmsOK,
-         DEV::ThermistorMux& thermMux, DEV::ResetHandler& resetHandler, EVT::core::DEV::IWDG& iwdg) : bqSettingsStorage(bqSettingsStorage),
-                                                                                                      bq(bq), state(State::START), interlock(interlock),
-                                                                                                      alarm(alarm), systemDetect(systemDetect), resetHandler(resetHandler),
-                                                                                                      bmsOK(bmsOK), thermistorMux(thermMux), iwdg(iwdg), stateChanged(true) {
+         DEV::Interlock& interlock, IO::GPIO& alarm, SystemDetect& systemDetect,
+         IO::GPIO& bmsOK, DEV::ThermistorMux& thermMux,
+         ResetHandler& resetHandler, EVT::core::DEV::IWDG& iwdg) : bqSettingsStorage(bqSettingsStorage),
+                                                                   bq(bq), state(State::START), interlock(interlock),
+                                                                   alarm(alarm), systemDetect(systemDetect), resetHandler(resetHandler),
+                                                                   bmsOK(bmsOK), thermistorMux(thermMux), iwdg(iwdg), stateChanged(true) {
     bmsOK.writePin(IO::GPIO::State::LOW);
 
     updateBQData();
@@ -123,9 +123,9 @@ void BMS::startState() {
         stateChanged = false;
 
         // Reset all data
-        numAttemptsMade = 0;
+        numBqAttemptsMade = 0;
         numThermAttemptsMade = 0;
-        lastAttemptTime = 0;
+        lastBqAttemptTime = 0;
         lastThermAttemptTime = 0;
         clearVoltageReadings();
         current = 0;
@@ -150,10 +150,10 @@ void BMS::startState() {
 
     // Check if an error has taken place, and if so, check to make sure
     // a certain delay time has taken place before making another attempt
-    if (numAttemptsMade > 0) {
+    if (numBqAttemptsMade > 0) {
         // If there has not been enough time between attempts, skip this run
         // of the state and try again later
-        if ((time::millis() - lastAttemptTime) < ERROR_TIME_DELAY) {
+        if ((time::millis() - lastBqAttemptTime) < ERROR_TIME_DELAY) {
             return;
         }
     }
@@ -163,12 +163,12 @@ void BMS::startState() {
     if (status != DEV::BQ76952::Status::OK) {
 
         // Increment the number of errors that have taken place
-        numAttemptsMade++;
+        numBqAttemptsMade++;
 
         // Record current time
-        lastAttemptTime = time::millis();
+        lastBqAttemptTime = time::millis();
 
-        if (numAttemptsMade >= MAX_BQ_COMM_ATTEMPTS) {
+        if (numBqAttemptsMade >= MAX_BQ_COMM_ATTEMPTS) {
             // If communication could not be handled, transition to error state
             state = State::INITIALIZATION_ERROR;
             errorRegister |= BQ_COMM_ERROR | static_cast<uint8_t>(status);
@@ -222,7 +222,7 @@ void BMS::transferSettingsState() {
     if (stateChanged) {
         bmsOK.writePin(BMS_NOT_OK);
         bqSettingsStorage.resetTransfer();
-        numAttemptsMade = 0;
+        numBqAttemptsMade = 0;
         stateChanged = false;
         clearVoltageReadings();
         log::LOGGER.log(log::Logger::LogLevel::INFO, "Entering transfer settings state");
@@ -230,10 +230,10 @@ void BMS::transferSettingsState() {
 
     // Check if an error has taken place, and if so, check to make sure
     // a certain delay time has taken place before making another attempt
-    if (numAttemptsMade > 0) {
+    if (numBqAttemptsMade > 0) {
         // If there has not been enough time between attempts, skip this run
         // of the state and try again later
-        if ((time::millis() - lastAttemptTime) < ERROR_TIME_DELAY) {
+        if ((time::millis() - lastBqAttemptTime) < ERROR_TIME_DELAY) {
             return;
         }
     }
@@ -241,10 +241,10 @@ void BMS::transferSettingsState() {
     bool isComplete = false;
     auto result = bqSettingsStorage.transferSetting(isComplete);
     if (result != DEV::BQ76952::Status::OK) {
-        numAttemptsMade++;
+        numBqAttemptsMade++;
 
         // If the number of errors are over the max
-        if (numAttemptsMade >= MAX_BQ_COMM_ATTEMPTS) {
+        if (numBqAttemptsMade >= MAX_BQ_COMM_ATTEMPTS) {
             // If the settings did not transfer successfully, transition to
             // error state
             state = State::INITIALIZATION_ERROR;
@@ -252,7 +252,7 @@ void BMS::transferSettingsState() {
             stateChanged = true;
         }
 
-        lastAttemptTime = time::millis();
+        lastBqAttemptTime = time::millis();
 
         bqSettingsStorage.resetTransfer();
 
@@ -280,11 +280,11 @@ void BMS::systemReadyState() {
     }
 
     if (interlock.isDetected()) {
-        if (systemDetect.getIdentifiedSystem() == DEV::SystemDetect::System::BIKE) {
+        if (systemDetect.getIdentifiedSystem() == SystemDetect::System::BIKE) {
             state = State::POWER_DELIVERY;
             stateChanged = true;
             return;
-        } else if (systemDetect.getIdentifiedSystem() == DEV::SystemDetect::System::CHARGER) {
+        } else if (systemDetect.getIdentifiedSystem() == SystemDetect::System::CHARGER) {
             state = State::CHARGING;
             stateChanged = true;
             return;
@@ -378,10 +378,10 @@ void BMS::updateBQData() {
 
     // Check if an error has taken place, and if so, check to make sure
     // a certain delay time has taken place before making another attempt
-    if (numAttemptsMade > 0) {
+    if (numBqAttemptsMade > 0) {
         // If there has not been enough time between attempts, skip this run
         // of the state and try again later
-        if ((time::millis() - lastAttemptTime) < ERROR_TIME_DELAY) {
+        if ((time::millis() - lastBqAttemptTime) < ERROR_TIME_DELAY) {
             return;
         }
     }
@@ -389,7 +389,7 @@ void BMS::updateBQData() {
     DEV::BQ76952::Status result = bq.getCellVoltage(cellVoltage, totalVoltage, voltageInfo);
 
     if (result == DEV::BQ76952::Status::OK) {
-        result = bq.getVoltage(batteryVoltage);
+        result = bq.getTotalVoltage(batteryVoltage);
     }
 
     if (result == DEV::BQ76952::Status::OK) {
@@ -405,17 +405,17 @@ void BMS::updateBQData() {
     }
 
     if (result != DEV::BQ76952::Status::OK) {
-        numAttemptsMade++;
+        numBqAttemptsMade++;
 
         // If the number of errors are over the max
-        if (numAttemptsMade >= MAX_BQ_COMM_ATTEMPTS) {
+        if (numBqAttemptsMade >= MAX_BQ_COMM_ATTEMPTS) {
             errorRegister |= static_cast<uint8_t>(result);
             return;
         }
 
-        lastAttemptTime = time::millis();
+        lastBqAttemptTime = time::millis();
     } else {
-        numAttemptsMade = 0;
+        numBqAttemptsMade = 0;
     }
 }
 

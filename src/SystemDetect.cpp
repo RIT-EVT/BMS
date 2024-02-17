@@ -1,10 +1,10 @@
-#include <dev/SystemDetect.hpp>
+#include <SystemDetect.hpp>
 
 #include <EVT/utils/time.hpp>
 
 namespace time = EVT::core::time;
 
-namespace BMS::DEV {
+namespace BMS {
 
 SystemDetect::SystemDetect(uint32_t bikeHeartbeat, uint32_t chargeHeartbeat,
                            uint32_t timeout) {
@@ -33,4 +33,4 @@ SystemDetect::System SystemDetect::getIdentifiedSystem() {
     return identifiedSystem;
 }
 
-}// namespace BMS::DEV
+}// namespace BMS

@@ -33,6 +33,12 @@ namespace BMS {
  */
 class BQSettingsStorage {
 public:
+    /**
+     * Make a new settings storage instance
+     *
+     * @param eeprom EEPROM instance that stores settings
+     * @param bq BQ instance to send settings to
+     */
     BQSettingsStorage(EVT::core::DEV::M24C32& eeprom, DEV::BQ76952& bq);
 
     /**
@@ -93,9 +99,10 @@ public:
     EVT::core::DEV::M24C32& getEEPROM();
 
     /**
-     * Reset the transfer setting logic. This will mean that the next call
-     * to BQSettingsStorage::transferSetting will transfer the first stored
-     * setting.
+     * Reset the transfer setting logic
+     *
+     * This will mean that the next call to BQSettingsStorage::transferSetting
+     * will transfer the first stored setting.
      */
     void resetTransfer();
 
@@ -119,19 +126,23 @@ public:
      * \endcode
      *
      * @param[out] isComplete Flag that represents all settings have been transferred
+     * @return The resulting status of the transfer operation
      */
     BMS::DEV::BQ76952::Status transferSetting(bool& isComplete);
 
     /**
-     * Checks to see if the settings are stored and can be used. This includes
-     * checking to see if there are settings stored, and also checks to make
-     * sure settings are not actively being written to.
+     * Check if the settings are stored and can be used
+     *
+     * This includes checking to see if there are settings stored, and also
+     * checks to make sure settings are not actively being written to.
+     *
+     * @return Whether there are stored settings to use
      */
     bool hasSettings();
 
 private:
     /**
-     * The starting address in EEPROM where the BQ settings are stored.
+     * The starting address in EEPROM where the BQ settings are stored
      */
     uint32_t startAddress;
     /**
@@ -139,7 +150,7 @@ private:
      */
     uint32_t addressLocation;
     /**
-     * The number of settings that are being stored for the BQ.
+     * The number of settings that are being stored for the BQ
      */
     uint16_t numSettings;
     /**

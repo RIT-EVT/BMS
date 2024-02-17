@@ -9,6 +9,7 @@ intermidate steps in order to perform edits to the converted format.
 from argparse import ArgumentParser
 from convert import convert
 from transfer import transfer
+from convert_transfer import convert_transfer
 
 
 def main():
@@ -39,17 +40,27 @@ def main():
     transfer_parser = subparsers.add_parser('transfer')
     transfer_parser.add_argument('input', action='store', help='''The binary
                                  file containing the settings to transfer''')
-    transfer_parser.add_argument('port', action='store', help='''Port of the
-                                 SLcan device to send settings to''')
+    transfer_parser.add_argument('port', action='store', help='''Serial port 
+                                 connected to the SLcan device to send settings 
+                                 to''')
     transfer_parser.add_argument('bms_node', action='store', type=int,
                                  help='The CANopen node of the BMS')
+
+    # Arguments for the convert-transfer command
+    transfer_parser = subparsers.add_parser('convert_transfer')
+    transfer_parser.add_argument('input', action='store', help='''The TI file 
+                                 containing the settings to transfer''')
+    transfer_parser.add_argument('port', action='store', help='''Serial port
+                                 connected to the BMS''')
 
     args = argparser.parse_args()
 
     if args.command == 'convert':
         convert(args)
-    else:
+    elif args.command == 'transfer':
         transfer(args)
+    else:
+        convert_transfer(args)
 
 
 if __name__ == '__main__':
