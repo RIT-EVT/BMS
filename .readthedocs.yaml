@@ -1,16 +1,23 @@
+# Read the Docs configuration file for Sphinx projects
+# See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
+
+# Required
 version: 2
 
-# Build from the docs/ directory with Sphinx
-sphinx:
-    configuration: docs/source/conf.py
-
+# Set the OS, Python version and other tools you might need
 build:
-    image: latest
+    os: ubuntu-22.04
+    tools:
+        python: "3.7"
+
     apt_packages:
         - doxygen
 
+# Build documentation in the "docs/" directory with Sphinx
+sphinx:
+    configuration: docs/source/conf.py
+
 # Explicitly set the version of Python and its requirements
 python:
-    version: 3.7
     install:
         - requirements: docs/requirements.txt
