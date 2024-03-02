@@ -3,6 +3,7 @@
  */
 
 #include <EVT/io/CANopen.hpp>
+#include <EVT/io/CANOpenMacros.hpp>
 #include <EVT/io/UART.hpp>
 #include <EVT/io/pin.hpp>
 #include <EVT/io/types/CANMessage.hpp>
@@ -14,7 +15,7 @@
 #include <EVT/utils/log.hpp>
 #include <EVT/utils/types/FixedQueue.hpp>
 
-#include "SystemDetect.hpp"
+#include <SystemDetect.hpp>
 #include <BMS.hpp>
 #include <dev/BQ76952.hpp>
 
@@ -61,37 +62,6 @@ void canInterruptHandler(IO::CANMessage& message, void* priv) {
         queue->append(message);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-// CANopen specific Callbacks. Need to be defined in some location
-///////////////////////////////////////////////////////////////////////////////
-extern "C" void CONodeFatalError(void) {
-    log::LOGGER.log(log::Logger::LogLevel::ERROR, "Fatal CANopen error");
-}
-
-extern "C" void COIfCanReceive(CO_IF_FRM* frm) {}
-
-extern "C" int16_t COLssStore(uint32_t baudrate, uint8_t nodeId) { return 0; }
-
-extern "C" int16_t COLssLoad(uint32_t* baudrate, uint8_t* nodeId) { return 0; }
-
-extern "C" void CONmtModeChange(CO_NMT* nmt, CO_MODE mode) {}
-
-extern "C" void CONmtHbConsEvent(CO_NMT* nmt, uint8_t nodeId) {}
-
-extern "C" void CONmtHbConsChange(CO_NMT* nmt, uint8_t nodeId, CO_MODE mode) {}
-
-extern "C" int16_t COParaDefault(CO_PARA* pg) { return 0; }
-
-extern "C" void COPdoTransmit(CO_IF_FRM* frm) {}
-
-extern "C" int16_t COPdoReceive(CO_IF_FRM* frm) { return 0; }
-
-extern "C" void COPdoSyncUpdate(CO_RPDO* pdo) {}
-
-extern "C" void COTmrLock(void) {}
-
-extern "C" void COTmrUnlock(void) {}
-
 int main() {
     // Initialize system
     EVT::core::platform::init();
@@ -111,6 +81,8 @@ int main() {
         .systemDetect = &systemDetect,
         .resetHandler = &resetHandler,
     };
+
+
 
     // Initialize IO
     // TODO: Investigate adding CAN filters
@@ -158,38 +130,31 @@ int main() {
     // Initialize the BMS itself
     BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect, bmsOK, thermMux, resetHandler, iwdg);
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Setup CAN configuration, this handles making drivers, applying settings.
+    // And generally creating the CANopen stack node which is the interface
+    // between the application (the code we write) and the physical CAN network
+    ///////////////////////////////////////////////////////////////////////////
+
+    // Will store CANopen messages that will be populated by the EVT-core CAN
+    // interrupt
+
     // Reserved memory for CANopen stack usage
-    uint8_t sdoBuffer[1][CO_SDO_BUF_BYTE];
-    CO_TMR_MEM appTmrMem[4];
+    uint8_t sdoBuffer[CO_SSDO_N * CO_SDO_BUF_BYTE];
+    CO_TMR_MEM appTmrMem[16];
 
     // Initialize the CANopen drivers
     CO_IF_DRV canStackDriver;
     CO_IF_CAN_DRV canDriver;
     CO_IF_TIMER_DRV timerDriver;
     CO_IF_NVM_DRV nvmDriver;
-    IO::getCANopenCANDriver(&can, &canOpenQueue, &canDriver);
-    IO::getCANopenTimerDriver(&timer, &timerDriver);
-    IO::getCANopenNVMDriver(&nvmDriver);
-
-    // Attach the CANopen drivers
-    canStackDriver.Can = &canDriver;
-    canStackDriver.Timer = &timerDriver;
-    canStackDriver.Nvm = &nvmDriver;
-
-    CO_NODE_SPEC canSpec = {
-        .NodeId = BMS::BMS::NODE_ID,
-        .Baudrate = IO::CAN::DEFAULT_BAUD,
-        .Dict = bms.getObjectDictionary(),
-        .DictLen = bms.getObjectDictionarySize(),
-        .EmcyCode = nullptr,
-        .TmrMem = appTmrMem,
-        .TmrNum = 16,
-        .TmrFreq = 100,
-        .Drv = &canStackDriver,
-        .SdoBuf = reinterpret_cast<uint8_t*>(&sdoBuffer[0]),
-    };
-
     CO_NODE canNode;
+
+    // Initialize all the CANOpen drivers.
+    IO::initializeCANopenDriver(&canOpenQueue, &can, &timer, &canStackDriver, &nvmDriver, &timerDriver, &canDriver);
+
+    // Initialize the CANOpen node we are using.
+    IO::initializeCANopenNode(&canNode, &bms, &canStackDriver, sdoBuffer, appTmrMem);
     time::wait(500);
 
     // Attempt to join the CAN network
@@ -200,9 +165,6 @@ int main() {
         return 1;
     }
 
-    // Initialize CANopen logic
-    CONodeInit(&canNode, &canSpec);
-    CONodeStart(&canNode);
     CONmtSetMode(&canNode.Nmt, CO_OPERATIONAL);
 
     log::LOGGER.log(log::Logger::LogLevel::INFO, "Initialization complete");
@@ -212,12 +174,8 @@ int main() {
     // 2. Run per-loop BMS state logic
     // 3. Wait for new data to come in
     while (1) {
-        // Process incoming CAN messages
-        CONodeProcess(&canNode);
-        // Update the state of timer based events
-        COTmrService(&canNode.Tmr);
-        // Handle executing timer events that have elapsed
-        COTmrProcess(&canNode.Tmr);
+        // Process CANopen
+        IO::processCANopenNode(&canNode);
         // Update the state of the BMS
         bms.process();
         // Wait for new data to come in
