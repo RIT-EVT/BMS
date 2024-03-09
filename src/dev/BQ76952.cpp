@@ -2,6 +2,8 @@
 
 #include <EVT/utils/log.hpp>
 #include <EVT/utils/time.hpp>
+#include <co_err.h>
+#include <co_obj.h>
 
 // (void)0 is added to the end of each macro to force users to follow the macro with a ';'
 /// Macro to make an I2C transfer and return an error on failure
@@ -22,6 +24,10 @@
         }                                                                                       \
     }                                                                                           \
     (void) 0
+//TODO: BQ is implemented incorrectly, so we must fix it
+//(The new implementation of CO_OBJ_TYPE_T does not allow the methods to accept void *)
+//and our implementation relies on those void * to be able to get a reference to the
+//instance of the class
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Functions for interacting with the BQ76952 balancing logic through CANopen
@@ -38,6 +44,7 @@
  * @param[in] priv Private data, pointer to the BQ76952 instance
  * @return The number of bytes representing the state of balancing (1)
  */
+ /*
 static uint32_t COBQBalancingSize(struct CO_OBJ_T* obj, struct CO_NODE_T* node,
                                   uint32_t width, void* priv) {
 
@@ -48,7 +55,7 @@ static uint32_t COBQBalancingSize(struct CO_OBJ_T* obj, struct CO_NODE_T* node,
 
     return 1;
 }
-
+*/
 /**
  * Read in the balance state of the given cell. This will communicate with the
  * BQ to determine the state.
@@ -61,6 +68,7 @@ static uint32_t COBQBalancingSize(struct CO_OBJ_T* obj, struct CO_NODE_T* node,
  * @param[in] priv The private data (BQ76952 instance)
  * @return CO_ERR_NONE on success
  */
+ /*
 static CO_ERR COBQBalancingRead(CO_OBJ_T* obj, CO_NODE_T* node, void* buf,
                                 uint32_t len, void* priv) {
 
@@ -83,6 +91,7 @@ static CO_ERR COBQBalancingRead(CO_OBJ_T* obj, CO_NODE_T* node, void* buf,
 
     return CO_ERR_NONE;
 }
+*/
 
 /**
  * Write out the state of the balancing. Can be used to enable balancing by
@@ -96,6 +105,7 @@ static CO_ERR COBQBalancingRead(CO_OBJ_T* obj, CO_NODE_T* node, void* buf,
  * @param[in] priv The private data (BQ76952 instance)
  * @return CO_ERR_NONE on success
  */
+ /*
 static CO_ERR COBQBalancingWrite(CO_OBJ_T* obj, CO_NODE_T* node, void* buf,
                                  uint32_t len, void* priv) {
     (void) node;
@@ -116,10 +126,12 @@ static CO_ERR COBQBalancingWrite(CO_OBJ_T* obj, CO_NODE_T* node, void* buf,
 
     return CO_ERR_NONE;
 }
+*/
 
 /**
  * Control logic, for the balancing logic does not need to do anything
  */
+ /*
 static CO_ERR COBalancingCtrl(CO_OBJ* obj, CO_NODE_T* node, uint16_t func,
                               uint32_t para, void* priv) {
     (void) obj;
@@ -130,17 +142,19 @@ static CO_ERR COBalancingCtrl(CO_OBJ* obj, CO_NODE_T* node, uint16_t func,
 
     return CO_ERR_NONE;
 }
-
+*/
 namespace BMS::DEV {
 
-BQ76952::BQ76952(EVT::core::IO::I2C& i2c, uint8_t i2cAddress)
-    : balancingCANOpen{
+BQ76952::BQ76952(EVT::core::IO::I2C& i2c, uint8_t i2cAddress) :
+    /*
+    balancingCANOpen{
         COBQBalancingSize,
         COBalancingCtrl,
         COBQBalancingRead,
         COBQBalancingWrite,
         this,
     },
+     */
       i2c(i2c), i2cAddress(i2cAddress) {}
 
 BQ76952::Status BQ76952::writeSetting(BMS::BQSetting& setting) {

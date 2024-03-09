@@ -689,8 +689,8 @@ private:
             DATA_LINK_21XX(06,3,CO_TUNSIGNED16, &cellVoltage[10]),
             //cellVoltage[11]
             DATA_LINK_21XX(06,4,CO_TUNSIGNED16, &cellVoltage[11]),
-
-
+//TODO: BQ is implemented incorrectly, so we must fix it.
+/*
         /// Expose information on the balancing of the target cells. Per
         /// cell ability to poll if the cell is balancing and write out
         /// balancing control.
@@ -755,7 +755,7 @@ private:
             .Type = ((CO_OBJ_TYPE*) &bq.balancingCANOpen),
             .Data = (uintptr_t) 12,
         },
-
+*/
         // End of dictionary marker
         CO_OBJ_DICT_ENDMARK,
     };
