@@ -13,6 +13,7 @@
 #include <SystemDetect.hpp>
 #include <dev/Interlock.hpp>
 #include <dev/ThermistorMux.hpp>
+#include <BMSCANOpenMacros.hpp>
 
 namespace IO = EVT::core::IO;
 
@@ -473,15 +474,15 @@ private:
         TRANSMIT_PDO_SETTINGS_OBJECT_18XX(3, TRANSMIT_PDO_TRIGGER_TIMER, 0, 1000),
 
         // TPDO4 settings
-        TRANSMIT_PDO_SETTINGS_OBJECT_18XX(4, TRANSMIT_PDO_TRIGGER_TIMER, 0, 1000),
+        EXTRA_TRANSMIT_PDO_SETTINGS_OBJECT_18XX(4, TRANSMIT_PDO_TRIGGER_TIMER, 0, 1000),
 
         // TPDO5 settings
-        TRANSMIT_PDO_SETTINGS_OBJECT_18XX(5, TRANSMIT_PDO_TRIGGER_TIMER, 0, 1000),
+        EXTRA_TRANSMIT_PDO_SETTINGS_OBJECT_18XX(5, TRANSMIT_PDO_TRIGGER_TIMER, 0, 1000),
 
         // TPDO6 settings
-        TRANSMIT_PDO_SETTINGS_OBJECT_18XX(6, TRANSMIT_PDO_TRIGGER_TIMER, 0, 1000),
+        EXTRA_TRANSMIT_PDO_SETTINGS_OBJECT_18XX(6, TRANSMIT_PDO_TRIGGER_TIMER, 0, 1000),
 
-            //TPDO MAPPINGS
+        //TPDO MAPPINGS
 
         // TPDO0 mapping, determines the PDO messages to send when TPDO1 is triggered
         TRANSMIT_PDO_MAPPING_START_KEY_1AXX(00,5),
@@ -689,7 +690,7 @@ private:
             DATA_LINK_21XX(06,3,CO_TUNSIGNED16, &cellVoltage[10]),
             //cellVoltage[11]
             DATA_LINK_21XX(06,4,CO_TUNSIGNED16, &cellVoltage[11]),
-//TODO: BQ is implemented incorrectly, so we must fix it.
+//TODO: Update SDOs to work with CANopen stack updates
 /*
         /// Expose information on the balancing of the target cells. Per
         /// cell ability to poll if the cell is balancing and write out
