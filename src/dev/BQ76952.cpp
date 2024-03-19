@@ -44,7 +44,7 @@
  * @param[in] priv Private data, pointer to the BQ76952 instance
  * @return The number of bytes representing the state of balancing (1)
  */
- /*
+/*
 static uint32_t COBQBalancingSize(struct CO_OBJ_T* obj, struct CO_NODE_T* node,
                                   uint32_t width, void* priv) {
 
@@ -68,7 +68,7 @@ static uint32_t COBQBalancingSize(struct CO_OBJ_T* obj, struct CO_NODE_T* node,
  * @param[in] priv The private data (BQ76952 instance)
  * @return CO_ERR_NONE on success
  */
- /*
+/*
 static CO_ERR COBQBalancingRead(CO_OBJ_T* obj, CO_NODE_T* node, void* buf,
                                 uint32_t len, void* priv) {
 
@@ -105,7 +105,7 @@ static CO_ERR COBQBalancingRead(CO_OBJ_T* obj, CO_NODE_T* node, void* buf,
  * @param[in] priv The private data (BQ76952 instance)
  * @return CO_ERR_NONE on success
  */
- /*
+/*
 static CO_ERR COBQBalancingWrite(CO_OBJ_T* obj, CO_NODE_T* node, void* buf,
                                  uint32_t len, void* priv) {
     (void) node;
@@ -131,7 +131,7 @@ static CO_ERR COBQBalancingWrite(CO_OBJ_T* obj, CO_NODE_T* node, void* buf,
 /**
  * Control logic, for the balancing logic does not need to do anything
  */
- /*
+/*
 static CO_ERR COBalancingCtrl(CO_OBJ* obj, CO_NODE_T* node, uint16_t func,
                               uint32_t para, void* priv) {
     (void) obj;
@@ -145,8 +145,7 @@ static CO_ERR COBalancingCtrl(CO_OBJ* obj, CO_NODE_T* node, uint16_t func,
 */
 namespace BMS::DEV {
 
-BQ76952::BQ76952(EVT::core::IO::I2C& i2c, uint8_t i2cAddress) :
-    /*
+BQ76952::BQ76952(EVT::core::IO::I2C& i2c, uint8_t i2cAddress) : /*
     balancingCANOpen{
         COBQBalancingSize,
         COBalancingCtrl,
@@ -155,7 +154,7 @@ BQ76952::BQ76952(EVT::core::IO::I2C& i2c, uint8_t i2cAddress) :
         this,
     },
      */
-      i2c(i2c), i2cAddress(i2cAddress) {}
+                                                                i2c(i2c), i2cAddress(i2cAddress) {}
 
 BQ76952::Status BQ76952::writeSetting(BMS::BQSetting& setting) {
     // Right now, the BQ only accepts settings made into RAM

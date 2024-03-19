@@ -4,7 +4,6 @@
 
 #include <EVT/dev/storage/M24C32.hpp>
 
-
 #include <BQSetting.hpp>
 #include <dev/BQ76952.hpp>
 

@@ -2,8 +2,8 @@
  * This is the main target to be used for the BMS in the DEV1 battery packs
  */
 
-#include <EVT/io/CANopen.hpp>
 #include <EVT/io/CANOpenMacros.hpp>
+#include <EVT/io/CANopen.hpp>
 #include <EVT/io/UART.hpp>
 #include <EVT/io/pin.hpp>
 #include <EVT/io/types/CANMessage.hpp>
@@ -15,8 +15,8 @@
 #include <EVT/utils/log.hpp>
 #include <EVT/utils/types/FixedQueue.hpp>
 
-#include <SystemDetect.hpp>
 #include <BMS.hpp>
+#include <SystemDetect.hpp>
 #include <dev/BQ76952.hpp>
 
 namespace IO = EVT::core::IO;
@@ -81,8 +81,6 @@ int main() {
         .systemDetect = &systemDetect,
         .resetHandler = &resetHandler,
     };
-
-
 
     // Initialize IO
     // TODO: Investigate adding CAN filters

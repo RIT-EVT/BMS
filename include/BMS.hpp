@@ -2,10 +2,11 @@
 
 #include <cstdint>
 
-#include <co_core.h>
 #include <EVT/io/CANDevice.hpp>
 #include <EVT/io/CANOpenMacros.hpp>
+#include <co_core.h>
 
+#include <BMSCANOpenMacros.hpp>
 #include <BQSettingStorage.hpp>
 #include <EVT/dev/IWDG.hpp>
 #include <EVT/io/pin.hpp>
@@ -13,7 +14,6 @@
 #include <SystemDetect.hpp>
 #include <dev/Interlock.hpp>
 #include <dev/ThermistorMux.hpp>
-#include <BMSCANOpenMacros.hpp>
 
 namespace IO = EVT::core::IO;
 
@@ -470,129 +470,129 @@ private:
 
         // TPDO Mappings
         // TPDO0
-        TRANSMIT_PDO_MAPPING_START_KEY_1AXX(0,5),
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(0,1,PDO_MAPPING_UNSIGNED16), //batteryVoltage
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(0,2,PDO_MAPPING_UNSIGNED16), //minCellVoltage
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(0,3,PDO_MAPPING_UNSIGNED8), //minCellVoltageID
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(0,4,PDO_MAPPING_UNSIGNED16), //maxCellVoltage
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(0,5,PDO_MAPPING_UNSIGNED8), //maxCellVoltageID
+        TRANSMIT_PDO_MAPPING_START_KEY_1AXX(0, 5),
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(0, 1, PDO_MAPPING_UNSIGNED16),//batteryVoltage
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(0, 2, PDO_MAPPING_UNSIGNED16),//minCellVoltage
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(0, 3, PDO_MAPPING_UNSIGNED8), //minCellVoltageID
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(0, 4, PDO_MAPPING_UNSIGNED16),//maxCellVoltage
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(0, 5, PDO_MAPPING_UNSIGNED8), //maxCellVoltageID
 
         // TPDO1
-        TRANSMIT_PDO_MAPPING_START_KEY_1AXX(1,7),
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(1,1,PDO_MAPPING_UNSIGNED16), //current
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(1,2,PDO_MAPPING_UNSIGNED8), //batteryPackMinTemp
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(1,3,PDO_MAPPING_UNSIGNED8), //batteryPackMinTempID
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(1,4,PDO_MAPPING_UNSIGNED8), //batteryPackMaxTemp
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(1,5,PDO_MAPPING_UNSIGNED8), //batteryPackMaxTempID
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(1,6,PDO_MAPPING_UNSIGNED8), //bqInternalTemp
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(1,7,PDO_MAPPING_UNSIGNED8), //state
+        TRANSMIT_PDO_MAPPING_START_KEY_1AXX(1, 7),
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(1, 1, PDO_MAPPING_UNSIGNED16),//current
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(1, 2, PDO_MAPPING_UNSIGNED8), //batteryPackMinTemp
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(1, 3, PDO_MAPPING_UNSIGNED8), //batteryPackMinTempID
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(1, 4, PDO_MAPPING_UNSIGNED8), //batteryPackMaxTemp
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(1, 5, PDO_MAPPING_UNSIGNED8), //batteryPackMaxTempID
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(1, 6, PDO_MAPPING_UNSIGNED8), //bqInternalTemp
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(1, 7, PDO_MAPPING_UNSIGNED8), //state
 
         // TPDO2
-        TRANSMIT_PDO_MAPPING_START_KEY_1AXX(2,8),
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(2,1,PDO_MAPPING_UNSIGNED8), //packtemp[0]
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(2,2,PDO_MAPPING_UNSIGNED8), //packtemp[1]
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(2,3,PDO_MAPPING_UNSIGNED8), //packtemp[2]
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(2,4,PDO_MAPPING_UNSIGNED8), //packtemp[3]
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(2,5,PDO_MAPPING_UNSIGNED8), //packtemp[4]
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(2,6,PDO_MAPPING_UNSIGNED8), //packtemp[5]
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(2,7,PDO_MAPPING_UNSIGNED8), //boardTemp1
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(2,8,PDO_MAPPING_UNSIGNED8), //boardTemp2
+        TRANSMIT_PDO_MAPPING_START_KEY_1AXX(2, 8),
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(2, 1, PDO_MAPPING_UNSIGNED8),//packtemp[0]
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(2, 2, PDO_MAPPING_UNSIGNED8),//packtemp[1]
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(2, 3, PDO_MAPPING_UNSIGNED8),//packtemp[2]
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(2, 4, PDO_MAPPING_UNSIGNED8),//packtemp[3]
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(2, 5, PDO_MAPPING_UNSIGNED8),//packtemp[4]
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(2, 6, PDO_MAPPING_UNSIGNED8),//packtemp[5]
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(2, 7, PDO_MAPPING_UNSIGNED8),//boardTemp1
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(2, 8, PDO_MAPPING_UNSIGNED8),//boardTemp2
 
         // TPDO3
-        TRANSMIT_PDO_MAPPING_START_KEY_1AXX(3,8),
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(3,1,PDO_MAPPING_UNSIGNED8), //errorRegister
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(3,2,PDO_MAPPING_UNSIGNED8), //bqStatusArr[0]
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(3,3,PDO_MAPPING_UNSIGNED8), //bqStatusArr[1]
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(3,4,PDO_MAPPING_UNSIGNED8), //bqStatusArr[2]
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(3,5,PDO_MAPPING_UNSIGNED8), //bqStatusArr[3]
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(3,6,PDO_MAPPING_UNSIGNED8), //bqStatusArr[4]
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(3,7,PDO_MAPPING_UNSIGNED8), //bqStatusArr[5]
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(3,8,PDO_MAPPING_UNSIGNED8), //bqStatusArr[6]
+        TRANSMIT_PDO_MAPPING_START_KEY_1AXX(3, 8),
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(3, 1, PDO_MAPPING_UNSIGNED8),//errorRegister
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(3, 2, PDO_MAPPING_UNSIGNED8),//bqStatusArr[0]
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(3, 3, PDO_MAPPING_UNSIGNED8),//bqStatusArr[1]
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(3, 4, PDO_MAPPING_UNSIGNED8),//bqStatusArr[2]
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(3, 5, PDO_MAPPING_UNSIGNED8),//bqStatusArr[3]
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(3, 6, PDO_MAPPING_UNSIGNED8),//bqStatusArr[4]
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(3, 7, PDO_MAPPING_UNSIGNED8),//bqStatusArr[5]
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(3, 8, PDO_MAPPING_UNSIGNED8),//bqStatusArr[6]
 
         // TPDO4
-        TRANSMIT_PDO_MAPPING_START_KEY_1AXX(4,4),
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(4,1,PDO_MAPPING_UNSIGNED16), //cellVoltage[0]
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(4,2,PDO_MAPPING_UNSIGNED16), //cellVoltage[1]
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(4,3,PDO_MAPPING_UNSIGNED16), //cellVoltage[2]
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(4,4,PDO_MAPPING_UNSIGNED16), //cellVoltage[3]
+        TRANSMIT_PDO_MAPPING_START_KEY_1AXX(4, 4),
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(4, 1, PDO_MAPPING_UNSIGNED16),//cellVoltage[0]
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(4, 2, PDO_MAPPING_UNSIGNED16),//cellVoltage[1]
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(4, 3, PDO_MAPPING_UNSIGNED16),//cellVoltage[2]
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(4, 4, PDO_MAPPING_UNSIGNED16),//cellVoltage[3]
 
         // TPDO5
-        TRANSMIT_PDO_MAPPING_START_KEY_1AXX(5,4),
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(5,1,PDO_MAPPING_UNSIGNED16), //cellVoltage[4]
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(5,2,PDO_MAPPING_UNSIGNED16), //cellVoltage[5]
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(5,3,PDO_MAPPING_UNSIGNED16), //cellVoltage[6]
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(5,4,PDO_MAPPING_UNSIGNED16), //cellVoltage[7]
+        TRANSMIT_PDO_MAPPING_START_KEY_1AXX(5, 4),
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(5, 1, PDO_MAPPING_UNSIGNED16),//cellVoltage[4]
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(5, 2, PDO_MAPPING_UNSIGNED16),//cellVoltage[5]
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(5, 3, PDO_MAPPING_UNSIGNED16),//cellVoltage[6]
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(5, 4, PDO_MAPPING_UNSIGNED16),//cellVoltage[7]
 
         // TPDO6
-        TRANSMIT_PDO_MAPPING_START_KEY_1AXX(6,4),
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(6,1,PDO_MAPPING_UNSIGNED16), //cellVoltage[8]
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(6,2,PDO_MAPPING_UNSIGNED16), //cellVoltage[9]
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(6,3,PDO_MAPPING_UNSIGNED16), //cellVoltage[10]
-        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(6,4,PDO_MAPPING_UNSIGNED16), //cellVoltage[11]
+        TRANSMIT_PDO_MAPPING_START_KEY_1AXX(6, 4),
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(6, 1, PDO_MAPPING_UNSIGNED16),//cellVoltage[8]
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(6, 2, PDO_MAPPING_UNSIGNED16),//cellVoltage[9]
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(6, 3, PDO_MAPPING_UNSIGNED16),//cellVoltage[10]
+        TRANSMIT_PDO_MAPPING_ENTRY_1AXX(6, 4, PDO_MAPPING_UNSIGNED16),//cellVoltage[11]
 
         // Data Links
         // TPDO0
         DATA_LINK_START_KEY_21XX(0, 5),
-        DATA_LINK_21XX(0,1, CO_TSIGNED16, &batteryVoltage),
-        DATA_LINK_21XX(0,2,CO_TSIGNED16, &voltageInfo.minCellVoltage),
-        DATA_LINK_21XX(0,3,CO_TUNSIGNED8, &voltageInfo.minCellVoltageId),
-        DATA_LINK_21XX(0,4,CO_TSIGNED16, &voltageInfo.maxCellVoltage),
-        DATA_LINK_21XX(0,5,CO_TUNSIGNED8, &voltageInfo.maxCellVoltageId),
+        DATA_LINK_21XX(0, 1, CO_TSIGNED16, &batteryVoltage),
+        DATA_LINK_21XX(0, 2, CO_TSIGNED16, &voltageInfo.minCellVoltage),
+        DATA_LINK_21XX(0, 3, CO_TUNSIGNED8, &voltageInfo.minCellVoltageId),
+        DATA_LINK_21XX(0, 4, CO_TSIGNED16, &voltageInfo.maxCellVoltage),
+        DATA_LINK_21XX(0, 5, CO_TUNSIGNED8, &voltageInfo.maxCellVoltageId),
 
         // TPDO1
-        DATA_LINK_START_KEY_21XX(1,7),
-        DATA_LINK_21XX(1,1,CO_TSIGNED16, &current),
-        DATA_LINK_21XX(1,2,CO_TUNSIGNED8, &packTempInfo.minPackTemp),
-        DATA_LINK_21XX(1,3,CO_TUNSIGNED8, &packTempInfo.minPackTempId),
-        DATA_LINK_21XX(1,4,CO_TUNSIGNED8, &packTempInfo.maxPackTemp),
-        DATA_LINK_21XX(1,5,CO_TUNSIGNED8, &packTempInfo.maxPackTempId),
-        DATA_LINK_21XX(1,6,CO_TUNSIGNED8, &bqTempInfo.internalTemp),
-        DATA_LINK_21XX(1,7,CO_TUNSIGNED8, &state),
+        DATA_LINK_START_KEY_21XX(1, 7),
+        DATA_LINK_21XX(1, 1, CO_TSIGNED16, &current),
+        DATA_LINK_21XX(1, 2, CO_TUNSIGNED8, &packTempInfo.minPackTemp),
+        DATA_LINK_21XX(1, 3, CO_TUNSIGNED8, &packTempInfo.minPackTempId),
+        DATA_LINK_21XX(1, 4, CO_TUNSIGNED8, &packTempInfo.maxPackTemp),
+        DATA_LINK_21XX(1, 5, CO_TUNSIGNED8, &packTempInfo.maxPackTempId),
+        DATA_LINK_21XX(1, 6, CO_TUNSIGNED8, &bqTempInfo.internalTemp),
+        DATA_LINK_21XX(1, 7, CO_TUNSIGNED8, &state),
 
         // TPDO2
-        DATA_LINK_START_KEY_21XX(2,8),
-        DATA_LINK_21XX(2,1,CO_TUNSIGNED8, &thermistorTemperature[0]),
-        DATA_LINK_21XX(2,2,CO_TUNSIGNED8, &thermistorTemperature[1]),
-        DATA_LINK_21XX(2,3,CO_TUNSIGNED8, &thermistorTemperature[2]),
-        DATA_LINK_21XX(2,4,CO_TUNSIGNED8, &thermistorTemperature[3]),
-        DATA_LINK_21XX(2,5,CO_TUNSIGNED8, &thermistorTemperature[4]),
-        DATA_LINK_21XX(2,6,CO_TUNSIGNED8, &thermistorTemperature[5]),
-        DATA_LINK_21XX(2,7,CO_TUNSIGNED8, &bqTempInfo.temp1),
-        DATA_LINK_21XX(2,8,CO_TUNSIGNED8, &bqTempInfo.temp2),
+        DATA_LINK_START_KEY_21XX(2, 8),
+        DATA_LINK_21XX(2, 1, CO_TUNSIGNED8, &thermistorTemperature[0]),
+        DATA_LINK_21XX(2, 2, CO_TUNSIGNED8, &thermistorTemperature[1]),
+        DATA_LINK_21XX(2, 3, CO_TUNSIGNED8, &thermistorTemperature[2]),
+        DATA_LINK_21XX(2, 4, CO_TUNSIGNED8, &thermistorTemperature[3]),
+        DATA_LINK_21XX(2, 5, CO_TUNSIGNED8, &thermistorTemperature[4]),
+        DATA_LINK_21XX(2, 6, CO_TUNSIGNED8, &thermistorTemperature[5]),
+        DATA_LINK_21XX(2, 7, CO_TUNSIGNED8, &bqTempInfo.temp1),
+        DATA_LINK_21XX(2, 8, CO_TUNSIGNED8, &bqTempInfo.temp2),
 
         // TPDO3
-        DATA_LINK_START_KEY_21XX(3,8),
-        DATA_LINK_21XX(3,1,CO_TUNSIGNED8, &errorRegister),
-        DATA_LINK_21XX(3,2,CO_TUNSIGNED8, &bqStatusArr[0]),
-        DATA_LINK_21XX(3,3,CO_TUNSIGNED8, &bqStatusArr[1]),
-        DATA_LINK_21XX(3,4,CO_TUNSIGNED8, &bqStatusArr[2]),
-        DATA_LINK_21XX(3,5,CO_TUNSIGNED8, &bqStatusArr[3]),
-        DATA_LINK_21XX(3,6,CO_TUNSIGNED8, &bqStatusArr[4]),
-        DATA_LINK_21XX(3,7,CO_TUNSIGNED8, &bqStatusArr[5]),
-        DATA_LINK_21XX(3,8,CO_TUNSIGNED8, &bqStatusArr[6]),
+        DATA_LINK_START_KEY_21XX(3, 8),
+        DATA_LINK_21XX(3, 1, CO_TUNSIGNED8, &errorRegister),
+        DATA_LINK_21XX(3, 2, CO_TUNSIGNED8, &bqStatusArr[0]),
+        DATA_LINK_21XX(3, 3, CO_TUNSIGNED8, &bqStatusArr[1]),
+        DATA_LINK_21XX(3, 4, CO_TUNSIGNED8, &bqStatusArr[2]),
+        DATA_LINK_21XX(3, 5, CO_TUNSIGNED8, &bqStatusArr[3]),
+        DATA_LINK_21XX(3, 6, CO_TUNSIGNED8, &bqStatusArr[4]),
+        DATA_LINK_21XX(3, 7, CO_TUNSIGNED8, &bqStatusArr[5]),
+        DATA_LINK_21XX(3, 8, CO_TUNSIGNED8, &bqStatusArr[6]),
 
         // TPDO4
-        DATA_LINK_START_KEY_21XX(4,4),
-        DATA_LINK_21XX(4,1,CO_TUNSIGNED16, &cellVoltage[0]),
-        DATA_LINK_21XX(4,2,CO_TUNSIGNED16, &cellVoltage[1]),
-        DATA_LINK_21XX(4,3,CO_TUNSIGNED16, &cellVoltage[2]),
-        DATA_LINK_21XX(4,4,CO_TUNSIGNED16, &cellVoltage[3]),
+        DATA_LINK_START_KEY_21XX(4, 4),
+        DATA_LINK_21XX(4, 1, CO_TUNSIGNED16, &cellVoltage[0]),
+        DATA_LINK_21XX(4, 2, CO_TUNSIGNED16, &cellVoltage[1]),
+        DATA_LINK_21XX(4, 3, CO_TUNSIGNED16, &cellVoltage[2]),
+        DATA_LINK_21XX(4, 4, CO_TUNSIGNED16, &cellVoltage[3]),
 
         // TPDO5
-        DATA_LINK_START_KEY_21XX(5,4),
-        DATA_LINK_21XX(5,1,CO_TUNSIGNED16, &cellVoltage[4]),
-        DATA_LINK_21XX(5,2,CO_TUNSIGNED16, &cellVoltage[5]),
-        DATA_LINK_21XX(5,3,CO_TUNSIGNED16, &cellVoltage[6]),
-        DATA_LINK_21XX(5,4,CO_TUNSIGNED16, &cellVoltage[7]),
+        DATA_LINK_START_KEY_21XX(5, 4),
+        DATA_LINK_21XX(5, 1, CO_TUNSIGNED16, &cellVoltage[4]),
+        DATA_LINK_21XX(5, 2, CO_TUNSIGNED16, &cellVoltage[5]),
+        DATA_LINK_21XX(5, 3, CO_TUNSIGNED16, &cellVoltage[6]),
+        DATA_LINK_21XX(5, 4, CO_TUNSIGNED16, &cellVoltage[7]),
 
         // TPDO6
-        DATA_LINK_START_KEY_21XX(6,4),
-        DATA_LINK_21XX(6,1,CO_TUNSIGNED16, &cellVoltage[8]),
-        DATA_LINK_21XX(6,2,CO_TUNSIGNED16, &cellVoltage[9]),
-        DATA_LINK_21XX(6,3,CO_TUNSIGNED16, &cellVoltage[10]),
-        DATA_LINK_21XX(6,4,CO_TUNSIGNED16, &cellVoltage[11]),
-//TODO: Update SDOs to work with CANopen stack updates
-/*
+        DATA_LINK_START_KEY_21XX(6, 4),
+        DATA_LINK_21XX(6, 1, CO_TUNSIGNED16, &cellVoltage[8]),
+        DATA_LINK_21XX(6, 2, CO_TUNSIGNED16, &cellVoltage[9]),
+        DATA_LINK_21XX(6, 3, CO_TUNSIGNED16, &cellVoltage[10]),
+        DATA_LINK_21XX(6, 4, CO_TUNSIGNED16, &cellVoltage[11]),
+        //TODO: Update SDOs to work with CANopen stack updates
+        /*
         /// Expose information on the balancing of the target cells. Per
         /// cell ability to poll if the cell is balancing and write out
         /// balancing control.

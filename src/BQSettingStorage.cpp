@@ -142,12 +142,12 @@ namespace log = EVT::core::log;
 namespace BMS {
 
 BQSettingsStorage::BQSettingsStorage(EVT::core::DEV::M24C32& eeprom, DEV::BQ76952& bq) : //canOpenInterface{
-//    COBQSettingSize,
-//    COBQSettingCtrl,
-//    COBQSettingRead,
-//    COBQSettingWrite,
-//    this,
-//},
+                                                                                         //    COBQSettingSize,
+                                                                                         //    COBQSettingCtrl,
+                                                                                         //    COBQSettingRead,
+                                                                                         //    COBQSettingWrite,
+                                                                                         //    this,
+                                                                                         //},
                                                                                          eeprom(eeprom), bq(bq) {
     startAddress = 0;
     addressLocation = startAddress + 2;
