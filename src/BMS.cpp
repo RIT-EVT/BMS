@@ -25,8 +25,12 @@ CO_OBJ_T* BMS::getObjectDictionary() {
     return objectDictionary;
 }
 
-uint16_t BMS::getObjectDictionarySize() {
+uint8_t BMS::getNumElements() {
     return OBJECT_DICTIONARY_SIZE;
+}
+
+uint8_t BMS::getNodeID() {
+    return NODE_ID;
 }
 
 void BMS::canTest() {

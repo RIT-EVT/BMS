@@ -5,7 +5,7 @@
 #include <BMSInfo.hpp>
 #include <BQSetting.hpp>
 
-#include <Canopen/co_obj.h>
+#include <co_obj.h>
 
 namespace BMS::DEV {
 
@@ -226,7 +226,7 @@ public:
     Status getBQStatus(uint8_t bqStatusArr[7]);
 
     /** CANopen interface for probing the state of the balancing */
-    CO_OBJ_TYPE balancingCANOpen;
+    //CO_OBJ_TYPE balancingCANOpen;
 
 private:
     /** Used for commands and subcommands */
