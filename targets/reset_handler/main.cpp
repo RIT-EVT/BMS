@@ -42,7 +42,7 @@ int main() {
     can.addIRQHandler(canInterruptHandler, &resetHandler);
 
     // Attempt to join the CAN network
-    IO::CAN::CANStatus result = can.connect();
+    IO::CAN::CANStatus result = can.connect(true);
 
     if (result != IO::CAN::CANStatus::OK) {
         uart.printf("Failed to connect to the CAN network\r\n");
