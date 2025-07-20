@@ -29,7 +29,7 @@ void canInterruptHandler(IO::CANMessage& message, void* priv) {
 int main() {
     EVT::core::platform::init();
 
-    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(115200, true);
+    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(115200);
 
     uart.printf("\r\n\r\nReset Handler Test\r\n");
 

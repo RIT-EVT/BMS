@@ -18,7 +18,7 @@ int main() {
     EVT::core::platform::init();
 
     IO::ADC& adc = IO::getADC<BMS::BMS::TEMP_INPUT_PIN>();
-    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(115200, true);
+    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(115200);
 
     IO::GPIO& muxs1 = IO::getGPIO<BMS::BMS::MUX_S1_PIN>();
     IO::GPIO& muxs2 = IO::getGPIO<BMS::BMS::MUX_S2_PIN>();

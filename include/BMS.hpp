@@ -58,11 +58,13 @@ public:
     static constexpr IO::Pin CAN_RX_PIN = IO::Pin::PA_11;
     static constexpr IO::Pin I2C_SCL_PIN = IO::Pin::PB_6;
     static constexpr IO::Pin I2C_SDA_PIN = IO::Pin::PB_7;
-    static constexpr IO::Pin INTERLOCK_PIN = IO::Pin::PA_3;
+    static constexpr IO::Pin INTERLOCK_PIN = IO::Pin::PF_0;
     static constexpr IO::Pin TEMP_INPUT_PIN = IO::Pin::PA_0;
     static constexpr IO::Pin MUX_S1_PIN = IO::Pin::PA_15;
     static constexpr IO::Pin MUX_S2_PIN = IO::Pin::PB_4;
     static constexpr IO::Pin MUX_S3_PIN = IO::Pin::PA_8;
+    static constexpr IO::Pin ERROR_LED_PIN = IO::Pin::PA_7;
+    static constexpr IO::Pin BQ_RESET_PIN = IO::Pin::PB_1;
 
     /** Error values */
     static constexpr uint8_t BQ_COMM_ERROR = 0x01;

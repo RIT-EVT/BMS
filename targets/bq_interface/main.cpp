@@ -418,7 +418,7 @@ int main() {
     BMS::DEV::BQ76952 bq(i2c, 0x08);
     EVT::core::DEV::M24C32 eeprom(0x57, i2c);
 
-    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(115200, true);
+    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(115200);
     log::LOGGER.setUART(&uart);
     log::LOGGER.setLogLevel(log::Logger::LogLevel::DEBUG);
 
