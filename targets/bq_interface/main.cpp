@@ -415,7 +415,8 @@ int main() {
     EVT::core::platform::init();
 
     IO::I2C& i2c = IO::getI2C<BMS::BMS::I2C_SCL_PIN, BMS::BMS::I2C_SDA_PIN>();
-    BMS::DEV::BQ76952 bq(i2c, 0x08);
+    IO::GPIO& bqReset = IO::getGPIO<BMS::BMS::BQ_RESET_PIN>();
+    BMS::DEV::BQ76952 bq(i2c, 0x08, bqReset);
     EVT::core::DEV::M24C32 eeprom(0x57, i2c);
 
     IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(115200);

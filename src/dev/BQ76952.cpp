@@ -145,7 +145,7 @@ static CO_ERR COBalancingCtrl(CO_OBJ* obj, CO_NODE_T* node, uint16_t func,
 */
 namespace BMS::DEV {
 
-BQ76952::BQ76952(EVT::core::IO::I2C& i2c, uint8_t i2cAddress) : /*
+BQ76952::BQ76952(EVT::core::IO::I2C& i2c, uint8_t i2cAddress, EVT::core::IO::GPIO& resetPin) : /*
     balancingCANOpen{
         COBQBalancingSize,
         COBalancingCtrl,
@@ -154,7 +154,10 @@ BQ76952::BQ76952(EVT::core::IO::I2C& i2c, uint8_t i2cAddress) : /*
         this,
     },
      */
-                                                                i2c(i2c), i2cAddress(i2cAddress) {}
+                                                                                               i2c(i2c), i2cAddress(i2cAddress), resetPin(resetPin) {
+    // Ensure the pin is initialized to low, so it doesn't reset or shut down the BQ
+    resetPin.writePin(EVT::core::IO::GPIO::State::LOW);
+}
 
 BQ76952::Status BQ76952::writeSetting(BMS::BQSetting& setting) {
     // Right now, the BQ only accepts settings made into RAM
@@ -493,6 +496,13 @@ BQ76952::Status BQ76952::getBQStatus(uint8_t bqStatusArr[7]) {
     bqStatusArr[6] = buf / 256;
 
     return BQ76952::Status::OK;
+}
+
+void BQ76952::reset() {
+    resetPin.writePin(EVT::core::IO::GPIO::State::HIGH);
+    // Wait an arbitrary amount of time to ensure the BQ actually resets
+    EVT::core::time::wait(10);
+    resetPin.writePin(EVT::core::IO::GPIO::State::LOW);
 }
 
 }// namespace BMS::DEV

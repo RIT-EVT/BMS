@@ -100,7 +100,8 @@ int main() {
     log::LOGGER.setLogLevel(log::Logger::LogLevel::DEBUG);
 
     // Initialize the BQ interfaces
-    BMS::DEV::BQ76952 bq(i2c, 0x08);
+    IO::GPIO& bqReset = IO::getGPIO<BMS::BMS::BQ_RESET_PIN>();
+    BMS::DEV::BQ76952 bq(i2c, 0x08, bqReset);
     BMS::BQSettingsStorage bqSettingsStorage(eeprom, bq);
 
     // Initialize the Interlock

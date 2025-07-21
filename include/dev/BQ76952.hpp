@@ -1,6 +1,7 @@
 #pragma once
 
 #include <EVT/io/I2C.hpp>
+#include <EVT/io/GPIO.hpp>
 
 #include <BMSInfo.hpp>
 #include <BQSetting.hpp>
@@ -48,8 +49,9 @@ public:
      *
      * @param[in] i2c I2C interface to use to communicate on the bus
      * @param[in] i2cAddress The address of the BQ76952 to use
+     * @param[in] resetPin GPIO instance to reset the BQ
      */
-    BQ76952(EVT::core::IO::I2C& i2c, uint8_t i2cAddress);
+    BQ76952(EVT::core::IO::I2C& i2c, uint8_t i2cAddress, EVT::core::IO::GPIO& resetPin);
 
     /**
      * Write out the given setting
@@ -225,6 +227,11 @@ public:
      */
     Status getBQStatus(uint8_t bqStatusArr[7]);
 
+    /**
+     * Reset the BQ
+     */
+    void reset();
+
     /** CANopen interface for probing the state of the balancing */
     //CO_OBJ_TYPE balancingCANOpen;
 
@@ -279,8 +286,10 @@ private:
 
     /** I2C bus to communicate over */
     EVT::core::IO::I2C& i2c;
-    /** The address of the BQ76952 on the I2C bus */
+    /** The address of the BQ on the I2C bus */
     uint8_t i2cAddress;
+    /** Reset pin of the BQ */
+    EVT::core::IO::GPIO& resetPin;
 };
 
 }// namespace BMS::DEV

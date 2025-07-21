@@ -32,7 +32,8 @@ int main() {
 
     EVT::core::time::wait(500);
 
-    BMS::DEV::BQ76952 bq(i2c, BQ_I2C_ADDR);
+    IO::GPIO& bqReset = IO::getGPIO<BMS::BMS::BQ_RESET_PIN>();
+    BMS::DEV::BQ76952 bq(i2c, 0x08, bqReset);
     BMS::BQSettingsStorage settingsStorage(eeprom, bq);
 
     bool isComplete = false;
