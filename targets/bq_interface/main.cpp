@@ -40,6 +40,7 @@ void printHelp(IO::UART& uart) {
     uart.printf(" i - Get interlock state\r\n");
     uart.printf(" a - Get alarm state\r\n");
     uart.printf(" o - Set OK signal output\r\n");
+    uart.printf(" e - Set error LED output\r\n");
     uart.printf(" v - Read voltages\r\n");
     uart.printf(" t - Transfer settings\r\n");
 
@@ -354,6 +355,19 @@ void setOK(IO::UART& uart, IO::GPIO& bmsOK) {
     }
 }
 
+void setError(IO::UART& uart, IO::GPIO& errorLed) {
+    uart.printf("Set error LED pin (0/1): ");
+    uart.printf("\r\n");
+    uart.gets(inputBuffer, MAX_BUFF);
+    if (inputBuffer[0] == '1') {
+        errorLed.writePin(IO::GPIO::State::HIGH);
+        uart.printf("Set error LED high\r\n");
+    } else {
+        errorLed.writePin(IO::GPIO::State::LOW);
+        uart.printf("Set error LED low\r\n");
+    }
+}
+
 void getVoltages(IO::UART& uart, BMS::DEV::BQ76952& bq) {
     uint16_t tot = 0;
     for (uint8_t i = 0; i < 16; i++) {
@@ -439,6 +453,8 @@ int main() {
 
     IO::GPIO& bmsOK = IO::getGPIO<BMS::BMS::OK_PIN>(IO::GPIO::Direction::OUTPUT);
 
+    IO::GPIO& errorLed = IO::getGPIO<BMS::BMS::ERROR_LED_PIN>(IO::GPIO::Direction::OUTPUT);
+
     time::wait(500);
 
     while (true) {
@@ -519,6 +535,10 @@ int main() {
         // Set OK signal output
         case 'o':
             setOK(uart, bmsOK);
+            break;
+        // Set OK signal output
+        case 'e':
+            setError(uart, errorLed);
             break;
         }
     }

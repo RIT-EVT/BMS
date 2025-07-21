@@ -74,17 +74,19 @@ public:
     /**
      * Make a new instance of the BMS with the given devices
      *
-     * @param bqSettingsStorage Object used to manage BQ settings storage
-     * @param bq BQ chip instance
-     * @param interlock GPIO used to check the interlock status
-     * @param alarm GPIO used to check the BQ alarm status
-     * @param systemDetect Object used to detect what system the BMS is connected to
-     * @param bmsOK GPIO used to output the OK signal from the BMS
-     * @param thermMux MUX for pack thermistors
-     * @param resetHandler Handler for reset messages
+     * @param[in] bqSettingsStorage Object used to manage BQ settings storage
+     * @param[in] bq BQ chip instance
+     * @param[in] interlock GPIO used to check the interlock status
+     * @param[in] alarm GPIO used to check the BQ alarm status
+     * @param[in] systemDetect Object used to detect what system the BMS is connected to
+     * @param[in] bmsOK GPIO used to output the OK signal from the BMS
+     * @param[in] errorLed GPIO used to indicate a BMS error with an LED
+     * @param[in] thermMux MUX for pack thermistors
+     * @param[in] resetHandler Handler for reset messages
+     * @param[in] iwdg Internal watchdog to ensure the BMS code is running without getting stuck
      */
     BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq, DEV::Interlock& interlock,
-        IO::GPIO& alarm, SystemDetect& systemDetect, IO::GPIO& bmsOK,
+        IO::GPIO& alarm, SystemDetect& systemDetect, IO::GPIO& bmsOK, IO::GPIO& errorLed,
         DEV::ThermistorMux& thermMux, ResetHandler& resetHandler, EVT::core::DEV::IWDG& iwdg);
 
     /**
@@ -224,6 +226,11 @@ private:
      * charge or discharge,
      */
     IO::GPIO& bmsOK;
+
+    /**
+     * LED to indicate an error in the BMS
+     */
+    IO::GPIO& errorLed;
 
     /**
      * Multiplexer to handle pack thermistors

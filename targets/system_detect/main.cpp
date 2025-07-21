@@ -100,7 +100,6 @@ int main() {
     BMS::BQSettingsStorage bqSettingsStorage(eeprom, bq);
 
     // Initialize the Interlock
-    // TODO: Determine actual interlock GPIO
     IO::GPIO& interlockGPIO = IO::getGPIO<BMS::BMS::INTERLOCK_PIN>(IO::GPIO::Direction::INPUT);
     BMS::DEV::Interlock interlock(interlockGPIO);
 
@@ -108,8 +107,10 @@ int main() {
     IO::GPIO& alarm = IO::getGPIO<BMS::BMS::ALARM_PIN>(IO::GPIO::Direction::INPUT);
 
     // Initialize the system OK pin
-    // TODO: Determine actual system ok pin
     IO::GPIO& bmsOK = IO::getGPIO<BMS::BMS::OK_PIN>(IO::GPIO::Direction::OUTPUT);
+
+    // Initialize the error LED pin
+    IO::GPIO& errorLed = IO::getGPIO<BMS::BMS::ERROR_LED_PIN>(IO::GPIO::Direction::OUTPUT);
 
     // Initialize the thermistor MUX
     IO::GPIO* muxSelectArr[3] = {
@@ -124,7 +125,7 @@ int main() {
     DEV::IWDG& iwdg = DEV::getIWDG(500);
 
     // Initialize the BMS itself
-    BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect, bmsOK, thermMux, resetHandler, iwdg);
+    BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect, bmsOK, errorLed, thermMux, resetHandler, iwdg);
 
     ///////////////////////////////////////////////////////////////////////////
     // Setup CAN configuration, this handles making drivers, applying settings.

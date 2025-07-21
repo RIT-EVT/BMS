@@ -11,12 +11,14 @@ namespace BMS {
 
 BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
          DEV::Interlock& interlock, IO::GPIO& alarm, SystemDetect& systemDetect,
-         IO::GPIO& bmsOK, DEV::ThermistorMux& thermMux,
+         IO::GPIO& bmsOK, IO::GPIO& errorLed, DEV::ThermistorMux& thermMux,
          ResetHandler& resetHandler, EVT::core::DEV::IWDG& iwdg) : bqSettingsStorage(bqSettingsStorage),
                                                                    bq(bq), state(State::START), interlock(interlock),
                                                                    alarm(alarm), systemDetect(systemDetect), resetHandler(resetHandler),
-                                                                   bmsOK(bmsOK), thermistorMux(thermMux), iwdg(iwdg), stateChanged(true) {
+                                                                   bmsOK(bmsOK), errorLed(errorLed), thermistorMux(thermMux),
+                                                                   iwdg(iwdg), stateChanged(true) {
     bmsOK.writePin(IO::GPIO::State::LOW);
+    errorLed.writePin(IO::GPIO::State::LOW);
 
     updateBQData();
 }
@@ -194,6 +196,7 @@ void BMS::startState() {
 void BMS::initializationErrorState() {
     if (stateChanged) {
         bmsOK.writePin(BMS_NOT_OK);
+        errorLed.writePin(IO::GPIO::State::HIGH);
         stateChanged = false;
         clearVoltageReadings();
         log::LOGGER.log(log::Logger::LogLevel::INFO, "Entering initialization error state");
@@ -202,6 +205,8 @@ void BMS::initializationErrorState() {
     updateThermistorReading();
 
     if (resetHandler.shouldReset()) {
+        bq.reset();
+        errorLed.writePin(IO::GPIO::State::LOW);
         state = State::START;
         stateChanged = true;
     }
@@ -302,6 +307,7 @@ void BMS::systemReadyState() {
 void BMS::unsafeConditionsError() {
     if (stateChanged) {
         bmsOK.writePin(BMS_NOT_OK);
+        errorLed.writePin(IO::GPIO::State::HIGH);
         stateChanged = false;
         log::LOGGER.log(log::Logger::LogLevel::INFO, "Entering unsafe conditions state");
     }
@@ -310,6 +316,8 @@ void BMS::unsafeConditionsError() {
     updateThermistorReading();
 
     if (resetHandler.shouldReset()) {
+        bq.reset();
+        errorLed.writePin(IO::GPIO::State::LOW);
         state = State::START;
         stateChanged = true;
     }
