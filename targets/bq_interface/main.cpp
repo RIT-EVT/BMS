@@ -320,7 +320,7 @@ void exitConfigMode(IO::UART& uart, BMS::DEV::BQ76952& bq) {
 void getTemperatures(IO::UART& uart, BMS::DEV::BQ76952& bq, BMS::DEV::ThermistorMux tMux) {
     for (uint8_t i = 0; i < 6; i++) {
         uint16_t temp = tMux.getTemp(i);
-        uart.printf("Thermistor %d: %d.%03d\r\n", i, temp / 1000, temp % 1000);
+        uart.printf("Thermistor %d: %d\r\n", i, temp);
     }
     uint16_t result;
     bq.makeDirectRead(0x68, &result);
