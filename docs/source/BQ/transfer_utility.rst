@@ -36,7 +36,7 @@ diagrams below.
 CANopen
 -------
 
-.. image:: ../_static/images/bq_settings_update_sequence.png
+.. image:: ../_static/images/bq_settings_update_sequence_canopen.png
    :width: 300
    :align: center
 
@@ -77,6 +77,44 @@ The utilities themselves are Python3 scripts with a command line interface.
 Users will interact directly with the scripts in order to execute the
 conversion logic as well as the transfer logic. The remainder of this
 document will go over the specifics of interacting with these scripts.
+
+.. _transfer_over_uart:
+Converting and Transferring over UART
+=====================================
+
+With revision 3 of the BMS, UART was exposed, so we were able to start using
+that interface for transferring settings instead of CAN. Because UART is a
+simpler method of communication, this is generally the preferred method of
+transferring settings to the BMS.
+
+To get started, all you'll need is a BMS, a BMS battery power source, an
+STLink-v3 Mini, and your laptop. Connect the STLink to your computer and the
+BMS, and carefully plug the BMS in. In STM32CubeProgrammer, confirm that you are
+able to connect to the microcontroller.
+
+Next, confirm that you have the Python scripts ready by get the help message for the ``convert_transfer`` command.
+Below is some example output. The python scripts are located in ``tools/bqsettings/``
+
+.. code-block:: bash
+    $ python run.py convert_transfer --help
+
+    usage: run.py convert_transfer [-h] input port
+
+    positional arguments:
+      input       The TI file containing the settings to transfer
+      port        Serial port connected to the BMS
+
+    optional arguments:
+      -h, --help  show this help message and exit
+
+Once this is working, you can begin the transfer process by following these steps:
+
+1. Open a command prompt and navigate to ``BMS/tools/bqsettings``.
+2. Compile and flash ``uart_settings_upload`` to the BMS.
+3. Within 10 seconds [#f1]_, run ``python3 run.py convert_transfer ../parse/settings_3_28_23.gg.csv PORT``, replacing PORT with the usb port, the ST-Link V3 is connected to.
+4. Wait for all settings to be sent to the BMS and written to the EEPROM.
+
+To confirm that settings have been sent successfully and that they don't cause issues with the BQ chip, follow :ref:`_flash_bms`.
 
 Training Module
 ===============
@@ -248,51 +286,6 @@ command below to convert the CSV into binary.
 
    python run.py convert output.csv output.bin
 
-Converting and Transferring over UART
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-With revision 3 of the BMS, UART was exposed, so we were able to start using
-that interface for transferring settings instead of CAN. Because UART is a
-simpler method of communication, this is generally the preferred method of
-transferring settings to the BMS.
-
-To get started, all you'll need is a BMS, a BMS battery power source, an
-STLink-v3 Mini, and your laptop. Connect the STLink to your computer and the
-BMS, and carefully plug the BMS in. In STM32CubeProgrammer, confirm that you are
-able to connect to the microcontroller. Next, confirm that you have the Python
-scripts ready by get the help message for the ``convert_transfer`` command.
-Below is some example output.
-
-.. code-block:: bash
-
-    $ python run.py convert_transfer --help
-
-    usage: run.py convert_transfer [-h] input port
-
-    positional arguments:
-      input       The TI file containing the settings to transfer
-      port        Serial port connected to the BMS
-
-    optional arguments:
-      -h, --help  show this help message and exit
-
-Once this is working, you can begin the transfer process by following these
-steps:
-
-1. Open a command prompt and navigate to ``BMS/tools/bqsettings``.
-2. Compile and flash ``uart_settings_upload`` to the BMS.
-3. Within 10 seconds, run ``
-   a. This 10-second time limit is caused by a limitation of EVT-core. It should
-   be fixed in future development.
-4. Wait for all settings to be sent to the BMS and written to the EEPROM.
-
-To confirm that settings have been sent successfully and that they don't cause
-issues with the BQ chip, perform the following steps:
-
-1. Compile and flash bq_interface to the BMS.
-2. Confirm that you have communication with BQ chip ('v').
-3. Transfer settings from the EEPROM to the BQ chip ('t').
-4. Check if you have communication with the BQ chip ('v').
 
 References
 ~~~~~~~~~~
@@ -300,3 +293,7 @@ References
 * `BQ76952 3-s to 16-s high-accuracy battery monitor and protector for Li-ion, Li-polymer and LiFePO4 <https://www.ti.com/product/BQ76952>`_
 * `CANopen - The standardized embedded network <https://www.can-cia.org/canopen/>`_
 * `EVT-core <https://evt-core.readthedocs.io/en/latest/>`_
+
+.. rubric:: Footnotes
+
+.. [#f1] This 10-second time limit is caused by a limitation of EVT-core. It should be fixed in future development.
