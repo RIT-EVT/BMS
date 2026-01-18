@@ -36,12 +36,12 @@ jobs:
       # Build the code for all supported chips
       - name: F302 Build
         run: |
-          cmake -DTARGET_DEV=STM32F302x8 -B ${{github.workspace}}/build
+          cmake -DTARGET_DEV=STM32F302x8 -Wno-dev -B ${{github.workspace}}/build
           cmake --build ${{github.workspace}}/build
 
       - name: F334 Build
         run: |
-          cmake -DTARGET_DEV=STM32F334x8 -B ${{github.workspace}}/build
+          cmake -DTARGET_DEV=STM32F334x8 -Wno-dev -B ${{github.workspace}}/build
           cmake --build ${{github.workspace}}/build
 
       - name: F446 Build
