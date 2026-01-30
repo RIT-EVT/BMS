@@ -5,7 +5,6 @@
 #include <EVT/io/CANOpenMacros.hpp>
 #include <EVT/io/CANopen.hpp>
 #include <EVT/io/UART.hpp>
-#include <EVT/io/pin.hpp>
 #include <EVT/io/types/CANMessage.hpp>
 #include <EVT/manager.hpp>
 

@@ -5,7 +5,7 @@ This document will cover how to setup a test environment for the BMS v4.0.
 
 Getting Started
 ===========
-To get started, the settings for the BMS need to transferred, follow the steps outlined in :ref:`transfer_over_uart`. This is a **very** important step and must be done **once** when a board is first brought up.
+To get started, the settings for the BMS need to transferred, follow the steps outlined in :ref:`_transfer_over_uart`. This is a **very** important step and must be done **once** when a board is first brought up.
 
 Loading BMS settings
 ------------
@@ -24,18 +24,39 @@ Settings Transfer
 -------------
 Before you can begin testing BMS functions you need to transfer the settings, this can be done by entering `t` and waiting for all settings to transfer.
 
-If there are any errors during settings transfer, unplug and replug the board. Reflash ``bq_interface`` and try again. Errors in this section are caused by a flaw in the BMS v4.0 that fails to hold the BQ reset line low. When the reset line is held high, it will shutdown the BQ chip. This flaw is present on BMS 1.0
-
-Reset line is not pulled low
-if the reset line is held in the wrong place for too long it will shutdown the BQ chip
-
+If there are any errors during settings transfer, unplug and replug the board, reflash ``bq_interface`` and try again. Errors in this section are caused by a flaw in BMS v4.0 that fails to hold the BQ reset line low. When the reset line is held high, it will shutdown the BQ chip.
 
 Testing
 ============
-You are now ready to start testing BMS functions.
+You are now ready to start testing BMS functions! For each section, check the values that the BMS reports, then check the real world value. After checking the real world value, recheck that the BMS has not changed (just a sanity check).
+
+Testing Voltages
+------------
+Testing pack voltages is the first step in validating the BMS. First plug the BMS into a test battery pack. You can then use ``v - Read voltages`` to list out the voltages for every cell.
+
+*Note that on BMS v4.0, the BMS skips cells 8, 10, 12, and 14. Practically, this just requires you to adjust cell numbering after 8 when checking voltages*
+
+To double check that the BMS is correctly reading voltages, grab a multimeter with two probes. The voltage of the first cell has a different measurement process than all other cells. This is because every cell is grounded to the previous cell. Since Cell #1 doesn't have a previous cell you need to use the Batt - pad on the BMS as ground.
+
+The diagram below shows the placement for the positive and negative probes from your multimeter.
+
+.. image:: ./_static/images/cell_1_voltage_measurement.png
+   :align: center
+
+For every other cell (greater than 1), this diagram shows the positions of the positive and negative probes of the multi meter.
+
+.. image:: ./_static/images/cell_voltage_measurement.png
+   :align: center
+
+Test pack balances
+------------
+To check cell balancing
+
 
 Testing Polarity / Current
-============
+------------
+
+
 Set current limit on power supply all the way down
 
 ps + -> hs_curr_p (red)    = charging
@@ -44,10 +65,13 @@ ps - -> hs_curr_n (purple) = charging
 ps + -> hs_curr_n (purple) = discharging
 ps - -> hs_curr_p (red)    = discharging
 
+direct read @ 0x3a
+
 N +0.08mv: 0xFD0A, 0xFD09, -718, -759
 P +0.08mv: 0x02CE, 0x02DA
+
 
 P > N = +
 P < N = -
 
-Set balance state to 1, point heat gun and see if it gets hot
+Set balance state to 1, point thermal gun and see if it gets hot
