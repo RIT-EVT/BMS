@@ -1,18 +1,20 @@
 #include <BMS.hpp>
 
-#include <EVT/utils/log.hpp>
-#include <EVT/utils/time.hpp>
+#include <core/utils/log.hpp>
+#include <core/utils/time.hpp>
 #include <cstring>
 
-namespace time = EVT::core::time;
-namespace log = EVT::core::log;
+#include <core/dev/IWDG.hpp>
+
+namespace time = core::time;
+namespace log = core::log;
 
 namespace BMS {
 
-BMS::BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq,
-         DEV::Interlock& interlock, IO::GPIO& alarm, SystemDetect& systemDetect,
-         IO::GPIO& bmsOK, IO::GPIO& errorLed, DEV::ThermistorMux& thermMux,
-         ResetHandler& resetHandler, EVT::core::DEV::IWDG& iwdg) : bqSettingsStorage(bqSettingsStorage),
+BMS::BMS(BQSettingsStorage& bqSettingsStorage, dev::BQ76952 bq,
+         dev::Interlock& interlock, IO::GPIO& alarm, SystemDetect& systemDetect,
+         IO::GPIO& bmsOK, IO::GPIO& errorLed, dev::ThermistorMux& thermMux,
+         ResetHandler& resetHandler, core::dev::IWDG& iwdg) : bqSettingsStorage(bqSettingsStorage),
                                                                    bq(bq), state(State::START), interlock(interlock),
                                                                    alarm(alarm), systemDetect(systemDetect), resetHandler(resetHandler),
                                                                    bmsOK(bmsOK), errorLed(errorLed), thermistorMux(thermMux),
@@ -146,7 +148,7 @@ void BMS::startState() {
             .temp1 = 0,
             .temp2 = 0,
         };
-        memset(thermistorTemperature, 0, DEV::BQ76952::NUM_CELLS * sizeof(uint16_t));
+        memset(thermistorTemperature, 0, dev::BQ76952::NUM_CELLS * sizeof(uint16_t));
         memset(bqStatusArr, 0, sizeof(uint8_t) * 3);
         errorRegister = 0;
         lastCheckedThermNum = -1;
@@ -165,8 +167,8 @@ void BMS::startState() {
     }
 
     // Check to see if communication is possible with the BQ chip
-    DEV::BQ76952::Status status = bq.communicationStatus();
-    if (status != DEV::BQ76952::Status::OK) {
+    dev::BQ76952::Status status = bq.communicationStatus();
+    if (status != dev::BQ76952::Status::OK) {
 
         // Increment the number of errors that have taken place
         numBqAttemptsMade++;
@@ -249,7 +251,7 @@ void BMS::transferSettingsState() {
 
     bool isComplete = false;
     auto result = bqSettingsStorage.transferSetting(isComplete);
-    if (result != DEV::BQ76952::Status::OK) {
+    if (result != dev::BQ76952::Status::OK) {
         numBqAttemptsMade++;
 
         // If the number of errors are over the max
@@ -398,25 +400,25 @@ void BMS::updateBQData() {
         }
     }
 
-    DEV::BQ76952::Status result = bq.getCellVoltage(cellVoltage, totalVoltage, voltageInfo);
+    dev::BQ76952::Status result = bq.getCellVoltage(cellVoltage, totalVoltage, voltageInfo);
 
-    if (result == DEV::BQ76952::Status::OK) {
+    if (result == dev::BQ76952::Status::OK) {
         result = bq.getTotalVoltage(batteryVoltage);
     }
 
-    if (result == DEV::BQ76952::Status::OK) {
+    if (result == dev::BQ76952::Status::OK) {
         result = bq.getCurrent(current);
     }
 
-    if (result == DEV::BQ76952::Status::OK) {
+    if (result == dev::BQ76952::Status::OK) {
         result = bq.getTemps(bqTempInfo);
     }
 
-    if (result == DEV::BQ76952::Status::OK) {
+    if (result == dev::BQ76952::Status::OK) {
         result = bq.getBQStatus(bqStatusArr);
     }
 
-    if (result != DEV::BQ76952::Status::OK) {
+    if (result != dev::BQ76952::Status::OK) {
         numBqAttemptsMade++;
 
         // If the number of errors are over the max
@@ -482,7 +484,7 @@ void BMS::clearVoltageReadings() {
     voltageInfo = {0, 0, 0, 0};
 
     // Zero out all cell voltages
-    memset(cellVoltage, 0, DEV::BQ76952::NUM_CELLS * sizeof(uint16_t));
+    memset(cellVoltage, 0, dev::BQ76952::NUM_CELLS * sizeof(uint16_t));
 }
 
 }// namespace BMS

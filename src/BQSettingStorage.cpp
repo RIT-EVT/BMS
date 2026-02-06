@@ -1,8 +1,8 @@
 #include <BQSettingStorage.hpp>
 
-#include <EVT/utils/log.hpp>
+#include <core/utils/log.hpp>
 
-namespace log = EVT::core::log;
+namespace log = core::log;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Functions for interacting with the BQSettingsStorage through CANopen
@@ -141,7 +141,7 @@ namespace log = EVT::core::log;
 
 namespace BMS {
 
-BQSettingsStorage::BQSettingsStorage(EVT::core::DEV::M24C32& eeprom, DEV::BQ76952& bq) ://canOpenInterface{
+BQSettingsStorage::BQSettingsStorage(core::dev::M24C32& eeprom, dev::BQ76952& bq) ://canOpenInterface{
                                                                                          //    COBQSettingSize,
                                                                                          //    COBQSettingCtrl,
                                                                                          //    COBQSettingRead,
@@ -167,10 +167,10 @@ void BQSettingsStorage::setNumSettings(uint32_t numSettings) {
 }
 
 void BQSettingsStorage::readSetting(BQSetting& setting) {
-    uint8_t buffer[BMS::BQSetting::ARRAY_SIZE];
+    uint8_t buffer[BQSetting::ARRAY_SIZE];
 
     eeprom.readBytes(addressLocation,
-                     buffer, BMS::BQSetting::ARRAY_SIZE);
+                     buffer, BQSetting::ARRAY_SIZE);
 
     log::LOGGER.log(log::Logger::LogLevel::DEBUG,
                     "Address Location: %u", addressLocation);
@@ -199,10 +199,10 @@ void BQSettingsStorage::writeSetting(BQSetting& setting) {
                     addressLocation);
     // Write the array of data into the EEPROM
     eeprom.writeBytes(addressLocation,
-                      buffer, BMS::BQSetting::ARRAY_SIZE);
+                      buffer, BQSetting::ARRAY_SIZE);
 
     // Increment where to write to next
-    addressLocation += BMS::BQSetting::ARRAY_SIZE;
+    addressLocation += BQSetting::ARRAY_SIZE;
 
     // Increment the number of settings that have been written
     numSettingsWritten += 1;
@@ -227,11 +227,11 @@ void BQSettingsStorage::resetTransfer() {
     resetEEPROMOffset();
 }
 
-BMS::DEV::BQ76952::Status BQSettingsStorage::transferSetting(bool& isComplete) {
+dev::BQ76952::Status BQSettingsStorage::transferSetting(bool& isComplete) {
     // If all settings have already been transferred, do nothing
     if (numSettingsTransferred == numSettings) {
         isComplete = true;
-        return BMS::DEV::BQ76952::Status::OK;
+        return dev::BQ76952::Status::OK;
     }
 
     if (numSettingsTransferred == 0) {
@@ -239,13 +239,13 @@ BMS::DEV::BQ76952::Status BQSettingsStorage::transferSetting(bool& isComplete) {
     }
 
     // Otherwise transfer a single setting
-    BMS::DEV::BQ76952::Status status;
+    dev::BQ76952::Status status;
     BQSetting setting;
     readSetting(setting);
     status = bq.writeSetting(setting);
 
     // Make sure the status was ok
-    if (status != BMS::DEV::BQ76952::Status::OK) {
+    if (status != dev::BQ76952::Status::OK) {
         isComplete = false;
 
         log::LOGGER.log(log::Logger::LogLevel::ERROR,
@@ -264,7 +264,7 @@ BMS::DEV::BQ76952::Status BQSettingsStorage::transferSetting(bool& isComplete) {
     if (isComplete) {
         bq.exitConfigUpdateMode();
     }
-    return BMS::DEV::BQ76952::Status::OK;
+    return dev::BQ76952::Status::OK;
 }
 
 bool BQSettingsStorage::hasSettings() {
