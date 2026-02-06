@@ -41,7 +41,7 @@ jobs:
 
       - name: F334 Build
         run: |
-          cmake -DTARGET_DEV=STM32F334x8 -Wno-dev -B ${{github.workspace}}/build
+          cmake -DTARGET_DEV=STM32F334x8 -B ${{github.workspace}}/build
           cmake --build ${{github.workspace}}/build
 #
 #      - name: F446 Build
@@ -67,5 +67,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: all_target_elfs
-          path: |
-            build/**/*.elf
+          path: build/**/*.elf
