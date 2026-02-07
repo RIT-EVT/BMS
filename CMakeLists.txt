@@ -36,8 +36,8 @@ include(CMakeDependentOption)
 include(${EVT_CORE_DIR}/cmake/evt-core_compiler.cmake)
 include(${EVT_CORE_DIR}/cmake/evt-core_install.cmake)
 
-set(CMAKE_CXX_FLAGS_DEBUG "-Os")
-set(CMAKE_CXX_FLAGS_RELEASE "-Os")
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Os -s")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Os -s")
 
 ###############################################################################
 # Project Setup
