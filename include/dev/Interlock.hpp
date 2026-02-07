@@ -1,8 +1,8 @@
 #pragma once
 
-#include <EVT/io/GPIO.hpp>
+#include <core/io/GPIO.hpp>
 
-namespace BMS::DEV {
+namespace BMS::dev {
 
 /**
  * Represents the interlock which detects if the battery is has a cable
@@ -16,7 +16,7 @@ public:
      *
      * @pre The GPIO is set as an input
      */
-    explicit Interlock(EVT::core::IO::GPIO& gpio);
+    explicit Interlock(core::io::GPIO& gpio);
 
     /**
      * See if a cable is detected in the interlock
@@ -25,10 +25,10 @@ public:
 
 private:
     /** Active high state of the detect GPIO */
-    static constexpr EVT::core::IO::GPIO::State ACTIVE_STATE = EVT::core::IO::GPIO::State::HIGH;
+    static constexpr core::io::GPIO::State ACTIVE_STATE = core::io::GPIO::State::HIGH;
 
     /** GPIO which is used to read the detect state */
-    EVT::core::IO::GPIO& gpio;
+    core::io::GPIO& gpio;
 };
 
-}// namespace BMS::DEV
+}// namespace BMS::dev

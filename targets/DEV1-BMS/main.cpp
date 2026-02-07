@@ -8,20 +8,20 @@
 #include <EVT/io/types/CANMessage.hpp>
 #include <EVT/manager.hpp>
 
-#include <EVT/dev/storage/EEPROM.hpp>
-#include <EVT/dev/storage/M24C32.hpp>
+#include <core/dev/storage/EEPROM.hpp>
+#include <core/dev/storage/M24C32.hpp>
 
-#include <EVT/utils/log.hpp>
-#include <EVT/utils/types/FixedQueue.hpp>
+#include <core/utils/log.hpp>
+#include <core/utils/types/FixedQueue.hpp>
 
 #include <BMS.hpp>
 #include <SystemDetect.hpp>
 #include <dev/BQ76952.hpp>
 
-namespace IO = EVT::core::IO;
-namespace DEV = EVT::core::DEV;
-namespace time = EVT::core::time;
-namespace log = EVT::core::log;
+namespace IO = core::io;
+namespace DEV = core::dev;
+namespace time = core::time;
+namespace log = core::log;
 
 #define BIKE_HEART_BEAT 0x70A   // NODE_ID = 10
 #define CHARGER_HEART_BEAT 0x710// NODE_ID = 16
@@ -33,7 +33,7 @@ namespace log = EVT::core::log;
  * to the interrupt handler.
  */
 struct CANInterruptParams {
-    EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>* queue;
+    core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>* queue;
     BMS::SystemDetect* systemDetect;
     BMS::ResetHandler* resetHandler;
 };
@@ -46,7 +46,7 @@ struct CANInterruptParams {
 void canInterruptHandler(IO::CANMessage& message, void* priv) {
     struct CANInterruptParams* params = (CANInterruptParams*) priv;
 
-    EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>* queue =
+    core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>* queue =
         params->queue;
     BMS::SystemDetect* systemDetect = params->systemDetect;
     BMS::ResetHandler* resetHandler = params->resetHandler;
@@ -63,10 +63,10 @@ void canInterruptHandler(IO::CANMessage& message, void* priv) {
 
 int main() {
     // Initialize system
-    EVT::core::platform::init();
+    core::platform::init();
 
     // Queue that will store CANopen messages
-    EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage> canOpenQueue;
+    core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage> canOpenQueue;
 
     // Initialize the system detect
     BMS::SystemDetect systemDetect(BIKE_HEART_BEAT, CHARGER_HEART_BEAT,
@@ -92,7 +92,7 @@ int main() {
     DEV::Timer& timer = DEV::getTimer<DEV::MCUTimer::Timer2>(100);
 
     // Initialize the EEPROM
-    EVT::core::DEV::M24C32 eeprom(0x57, i2c);
+    DEV::M24C32 eeprom(0x57, i2c);
 
     // Initialize the logger
     log::LOGGER.setUART(&uart);
@@ -100,12 +100,12 @@ int main() {
 
     // Initialize the BQ interfaces
     IO::GPIO& bqReset = IO::getGPIO<BMS::BMS::BQ_RESET_PIN>();
-    BMS::DEV::BQ76952 bq(i2c, 0x08, bqReset);
+    BMS::dev::BQ76952 bq(i2c, 0x08, bqReset);
     BMS::BQSettingsStorage bqSettingsStorage(eeprom, bq);
 
     // Initialize the Interlock
     IO::GPIO& interlockGPIO = IO::getGPIO<BMS::BMS::INTERLOCK_PIN>(IO::GPIO::Direction::INPUT);
-    BMS::DEV::Interlock interlock(interlockGPIO);
+    BMS::dev::Interlock interlock(interlockGPIO);
 
     // Initialize the alarm pin
     IO::GPIO& alarm = IO::getGPIO<BMS::BMS::ALARM_PIN>(IO::GPIO::Direction::INPUT);
@@ -124,7 +124,7 @@ int main() {
     };
     IO::ADC& thermAdc = IO::getADC<BMS::BMS::TEMP_INPUT_PIN>();
 
-    BMS::DEV::ThermistorMux thermMux(muxSelectArr, thermAdc);
+    BMS::dev::ThermistorMux thermMux(muxSelectArr, thermAdc);
 
     DEV::IWDG& iwdg = DEV::getIWDG(500);
 

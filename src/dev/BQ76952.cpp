@@ -1,14 +1,14 @@
 #include <dev/BQ76952.hpp>
 
-#include <EVT/utils/log.hpp>
-#include <EVT/utils/time.hpp>
+#include <core/utils/log.hpp>
+#include <core/utils/time.hpp>
 #include <co_err.h>
 #include <co_obj.h>
 
 // (void)0 is added to the end of each macro to force users to follow the macro with a ';'
 /// Macro to make an I2C transfer and return an error on failure
 #define BQ_I2C_RETURN_IF_ERR(func)                   \
-    if (func != EVT::core::IO::I2C::I2CStatus::OK) { \
+    if (func != core::io::I2C::I2CStatus::OK) { \
         return Status::I2C_ERROR;                    \
     }                                                \
     (void) 0
@@ -18,7 +18,7 @@
     {                                                                                           \
         Status result_ = func;                                                                  \
         if (result_ != Status::OK) {                                                            \
-            EVT::core::log::LOGGER.log(EVT::core::log::Logger::LogLevel::ERROR, "BQ ERROR: %d", \
+            core::log::LOGGER.log(core::log::Logger::LogLevel::ERROR, "BQ ERROR: %d", \
                                        (uint8_t) result_);                                      \
             return result_;                                                                     \
         }                                                                                       \
@@ -77,12 +77,12 @@ static CO_ERR COBQBalancingRead(CO_OBJ_T* obj, CO_NODE_T* node, void* buf,
 
     auto targetCell = static_cast<uint8_t>(obj->Data);
 
-    auto* bq = (BMS::DEV::BQ76952*) priv;
+    auto* bq = (bms::dev::BQ76952*) priv;
 
     bool isBalancing = false;
-    BMS::DEV::BQ76952::Status status = bq->isBalancing(targetCell, &isBalancing);
+    bms::dev::BQ76952::Status status = bq->isBalancing(targetCell, &isBalancing);
 
-    if (status != BMS::DEV::BQ76952::Status::OK) {
+    if (status != bms::dev::BQ76952::Status::OK) {
         return CO_ERR_OBJ_READ;
     }
 
@@ -113,14 +113,14 @@ static CO_ERR COBQBalancingWrite(CO_OBJ_T* obj, CO_NODE_T* node, void* buf,
 
     auto targetCell = static_cast<uint8_t>(obj->Data);
 
-    auto* bq = (BMS::DEV::BQ76952*) priv;
+    auto* bq = (bms::dev::BQ76952*) priv;
 
     uint8_t balancingState = *(uint8_t*) buf;
     balancingState = balancingState > 0 ? 1 : 0;
 
-    BMS::DEV::BQ76952::Status status = bq->setBalancing(targetCell, balancingState);
+    bms::dev::BQ76952::Status status = bq->setBalancing(targetCell, balancingState);
 
-    if (status != BMS::DEV::BQ76952::Status::OK) {
+    if (status != bms::dev::BQ76952::Status::OK) {
         return CO_ERR_OBJ_WRITE;
     }
 
@@ -143,9 +143,9 @@ static CO_ERR COBalancingCtrl(CO_OBJ* obj, CO_NODE_T* node, uint16_t func,
     return CO_ERR_NONE;
 }
 */
-namespace BMS::DEV {
+namespace BMS::dev {
 
-BQ76952::BQ76952(EVT::core::IO::I2C& i2c, uint8_t i2cAddress, EVT::core::IO::GPIO& resetPin) : /*
+BQ76952::BQ76952(core::io::I2C& i2c, uint8_t i2cAddress, core::io::GPIO& resetPin) : /*
     balancingCANOpen{
         COBQBalancingSize,
         COBalancingCtrl,
@@ -156,13 +156,13 @@ BQ76952::BQ76952(EVT::core::IO::I2C& i2c, uint8_t i2cAddress, EVT::core::IO::GPI
      */
                                                                                                i2c(i2c), i2cAddress(i2cAddress), resetPin(resetPin) {
     // Ensure the pin is initialized to low, so it doesn't reset or shut down the BQ
-    resetPin.writePin(EVT::core::IO::GPIO::State::LOW);
+    resetPin.writePin(core::io::GPIO::State::LOW);
 }
 
-BQ76952::Status BQ76952::writeSetting(BMS::BQSetting& setting) {
+BQ76952::Status BQ76952::writeSetting(BQSetting& setting) {
     // Right now, the BQ only accepts settings made into RAM
-    if (setting.getSettingType() != BMS::BQSetting::BQSettingType::RAM) {
-        EVT::core::log::LOGGER.log(EVT::core::log::Logger::LogLevel::ERROR, "Setting type is incorrect");
+    if (setting.getSettingType() != BQSetting::BQSettingType::RAM) {
+        core::log::LOGGER.log(core::log::Logger::LogLevel::ERROR, "Setting type is incorrect");
         return Status::ERROR;
     }
     return writeRAMSetting(setting);
@@ -255,7 +255,7 @@ BQ76952::Status BQ76952::makeRAMRead(uint16_t reg, uint32_t* result) {
     return Status::OK;
 }
 
-BQ76952::Status BQ76952::writeRAMSetting(BMS::BQSetting& setting) {
+BQ76952::Status BQ76952::writeRAMSetting(BQSetting& setting) {
     // Array which stores all bytes that make up a RAM write request
     // transfer[0]: LSB of the address in RAM
     // transfer[1]: MSB of the address in RAM
@@ -302,7 +302,7 @@ BQ76952::Status BQ76952::writeRAMSetting(BMS::BQSetting& setting) {
     uint16_t address = 0;
     uint16_t targetAddress = setting.getAddress();
     uint16_t rawResponse;
-    uint32_t startTime = EVT::core::time::millis();
+    uint32_t startTime = core::time::millis();
 
     // Try to read back the address that was written out
     while (address != targetAddress) {
@@ -311,7 +311,7 @@ BQ76952::Status BQ76952::writeRAMSetting(BMS::BQSetting& setting) {
         address = rawResponse;
 
         // Check to see if a timeout occurred
-        if (EVT::core::time::millis() - startTime > TIMEOUT) {
+        if (core::time::millis() - startTime > TIMEOUT) {
             return Status::TIMEOUT;
         }
     }
@@ -499,10 +499,10 @@ BQ76952::Status BQ76952::getBQStatus(uint8_t bqStatusArr[7]) {
 }
 
 void BQ76952::reset() {
-    resetPin.writePin(EVT::core::IO::GPIO::State::HIGH);
+    resetPin.writePin(core::io::GPIO::State::HIGH);
     // Wait an arbitrary amount of time to ensure the BQ actually resets
-    EVT::core::time::wait(10);
-    resetPin.writePin(EVT::core::IO::GPIO::State::LOW);
+    core::time::wait(10);
+    resetPin.writePin(core::io::GPIO::State::LOW);
 }
 
-}// namespace BMS::DEV
+}// namespace BMS::dev

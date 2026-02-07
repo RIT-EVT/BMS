@@ -5,24 +5,24 @@
 
 #include <cstdlib>
 
-#include <EVT/io/I2C.hpp>
-#include <EVT/io/UART.hpp>
-#include <EVT/manager.hpp>
-#include <EVT/utils/log.hpp>
-#include <EVT/utils/time.hpp>
+#include <core/io/I2C.hpp>
+#include <core/io/UART.hpp>
+#include <core/manager.hpp>
+#include <core/utils/log.hpp>
+#include <core/utils/time.hpp>
 
 #include <BMS.hpp>
 #include <dev/BQ76952.hpp>
 
-namespace IO = EVT::core::IO;
-namespace time = EVT::core::time;
-namespace log = EVT::core::log;
+namespace io = core::io;
+namespace time = core::time;
+namespace log = core::log;
 
 constexpr size_t MAX_BUFF = 100;
 
 char inputBuffer[MAX_BUFF];
 
-void printHelp(IO::UART& uart) {
+void printHelp(io::UART& uart) {
     uart.printf("Available commands:\r\n");
     uart.printf(" h - Print this help message\r\n");
     uart.printf(" d - Direct read\r\n");
@@ -54,7 +54,7 @@ void printHelp(IO::UART& uart) {
  * @param[in] uart The UART interface to read in from
  * @param[in] bq The BQ interface to communicate with
  */
-void directRead(IO::UART& uart, BMS::DEV::BQ76952& bq) {
+void directRead(io::UART& uart, BMS::dev::BQ76952& bq) {
     uart.printf("Enter the direct address in hex: 0x");
     uart.gets(inputBuffer, MAX_BUFF);
     uart.printf("\r\n");
@@ -65,7 +65,7 @@ void directRead(IO::UART& uart, BMS::DEV::BQ76952& bq) {
     auto result = bq.makeDirectRead(reg, &regValue);
 
     // Make sure the read was successful
-    if (result != BMS::DEV::BQ76952::Status::OK) {
+    if (result != BMS::dev::BQ76952::Status::OK) {
         uart.printf("Failed to read register: 0x%x\r\n", reg);
         return;
     }
@@ -79,14 +79,14 @@ void directRead(IO::UART& uart, BMS::DEV::BQ76952& bq) {
  *
  * @param[in] uart The UART interface to write in from
  */
-void directWrite(IO::UART& uart) {}
+void directWrite(io::UART& uart) {}
 
 /**
  * Function for making an indirect write request
  *
  * @param[in] uart The UART interface to write in from
  */
-void indirectWrite(IO::UART& uart) {}
+void indirectWrite(io::UART& uart) {}
 
 /**
  * Function for making a subcommand request
@@ -94,7 +94,7 @@ void indirectWrite(IO::UART& uart) {}
  * @param[in] uart The UART interface to read from
  * @param[in] bq The BQ interface
  */
-void subcommandRead(IO::UART& uart, BMS::DEV::BQ76952& bq) {
+void subcommandRead(io::UART& uart, BMS::dev::BQ76952& bq) {
     uart.printf("Enter the subcommand address in hex: 0x");
     uart.gets(inputBuffer, MAX_BUFF);
     uart.printf("\r\n");
@@ -107,7 +107,7 @@ void subcommandRead(IO::UART& uart, BMS::DEV::BQ76952& bq) {
     auto result = bq.makeSubcommandRead(reg, &subcommandValue);
 
     // Make sure the read was successful
-    if (result != BMS::DEV::BQ76952::Status::OK) {
+    if (result != BMS::dev::BQ76952::Status::OK) {
         uart.printf("Failed to read register: 0x%x\r\n", reg);
         return;
     }
@@ -115,7 +115,7 @@ void subcommandRead(IO::UART& uart, BMS::DEV::BQ76952& bq) {
     uart.printf("Register 0x%x: 0x%08X\r\n", reg, subcommandValue);
 }
 
-void commandOnlySub(IO::UART& uart, BMS::DEV::BQ76952& bq) {
+void commandOnlySub(io::UART& uart, BMS::dev::BQ76952& bq) {
     uart.printf("Enter the command-only subcommand address in hex: 0x");
     uart.gets(inputBuffer, MAX_BUFF);
     uart.printf("\r\n");
@@ -127,7 +127,7 @@ void commandOnlySub(IO::UART& uart, BMS::DEV::BQ76952& bq) {
     auto result = bq.commandOnlySubcommand(reg);
 
     // Make sure the read was successful
-    if (result != BMS::DEV::BQ76952::Status::OK) {
+    if (result != BMS::dev::BQ76952::Status::OK) {
         uart.printf("Failed to read register: 0x%x\r\n", reg);
         return;
     }
@@ -141,7 +141,7 @@ void commandOnlySub(IO::UART& uart, BMS::DEV::BQ76952& bq) {
  * @param[in] uart The UART interface to read in from
  * @param[in] bq The BQ interface to use
  */
-void ramRead(IO::UART& uart, BMS::DEV::BQ76952& bq) {
+void ramRead(io::UART& uart, BMS::dev::BQ76952& bq) {
     uart.printf("Enter the RAM address in hex: 0x");
     uart.gets(inputBuffer, MAX_BUFF);
     uart.printf("\r\n");
@@ -154,7 +154,7 @@ void ramRead(IO::UART& uart, BMS::DEV::BQ76952& bq) {
     auto result = bq.makeRAMRead(reg, &ramValue);
 
     // Make sure the read was successful
-    if (result != BMS::DEV::BQ76952::Status::OK) {
+    if (result != BMS::dev::BQ76952::Status::OK) {
         uart.printf("Failed to read register: 0x%x\r\n", reg);
         return;
     }
@@ -169,10 +169,10 @@ void ramRead(IO::UART& uart, BMS::DEV::BQ76952& bq) {
  *
  * @param[in] uart The UART interface to write in from
  */
-void ramWrite(IO::UART& uart, BMS::DEV::BQ76952& bq) {
+void ramWrite(io::UART& uart, BMS::dev::BQ76952& bq) {
     bool inConfigMode;
     auto result = bq.inConfigMode(&inConfigMode);
-    if (result != BMS::DEV::BQ76952::Status::OK) {
+    if (result != BMS::dev::BQ76952::Status::OK) {
         uart.printf("Failed to get if the BQ is in config update mode\r\n");
         return;
     }
@@ -222,7 +222,7 @@ void ramWrite(IO::UART& uart, BMS::DEV::BQ76952& bq) {
 
         result = bq.writeRAMSetting(setting);
 
-        if (result != BMS::DEV::BQ76952::Status::OK) {
+        if (result != BMS::dev::BQ76952::Status::OK) {
             uart.printf("Failed to write out RAM setting\r\n");
             return;
         }
@@ -241,7 +241,7 @@ void ramWrite(IO::UART& uart, BMS::DEV::BQ76952& bq) {
  * @param[in] uart The UART interface to read in from
  * @param[in] bq The BQ interface to use
  */
-void readBalancing(IO::UART& uart, BMS::DEV::BQ76952& bq) {
+void readBalancing(io::UART& uart, BMS::dev::BQ76952& bq) {
     uart.printf("Enter the cell to read balancing of: ");
     uart.gets(inputBuffer, MAX_BUFF);
     uart.printf("\r\n");
@@ -249,7 +249,7 @@ void readBalancing(IO::UART& uart, BMS::DEV::BQ76952& bq) {
     uint8_t targetCell = strtol(inputBuffer, nullptr, 10);
 
     bool isBalancing;
-    if (bq.isBalancing(targetCell, &isBalancing) != BMS::DEV::BQ76952::Status::OK) {
+    if (bq.isBalancing(targetCell, &isBalancing) != BMS::dev::BQ76952::Status::OK) {
         uart.printf("Failed to read balancing state\r\n");
     }
 
@@ -262,7 +262,7 @@ void readBalancing(IO::UART& uart, BMS::DEV::BQ76952& bq) {
  * @param[in] uart The UART interface to read from
  * @param[in] bq The BQ interface to use
  */
-void setBalancing(IO::UART& uart, BMS::DEV::BQ76952& bq) {
+void setBalancing(io::UART& uart, BMS::dev::BQ76952& bq) {
     uart.printf("Enter the cell to set balancing of: ");
     uart.gets(inputBuffer, MAX_BUFF);
     uart.printf("\r\n");
@@ -275,7 +275,7 @@ void setBalancing(IO::UART& uart, BMS::DEV::BQ76952& bq) {
 
     uint8_t targetState = strtol(inputBuffer, nullptr, 10);
 
-    if (bq.setBalancing(targetCell, targetState) != BMS::DEV::BQ76952::Status::OK) {
+    if (bq.setBalancing(targetCell, targetState) != BMS::dev::BQ76952::Status::OK) {
         uart.printf("Failed to set the state of balancing\r\n");
     }
 }
@@ -286,12 +286,12 @@ void setBalancing(IO::UART& uart, BMS::DEV::BQ76952& bq) {
  * @param[in] uart The interface to print status messages to
  * @param[in] bq The interface to communicate with the BQ
  */
-void enterConfigMode(IO::UART& uart, BMS::DEV::BQ76952& bq) {
+void enterConfigMode(io::UART& uart, BMS::dev::BQ76952& bq) {
     uart.printf("Putting the BQ chip into config mode\r\n");
 
     // Attempt to put the BQ into configure update mode
     auto result = bq.enterConfigUpdateMode();
-    if (result != BMS::DEV::BQ76952::Status::OK) {
+    if (result != BMS::dev::BQ76952::Status::OK) {
         uart.printf("Failed writing out config update mode\r\n");
         return;
     }
@@ -305,12 +305,12 @@ void enterConfigMode(IO::UART& uart, BMS::DEV::BQ76952& bq) {
  * @param[in] uart The interface to print status messages to
  * @param[in] bq The interface to communicate with the BQ
  */
-void exitConfigMode(IO::UART& uart, BMS::DEV::BQ76952& bq) {
+void exitConfigMode(io::UART& uart, BMS::dev::BQ76952& bq) {
     uart.printf("Pulling the BQ chip out of config mode\r\n");
 
     // Attempt to put the BQ into configure update mode
     auto result = bq.exitConfigUpdateMode();
-    if (result != BMS::DEV::BQ76952::Status::OK) {
+    if (result != BMS::dev::BQ76952::Status::OK) {
         uart.printf("Failed writing out config update mode\r\n");
         return;
     }
@@ -318,7 +318,7 @@ void exitConfigMode(IO::UART& uart, BMS::DEV::BQ76952& bq) {
     uart.printf("BQ not in config mode\r\n");
 }
 
-void getTemperatures(IO::UART& uart, BMS::DEV::BQ76952& bq, BMS::DEV::ThermistorMux tMux) {
+void getTemperatures(io::UART& uart, BMS::dev::BQ76952& bq, BMS::dev::ThermistorMux tMux) {
     for (uint8_t i = 0; i < 6; i++) {
         uint16_t temp = tMux.getTemp(i);
         uart.printf("Thermistor %d: %d\r\n", i, temp);
@@ -335,41 +335,41 @@ void getTemperatures(IO::UART& uart, BMS::DEV::BQ76952& bq, BMS::DEV::Thermistor
     uart.printf("BQ Board Temp 2: %d.%01d\r\n", result / 10, result % 10);
 }
 
-void getInterlock(IO::UART& uart, BMS::DEV::Interlock interlock) {
+void getInterlock(io::UART& uart, BMS::dev::Interlock interlock) {
     uart.printf("Interlock Detected: %s\r\n", interlock.isDetected() ? "true" : "false");
 }
 
-void getAlarm(IO::UART& uart, IO::GPIO& alarm) {
-    uart.printf("Alarm Set: %s\r\n", alarm.readPin() == IO::GPIO::State::HIGH ? "true" : "false");
+void getAlarm(io::UART& uart, io::GPIO& alarm) {
+    uart.printf("Alarm Set: %s\r\n", alarm.readPin() == io::GPIO::State::HIGH ? "true" : "false");
 }
 
-void setOK(IO::UART& uart, IO::GPIO& bmsOK) {
+void setOK(io::UART& uart, io::GPIO& bmsOK) {
     uart.printf("Set OK pin (0/1): ");
     uart.printf("\r\n");
     uart.gets(inputBuffer, MAX_BUFF);
     if (inputBuffer[0] == '1') {
-        bmsOK.writePin(IO::GPIO::State::HIGH);
+        bmsOK.writePin(io::GPIO::State::HIGH);
         uart.printf("Set BMS OK high\r\n");
     } else {
-        bmsOK.writePin(IO::GPIO::State::LOW);
+        bmsOK.writePin(io::GPIO::State::LOW);
         uart.printf("Set BMS OK low\r\n");
     }
 }
 
-void setError(IO::UART& uart, IO::GPIO& errorLed) {
+void setError(io::UART& uart, io::GPIO& errorLed) {
     uart.printf("Set error LED pin (0/1): ");
     uart.printf("\r\n");
     uart.gets(inputBuffer, MAX_BUFF);
     if (inputBuffer[0] == '1') {
-        errorLed.writePin(IO::GPIO::State::HIGH);
+        errorLed.writePin(io::GPIO::State::HIGH);
         uart.printf("Set error LED high\r\n");
     } else {
-        errorLed.writePin(IO::GPIO::State::LOW);
+        errorLed.writePin(io::GPIO::State::LOW);
         uart.printf("Set error LED low\r\n");
     }
 }
 
-void getVoltages(IO::UART& uart, BMS::DEV::BQ76952& bq) {
+void getVoltages(io::UART& uart, BMS::dev::BQ76952& bq) {
     uint16_t tot = 0;
     for (uint8_t i = 0; i < 16; i++) {
         uint8_t reg = 0x14 + 2 * i;
@@ -377,7 +377,7 @@ void getVoltages(IO::UART& uart, BMS::DEV::BQ76952& bq) {
         auto result = bq.makeDirectRead(reg, &regValue);
 
         // Make sure the read was successful
-        if (result != BMS::DEV::BQ76952::Status::OK) {
+        if (result != BMS::dev::BQ76952::Status::OK) {
             uart.printf("Failed to read register: 0x%x\r\n", reg);
             return;
         }
@@ -389,7 +389,7 @@ void getVoltages(IO::UART& uart, BMS::DEV::BQ76952& bq) {
     uart.printf("Total: %d.%d", tot / 1000, tot % 1000);
 }
 
-void transferSettings(IO::UART& uart, BMS::DEV::BQ76952& bq, EVT::core::DEV::M24C32 eeprom) {
+void transferSettings(io::UART& uart, BMS::dev::BQ76952& bq, core::dev::M24C32 eeprom) {
     uart.printf("Really transfer settings? (y/n): ");
     uart.gets(inputBuffer, MAX_BUFF);
     uart.printf("\r\n");
@@ -403,16 +403,16 @@ void transferSettings(IO::UART& uart, BMS::DEV::BQ76952& bq, EVT::core::DEV::M24
             auto status = settingsStorage.transferSetting(isComplete);
 
             switch (status) {
-            case BMS::DEV::BQ76952::Status::ERROR:
+            case BMS::dev::BQ76952::Status::ERROR:
                 uart.printf("FAILED: BQ specific error\r\n");
                 break;
-            case BMS::DEV::BQ76952::Status::I2C_ERROR:
+            case BMS::dev::BQ76952::Status::I2C_ERROR:
                 uart.printf("FAILED: I2C error\r\n");
                 break;
-            case BMS::DEV::BQ76952::Status::TIMEOUT:
+            case BMS::dev::BQ76952::Status::TIMEOUT:
                 uart.printf("FAILED: Timeout waiting for BQ\r\n");
                 break;
-            case BMS::DEV::BQ76952::Status::OK:
+            case BMS::dev::BQ76952::Status::OK:
                 uart.printf("SUCCESS\r\n");
                 break;
             default:
@@ -453,34 +453,34 @@ void readCurrentShuntPolarity(IO::UART& uart, BMS::DEV::BQ76952& bq) {
 }
 
 int main() {
-    EVT::core::platform::init();
+    core::platform::init();
 
-    IO::I2C& i2c = IO::getI2C<BMS::BMS::I2C_SCL_PIN, BMS::BMS::I2C_SDA_PIN>();
-    IO::GPIO& bqReset = IO::getGPIO<BMS::BMS::BQ_RESET_PIN>();
-    BMS::DEV::BQ76952 bq(i2c, 0x08, bqReset);
-    EVT::core::DEV::M24C32 eeprom(0x57, i2c);
+    io::I2C& i2c = io::getI2C<BMS::BMS::I2C_SCL_PIN, BMS::BMS::I2C_SDA_PIN>();
+    io::GPIO& bqReset = io::getGPIO<BMS::BMS::BQ_RESET_PIN>();
+    BMS::dev::BQ76952 bq(i2c, 0x08, bqReset);
+    core::dev::M24C32 eeprom(0x57, i2c);
 
-    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(115200);
+    io::UART& uart = io::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(115200);
     log::LOGGER.setUART(&uart);
     log::LOGGER.setLogLevel(log::Logger::LogLevel::DEBUG);
 
-    IO::ADC& adc = IO::getADC<BMS::BMS::TEMP_INPUT_PIN>();
+    io::ADC& adc = io::getADC<BMS::BMS::TEMP_INPUT_PIN>();
 
-    IO::GPIO& muxs1 = IO::getGPIO<BMS::BMS::MUX_S1_PIN>();
-    IO::GPIO& muxs2 = IO::getGPIO<BMS::BMS::MUX_S2_PIN>();
-    IO::GPIO& muxs3 = IO::getGPIO<BMS::BMS::MUX_S3_PIN>();
-    IO::GPIO* muxPinArr[3] = {&muxs1, &muxs2, &muxs3};
+    io::GPIO& muxs1 = io::getGPIO<BMS::BMS::MUX_S1_PIN>();
+    io::GPIO& muxs2 = io::getGPIO<BMS::BMS::MUX_S2_PIN>();
+    io::GPIO& muxs3 = io::getGPIO<BMS::BMS::MUX_S3_PIN>();
+    io::GPIO* muxPinArr[3] = {&muxs1, &muxs2, &muxs3};
 
-    BMS::DEV::ThermistorMux tmux(muxPinArr, adc);
+    BMS::dev::ThermistorMux tmux(muxPinArr, adc);
 
-    IO::GPIO& interlockGPIO = IO::getGPIO<BMS::BMS::INTERLOCK_PIN>(IO::GPIO::Direction::INPUT);
-    BMS::DEV::Interlock interlock(interlockGPIO);
+    io::GPIO& interlockGPIO = io::getGPIO<BMS::BMS::INTERLOCK_PIN>(io::GPIO::Direction::INPUT);
+    BMS::dev::Interlock interlock(interlockGPIO);
 
-    IO::GPIO& alarm = IO::getGPIO<BMS::BMS::ALARM_PIN>(IO::GPIO::Direction::INPUT);
+    io::GPIO& alarm = io::getGPIO<BMS::BMS::ALARM_PIN>(io::GPIO::Direction::INPUT);
 
-    IO::GPIO& bmsOK = IO::getGPIO<BMS::BMS::OK_PIN>(IO::GPIO::Direction::OUTPUT);
+    io::GPIO& bmsOK = io::getGPIO<BMS::BMS::OK_PIN>(io::GPIO::Direction::OUTPUT);
 
-    IO::GPIO& errorLed = IO::getGPIO<BMS::BMS::ERROR_LED_PIN>(IO::GPIO::Direction::OUTPUT);
+    io::GPIO& errorLed = io::getGPIO<BMS::BMS::ERROR_LED_PIN>(io::GPIO::Direction::OUTPUT);
 
     time::wait(500);
 

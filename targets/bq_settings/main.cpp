@@ -4,15 +4,15 @@
  * correctly.
  */
 
-#include <EVT/manager.hpp>
+#include <core/manager.hpp>
 
 #include <BMS.hpp>
 #include <BQSetting.hpp>
 
-namespace IO = EVT::core::IO;
+namespace io = core::io;
 
 /** Print the content of the array in a user friendly manner */
-void printArray(IO::UART& uart, uint8_t* buffer, uint8_t size) {
+void printArray(io::UART& uart, uint8_t* buffer, uint8_t size) {
     uart.printf("{ ");
     for (uint8_t i = 0; i < size; i++)
         uart.printf("0x%2x ", buffer[i]);
@@ -32,7 +32,7 @@ bool arraysEqual(uint8_t* first, uint8_t* second, uint8_t size) {
  * array with known contents to the BQSettings and ensure the parsed results
  * match expectation.
  */
-void deserializeTest(IO::UART& uart) {
+void deserializeTest(io::UART& uart) {
     /**
      * Command Byte: Direct command with 1 byte of data
      * Address: 0x0001
@@ -78,7 +78,7 @@ void deserializeTest(IO::UART& uart) {
  * Will make a settings value, convert it into an array, and compare it against
  * the expected output.
  */
-void serializeTest(IO::UART& uart) {
+void serializeTest(io::UART& uart) {
     BMS::BQSetting setting(BMS::BQSetting::BQSettingType::RAM, 4, 0x1122, 0x12345678);
     uint8_t expectedArray[] = {0x12, 0x22, 0x11, 0x78, 0x56, 0x34, 0x12};
 
@@ -100,7 +100,7 @@ void serializeTest(IO::UART& uart) {
  * Third test, ensure the settings can be serialized and deserialized back
  * and forth.
  */
-void serializeDeserializeTest(IO::UART& uart) {
+void serializeDeserializeTest(io::UART& uart) {
     BMS::BQSetting original(BMS::BQSetting::BQSettingType::SUBCOMMAND, 4, 0x2345, 0x45678901);
 
     uint8_t serializedArray[BMS::BQSetting::ARRAY_SIZE];
@@ -138,9 +138,9 @@ void serializeDeserializeTest(IO::UART& uart) {
 }
 
 int main() {
-    EVT::core::platform::init();
+    core::platform::init();
 
-    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(115200);
+    io::UART& uart = io::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(115200);
 
     uart.printf("\r\n\r\nBQ SETTING TEST\r\n");
 

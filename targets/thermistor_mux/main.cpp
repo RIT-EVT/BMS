@@ -2,31 +2,31 @@
  * This test demonstrates the functionality of the ThermistorMux class.
  */
 
-#include <EVT/io/ADC.hpp>
-#include <EVT/io/GPIO.hpp>
-#include <EVT/manager.hpp>
-#include <EVT/utils/time.hpp>
+#include <core/io/ADC.hpp>
+#include <core/io/GPIO.hpp>
+#include <core/manager.hpp>
+#include <core/utils/time.hpp>
 
 #include <BMS.hpp>
 #include <dev/ThermistorMux.hpp>
 
-namespace IO = EVT::core::IO;
+namespace io = core::io;
 
-namespace time = EVT::core::time;
+namespace time = core::time;
 
 int main() {
-    EVT::core::platform::init();
+    core::platform::init();
 
-    IO::ADC& adc = IO::getADC<BMS::BMS::TEMP_INPUT_PIN>();
-    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(115200);
+    io::ADC& adc = io::getADC<BMS::BMS::TEMP_INPUT_PIN>();
+    io::UART& uart = io::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(115200);
 
-    IO::GPIO& muxs1 = IO::getGPIO<BMS::BMS::MUX_S1_PIN>();
-    IO::GPIO& muxs2 = IO::getGPIO<BMS::BMS::MUX_S2_PIN>();
-    IO::GPIO& muxs3 = IO::getGPIO<BMS::BMS::MUX_S3_PIN>();
+    io::GPIO& muxs1 = io::getGPIO<BMS::BMS::MUX_S1_PIN>();
+    io::GPIO& muxs2 = io::getGPIO<BMS::BMS::MUX_S2_PIN>();
+    io::GPIO& muxs3 = io::getGPIO<BMS::BMS::MUX_S3_PIN>();
 
-    IO::GPIO* muxPinArr[3] = {&muxs1, &muxs2, &muxs3};
+    io::GPIO* muxPinArr[3] = {&muxs1, &muxs2, &muxs3};
 
-    BMS::DEV::ThermistorMux thermistorMux(muxPinArr, adc);
+    BMS::dev::ThermistorMux thermistorMux(muxPinArr, adc);
 
     uint8_t looper = 0;
 
