@@ -63,9 +63,3 @@ jobs:
             git commit -a -m "Applied Formatting Changes During GitHub Build"
             git push origin
           fi
-      - name: Archive elf for debugging
-        if: '!cancelled()'
-        uses: actions/upload-artifact@v4
-        with:
-          name: all_target_elfs
-          path: build/**/*.elf
