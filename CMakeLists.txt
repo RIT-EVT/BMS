@@ -4,9 +4,9 @@
 cmake_minimum_required(VERSION 3.15)
 
 # Convert CMake flags to compiler flags
-if(EVT_CORE_LOG_ENABLE)
+if (EVT_CORE_LOG_ENABLE)
     add_compile_definitions(EVT_CORE_LOG_ENABLE)
-endif()
+endif ()
 
 # Allow for up to 8 CANopen TPDOs
 add_compile_definitions(CO_TPDO_N=8)
@@ -23,11 +23,11 @@ add_compile_definitions(USE_HAL_DRIVER)
 
 # Handle Selection of the target device
 option(TARGET_DEV "Target device" "STM32F302x8")
-if(NOT TARGET_DEV)
+if (NOT TARGET_DEV)
     set(TARGET_DEV "STM32F334x8")
-endif()
+endif ()
 
-set(EVT_CORE_DIR      ${CMAKE_SOURCE_DIR}/libs/EVT-core)
+set(EVT_CORE_DIR ${CMAKE_SOURCE_DIR}/libs/EVT-core)
 
 # Link to the EVT-core library
 add_subdirectory(libs/EVT-core/)
@@ -36,17 +36,18 @@ include(CMakeDependentOption)
 include(${EVT_CORE_DIR}/cmake/evt-core_compiler.cmake)
 include(${EVT_CORE_DIR}/cmake/evt-core_install.cmake)
 
-set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Os -s")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Os -s")
+
+set(CMAKE_C_FLAGS_RELEASE "-mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -Wall -fdata-sections -ffunction-sections -MMD -MP -MF -ggdb -std=gnu99 -fno-rtti -Wvla -Os -s")
+set(CMAKE_CXX_FLAGS_RELEASE "-mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -Wall -fdata-sections -ffunction-sections -MMD -MP -MF -ggdb -std=gnu99 -fno-rtti -Wvla  -Os -s")
 
 ###############################################################################
 # Project Setup
 ###############################################################################
-set(BOARD_LIB_NAME   BMS)
-if("${BOARD_LIB_NAME}" STREQUAL BOARD_NAME)
+set(BOARD_LIB_NAME BMS)
+if ("${BOARD_LIB_NAME}" STREQUAL BOARD_NAME)
     message(FATAL_ERROR
             "You must set the template project name in the top-level CMakeLists.txt")
-endif()
+endif ()
 
 file(STRINGS version.txt BOARD_VERSION)
 
@@ -59,14 +60,14 @@ add_library(${PROJECT_NAME} STATIC)
 
 # Add sources
 target_sources(${PROJECT_NAME} PRIVATE
-    src/BMS.cpp
-    src/BQSettingStorage.cpp
-    src/BQSetting.cpp
-    src/ResetHandler.cpp
-    src/SystemDetect.cpp
-    src/dev/BQ76952.cpp
-    src/dev/Interlock.cpp
-    src/dev/ThermistorMux.cpp
+        src/BMS.cpp
+        src/BQSettingStorage.cpp
+        src/BQSetting.cpp
+        src/ResetHandler.cpp
+        src/SystemDetect.cpp
+        src/dev/BQ76952.cpp
+        src/dev/Interlock.cpp
+        src/dev/ThermistorMux.cpp
 )
 
 ###############################################################################
@@ -74,7 +75,7 @@ target_sources(${PROJECT_NAME} PRIVATE
 ###############################################################################
 target_link_libraries(${PROJECT_NAME}
         PUBLIC EVT
-        )
+)
 
 ###############################################################################
 # Install and expose library
