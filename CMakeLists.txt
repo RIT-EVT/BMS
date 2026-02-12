@@ -36,7 +36,6 @@ include(CMakeDependentOption)
 include(${EVT_CORE_DIR}/cmake/evt-core_compiler.cmake)
 include(${EVT_CORE_DIR}/cmake/evt-core_install.cmake)
 
-
 set(CMAKE_C_FLAGS_RELEASE "-mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -Wall -fdata-sections -ffunction-sections -MMD -MP -MF -ggdb -std=gnu99 -fno-rtti -Wvla -Os -s")
 set(CMAKE_CXX_FLAGS_RELEASE "-mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -Wall -fdata-sections -ffunction-sections -MMD -MP -MF -ggdb -std=gnu99 -fno-rtti -Wvla  -Os -s")
 

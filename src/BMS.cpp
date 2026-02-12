@@ -11,9 +11,9 @@ namespace log = core::log;
 
 namespace BMS {
 
-BMS::BMS(BQSettingsStorage& bqSettingsStorage, dev::BQ76952 bq,
+BMS::BMS(BQSettingsStorage& bqSettingsStorage, const dev::BQ76952 &bq,
          dev::Interlock& interlock, IO::GPIO& alarm, SystemDetect& systemDetect,
-         IO::GPIO& bmsOK, IO::GPIO& errorLed, dev::ThermistorMux& thermMux,
+         IO::GPIO& bmsOK, IO::GPIO& errorLed, const dev::ThermistorMux& thermMux,
          ResetHandler& resetHandler, core::dev::IWDG& iwdg) : bqSettingsStorage(bqSettingsStorage),
                                                                    bq(bq), state(State::START), interlock(interlock),
                                                                    alarm(alarm), systemDetect(systemDetect), resetHandler(resetHandler),
