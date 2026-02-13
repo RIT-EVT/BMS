@@ -47,8 +47,7 @@ struct CANInterruptParams {
 void canInterruptHandler(IO::CANMessage& message, void* priv) {
     struct CANInterruptParams* params = (CANInterruptParams*) priv;
 
-    core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>* queue =
-        params->queue;
+    core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>* queue = params->queue;
     BMS::SystemDetect* systemDetect = params->systemDetect;
     BMS::ResetHandler* resetHandler = params->resetHandler;
 

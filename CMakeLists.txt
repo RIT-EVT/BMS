@@ -11,7 +11,7 @@ endif ()
 # Allow for up to 8 CANopen TPDOs
 add_compile_definitions(CO_TPDO_N=8)
 
-add_compile_definitions(CANOPEN_QUEUE_SIZE=45)
+add_compile_definitions(CANOPEN_QUEUE_SIZE=50)
 
 #TODO: Replace the function in uart_settings_upload so this isn't necessary
 add_compile_definitions(EVT_UART_TIMEOUT=10000)
@@ -37,7 +37,7 @@ include(${EVT_CORE_DIR}/cmake/evt-core_compiler.cmake)
 include(${EVT_CORE_DIR}/cmake/evt-core_install.cmake)
 
 set(CMAKE_C_FLAGS "-mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -Wall -fdata-sections -ffunction-sections -MMD -MP -MF -ggdb -std=gnu99 -fno-rtti -Wvla -Os -s")
-set(CMAKE_CXX_FLAGS "-mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -Wall -fdata-sections -ffunction-sections -MMD -MP -MF -ggdb -std=gnu99 -fno-rtti -Wvla  -Os -s")
+set(CMAKE_CXX_FLAGS "-mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -Wall -fdata-sections -ffunction-sections -MMD -MP -MF -ggdb -std=gnu99 -fno-rtti -Wvla -Os -s")
 
 ###############################################################################
 # Project Setup
