@@ -75,7 +75,7 @@ int main() {
     BMS::ResetHandler resetHandler;
 
     // Create struct that will hold CAN interrupt parameters
-    struct CANInterruptParams canParams = {
+    CANInterruptParams canParams = {
         .queue = &canOpenQueue,
         .systemDetect = &systemDetect,
         .resetHandler = &resetHandler,
@@ -84,7 +84,8 @@ int main() {
     // Initialize IO
     // TODO: Investigate adding CAN filters
     IO::CAN& can = IO::getCAN<BMS::BMS::CAN_TX_PIN, BMS::BMS::CAN_RX_PIN>();
-    can.addIRQHandler(canInterruptHandler, reinterpret_cast<void*>(&canParams));
+    can.addIRQHandler(canInterruptHandler, &canParams);
+
     IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(115200);
     IO::I2C& i2c = IO::getI2C<BMS::BMS::I2C_SCL_PIN, BMS::BMS::I2C_SDA_PIN>();
 
@@ -137,38 +138,45 @@ int main() {
     // between the application (the code we write) and the physical CAN network
     ///////////////////////////////////////////////////////////////////////////
 
-    // Will store CANopen messages that will be populated by the EVT-core CAN
-    // interrupt
-
     // Reserved memory for CANopen stack usage
     uint8_t sdoBuffer[CO_SSDO_N * CO_SDO_BUF_BYTE];
     CO_TMR_MEM appTmrMem[16];
 
-    // Initialize the CANopen drivers
+    // Reserve driver variables
     CO_IF_DRV canStackDriver;
+
     CO_IF_CAN_DRV canDriver;
     CO_IF_TIMER_DRV timerDriver;
     CO_IF_NVM_DRV nvmDriver;
+
     CO_NODE canNode;
+
+    // Attempt to join the CAN network
+    IO::CAN::CANStatus result = can.connect();
+
+    // test that the board is connected to the can network
+    if (result != IO::CAN::CANStatus::OK) {
+        log::LOGGER.log(log::Logger::LogLevel::ERROR, "Failed to connect to CAN network\r\n");
+        return 1;
+    }
 
     // Initialize all the CANOpen drivers.
     IO::initializeCANopenDriver(&canOpenQueue, &can, &timer, &canStackDriver, &nvmDriver, &timerDriver, &canDriver);
 
     // Initialize the CANOpen node we are using.
     IO::initializeCANopenNode(&canNode, &bms, &canStackDriver, sdoBuffer, appTmrMem);
+
+    // Set the node to operational mode
+    CONmtSetMode(&canNode.Nmt, CO_OPERATIONAL);
+
     time::wait(500);
 
-    // Attempt to join the CAN network
-    IO::CAN::CANStatus result = can.connect(true);
-
-    if (result != IO::CAN::CANStatus::OK) {
-        uart.printf("Failed to connect to CAN network\r\n");
+    if (CO_ERR canError = CONodeGetErr(&canNode); canError != CO_ERR_NONE) {
+        log::LOGGER.log(log::Logger::LogLevel::INFO, "CANopen initialization failed %d", canError);
         return 1;
     }
 
-    CONmtSetMode(&canNode.Nmt, CO_OPERATIONAL);
-
-    log::LOGGER.log(log::Logger::LogLevel::INFO, "Initialization complete");
+    log::LOGGER.log(log::Logger::LogLevel::INFO, "CAN initialization complete");
 
     // Main processing loop, contains the following logic
     // 1. Update CANopen logic and processing incoming messages
