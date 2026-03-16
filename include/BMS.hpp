@@ -83,9 +83,9 @@ public:
      * @param[in] resetHandler Handler for reset messages
      * @param[in] iwdg Internal watchdog to ensure the BMS code is running without getting stuck
      */
-    BMS(BQSettingsStorage& bqSettingsStorage, dev::BQ76952 bq, dev::Interlock& interlock,
+    BMS(BQSettingsStorage& bqSettingsStorage, const dev::BQ76952 &bq, dev::Interlock& interlock,
         IO::GPIO& alarm, SystemDetect& systemDetect, IO::GPIO& bmsOK, IO::GPIO& errorLed,
-        dev::ThermistorMux& thermMux, ResetHandler& resetHandler, core::dev::IWDG& iwdg);
+        const dev::ThermistorMux& thermMux, ResetHandler& resetHandler, core::dev::IWDG& iwdg);
 
     /**
      * The node ID used to identify the device on the CAN network.
