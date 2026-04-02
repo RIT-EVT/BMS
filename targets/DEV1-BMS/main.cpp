@@ -2,12 +2,11 @@
  * This is the main target to be used for the BMS in the DEV1 battery packs
  */
 
-#include <core/io/CANOpenMacros.hpp>
-#include <core/io/CANopen.hpp>
-#include <core/io/UART.hpp>
-#include <core/io/pin.hpp>
-#include <core/io/types/CANMessage.hpp>
-#include <core/manager.hpp>
+#include <EVT/io/CANOpenMacros.hpp>
+#include <EVT/io/CANopen.hpp>
+#include <EVT/io/UART.hpp>
+#include <EVT/io/types/CANMessage.hpp>
+#include <EVT/manager.hpp>
 
 #include <core/dev/storage/EEPROM.hpp>
 #include <core/dev/storage/M24C32.hpp>

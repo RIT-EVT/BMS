@@ -43,6 +43,7 @@ void printHelp(io::UART& uart) {
     uart.printf(" e - Set error LED output\r\n");
     uart.printf(" v - Read voltages\r\n");
     uart.printf(" t - Transfer settings\r\n");
+    uart.printf(" p - Read Current Shunt Polarity\r\n");
 
     uart.printf("\r\n");
 }
@@ -425,6 +426,32 @@ void transferSettings(io::UART& uart, BMS::dev::BQ76952& bq, core::dev::M24C32 e
     }
 }
 
+
+/**
+ * Function for reading the current shunt polarity
+ *
+ * @param[in] uart The UART interface to read in from
+ * @param[in] bq The BQ interface to communicate with
+ */
+void readCurrentShuntPolarity(IO::UART& uart, BMS::DEV::BQ76952& bq) {
+    constexpr uint32_t currentRegister = 0x3a;
+
+    uint16_t regValue = 0;
+    auto result = bq.makeDirectRead(currentRegister, &regValue);
+
+    // Make sure the read was successful
+    if (result != BMS::DEV::BQ76952::Status::OK) {
+        uart.printf("Failed to read register: 0x%x\r\n", currentRegister);
+        return;
+    }
+
+    const auto signedRegisterValue = static_cast<int16_t>(((0x8000 & regValue) ? ((0x7FFF & regValue) - 0x8000) : regValue));
+    const bool isPositive = signedRegisterValue > 0;
+
+    uart.printf("Current: %u\r\n", signedRegisterValue);
+    uart.printf("Polarity %s\r\n", isPositive ? "Positive" : "Negative");
+}
+
 int main() {
     core::platform::init();
 
@@ -539,6 +566,9 @@ int main() {
         // Set OK signal output
         case 'e':
             setError(uart, errorLed);
+            break;
+        case 'p':
+            readCurrentShuntPolarity(uart, bq);
             break;
         }
     }
