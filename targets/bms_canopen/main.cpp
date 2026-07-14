@@ -2,26 +2,26 @@
 * This is a target used for testing BMS CANopen output
 */
 
-#include <EVT/io/CANopen.hpp>
-#include <EVT/io/UART.hpp>
-#include <EVT/io/pin.hpp>
-#include <EVT/io/types/CANMessage.hpp>
-#include <EVT/manager.hpp>
+#include <core/io/CANopen.hpp>
+#include <core/io/UART.hpp>
+#include <core/io/pin.hpp>
+#include <core/io/types/CANMessage.hpp>
+#include <core/manager.hpp>
 
-#include <EVT/dev/storage/EEPROM.hpp>
-#include <EVT/dev/storage/M24C32.hpp>
+#include <core/dev/storage/EEPROM.hpp>
+#include <core/dev/storage/M24C32.hpp>
 
-#include <EVT/utils/log.hpp>
-#include <EVT/utils/types/FixedQueue.hpp>
+#include <core/utils/log.hpp>
+#include <core/utils/types/FixedQueue.hpp>
 
 #include "SystemDetect.hpp"
 #include <BMS.hpp>
 #include <dev/BQ76952.hpp>
 
-namespace IO = EVT::core::IO;
-namespace DEV = EVT::core::DEV;
-namespace time = EVT::core::time;
-namespace log = EVT::core::log;
+namespace io = core::io;
+namespace dev = core::dev;
+namespace time = core::time;
+namespace log = core::log;
 
 #define BIKE_HEART_BEAT 0x70A   // NODE_ID = 10
 #define CHARGER_HEART_BEAT 0x710// NODE_ID = 16
@@ -33,7 +33,7 @@ namespace log = EVT::core::log;
 * to the interrupt handler.
 */
 struct CANInterruptParams {
-    EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>* queue;
+    core::types::FixedQueue<CANOPEN_QUEUE_SIZE, io::CANMessage>* queue;
     BMS::SystemDetect* systemDetect;
 };
 
@@ -42,10 +42,10 @@ struct CANInterruptParams {
 *
 * @param priv[in] The private data (FixedQueue<CANOPEN_QUEUE_SIZE, CANMessage>)
 */
-void canInterruptHandler(IO::CANMessage& message, void* priv) {
+void canInterruptHandler(io::CANMessage& message, void* priv) {
     struct CANInterruptParams* params = (CANInterruptParams*) priv;
 
-    EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>* queue =
+    core::types::FixedQueue<CANOPEN_QUEUE_SIZE, io::CANMessage>* queue =
         params->queue;
     BMS::SystemDetect* systemDetect = params->systemDetect;
 
@@ -66,10 +66,10 @@ extern "C" void CONodeFatalError(void) {
 
 int main() {
     // Initialize system
-    EVT::core::platform::init();
+    core::platform::init();
 
     // Queue that will store CANopen messages
-    EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage> canOpenQueue;
+    core::types::FixedQueue<CANOPEN_QUEUE_SIZE, io::CANMessage> canOpenQueue;
 
     // Initialize the system detect
     BMS::SystemDetect systemDetect(BIKE_HEART_BEAT, CHARGER_HEART_BEAT,
@@ -83,50 +83,54 @@ int main() {
         .systemDetect = &systemDetect,
     };
 
-    // Initialize IO
-    IO::CAN& can = IO::getCAN<BMS::BMS::CAN_TX_PIN, BMS::BMS::CAN_RX_PIN>();
+    // Initialize io
+    io::CAN& can = io::getCAN<BMS::BMS::CAN_TX_PIN, BMS::BMS::CAN_RX_PIN>();
     can.addIRQHandler(canInterruptHandler, reinterpret_cast<void*>(&canParams));
-    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(115200, true);
-    IO::I2C& i2c = IO::getI2C<BMS::BMS::I2C_SCL_PIN, BMS::BMS::I2C_SDA_PIN>();
+    io::UART& uart = io::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(115200);
+    io::I2C& i2c = io::getI2C<BMS::BMS::I2C_SCL_PIN, BMS::BMS::I2C_SDA_PIN>();
 
     // Initialize the timer
-    DEV::Timer& timer = DEV::getTimer<DEV::MCUTimer::Timer2>(100);
+    dev::Timer& timer = dev::getTimer<dev::MCUTimer::Timer2>(100);
 
     // Initialize the EEPROM
-    EVT::core::DEV::M24C32 eeprom(0x57, i2c);
+    core::dev::M24C32 eeprom(0x57, i2c);
 
     // Initialize the logger
     log::LOGGER.setUART(&uart);
     log::LOGGER.setLogLevel(log::Logger::LogLevel::DEBUG);
 
     // Initialize the BQ interfaces
-    BMS::DEV::BQ76952 bq(i2c, 0x08);
+    io::GPIO& bqReset = io::getGPIO<BMS::BMS::BQ_RESET_PIN>();
+    BMS::dev::BQ76952 bq(i2c, 0x08, bqReset);
     BMS::BQSettingsStorage bqSettingsStorage(eeprom, bq);
 
     // Initialize the Interlock
-    IO::GPIO& interlockGPIO = IO::getGPIO<BMS::BMS::INTERLOCK_PIN>(IO::GPIO::Direction::INPUT);
-    BMS::DEV::Interlock interlock(interlockGPIO);
+    io::GPIO& interlockGPIO = io::getGPIO<BMS::BMS::INTERLOCK_PIN>(io::GPIO::Direction::INPUT);
+    BMS::dev::Interlock interlock(interlockGPIO);
 
     // Initialize the alarm pin
-    IO::GPIO& alarm = IO::getGPIO<BMS::BMS::ALARM_PIN>(IO::GPIO::Direction::INPUT);
+    io::GPIO& alarm = io::getGPIO<BMS::BMS::ALARM_PIN>(io::GPIO::Direction::INPUT);
 
     // Initialize the system OK pin
-    IO::GPIO& bmsOK = IO::getGPIO<BMS::BMS::OK_PIN>(IO::GPIO::Direction::OUTPUT);
+    io::GPIO& bmsOK = io::getGPIO<BMS::BMS::OK_PIN>(io::GPIO::Direction::OUTPUT);
+
+    // Initialize the error LED pin
+    io::GPIO& errorLed = io::getGPIO<BMS::BMS::ERROR_LED_PIN>(io::GPIO::Direction::OUTPUT);
 
     // Initialize the thermistor MUX
-    IO::GPIO* muxSelectArr[3] = {
-        &IO::getGPIO<BMS::BMS::MUX_S1_PIN>(),
-        &IO::getGPIO<BMS::BMS::MUX_S2_PIN>(),
-        &IO::getGPIO<BMS::BMS::MUX_S3_PIN>(),
+    io::GPIO* muxSelectArr[3] = {
+        &io::getGPIO<BMS::BMS::MUX_S1_PIN>(),
+        &io::getGPIO<BMS::BMS::MUX_S2_PIN>(),
+        &io::getGPIO<BMS::BMS::MUX_S3_PIN>(),
     };
-    IO::ADC& thermAdc = IO::getADC<BMS::BMS::TEMP_INPUT_PIN>();
+    io::ADC& thermAdc = io::getADC<BMS::BMS::TEMP_INPUT_PIN>();
 
-    BMS::DEV::ThermistorMux thermMux(muxSelectArr, thermAdc);
+    BMS::dev::ThermistorMux thermMux(muxSelectArr, thermAdc);
 
-    DEV::IWDG& iwdg = DEV::getIWDG(500);
+    dev::IWDG& iwdg = dev::getIWDG(500);
 
     // Initialize the BMS itself
-    BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect, bmsOK, thermMux, resetHandler, iwdg);
+    BMS::BMS bms(bqSettingsStorage, bq, interlock, alarm, systemDetect, bmsOK, errorLed, thermMux, resetHandler, iwdg);
 
     ///////////////////////////////////////////////////////////////////////////
     // Setup CAN configuration, this handles making drivers, applying settings.
@@ -149,16 +153,16 @@ int main() {
     CO_NODE canNode;
 
     // Initialize all the CANOpen drivers.
-    IO::initializeCANopenDriver(&canOpenQueue, &can, &timer, &canStackDriver, &nvmDriver, &timerDriver, &canDriver);
+    io::initializeCANopenDriver(&canOpenQueue, &can, &timer, &canStackDriver, &nvmDriver, &timerDriver, &canDriver);
 
     // Initialize the CANOpen node we are using.
-    IO::initializeCANopenNode(&canNode, &bms, &canStackDriver, sdoBuffer, appTmrMem);
+    io::initializeCANopenNode(&canNode, &bms, &canStackDriver, sdoBuffer, appTmrMem);
     time::wait(500);
 
     // Attempt to join the CAN network
-    IO::CAN::CANStatus result = can.connect(true);
+    io::CAN::CANStatus result = can.connect(true);
 
-    if (result != IO::CAN::CANStatus::OK) {
+    if (result != io::CAN::CANStatus::OK) {
         uart.printf("Failed to connect to CAN network\r\n");
         return 1;
     }
@@ -173,7 +177,7 @@ int main() {
     // 3. Wait for new data to come in
     while (1) {
         // Process CANopen
-        IO::processCANopenNode(&canNode);
+        io::processCANopenNode(&canNode);
         // Update the state of the BMS
         bms.canTest();
         // Wait for new data to come in

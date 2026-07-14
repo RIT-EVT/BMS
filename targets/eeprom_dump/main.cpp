@@ -4,32 +4,33 @@
  * the target.
  */
 
-#include <EVT/dev/storage/M24C32.hpp>
-#include <EVT/manager.hpp>
-#include <EVT/utils/log.hpp>
+#include <core/dev//storage/M24C32.hpp>
+#include <core/manager.hpp>
+#include <core/utils/log.hpp>
 
 #include <BMS.hpp>
 #include <BQSetting.hpp>
 #include <BQSettingStorage.hpp>
 #include <dev/BQ76952.hpp>
 
-namespace IO = EVT::core::IO;
-namespace log = EVT::core::log;
+namespace io = core::io;
+namespace log = core::log;
 
 int main() {
-    EVT::core::platform::init();
+    core::platform::init();
 
-    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(115200, true);
+    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(115200);
 
     uart.printf("\r\n\r\nEEPROM Dump\r\n");
 
     IO::I2C& i2c = IO::getI2C<BMS::BMS::I2C_SCL_PIN, BMS::BMS::I2C_SDA_PIN>();
-    EVT::core::DEV::M24C32 eeprom(0x57, i2c);
+    core::dev::M24C32 eeprom(0x57, i2c);
 
     log::LOGGER.setUART(&uart);
     log::LOGGER.setLogLevel(log::Logger::LogLevel::DEBUG);
 
-    BMS::DEV::BQ76952 bq(i2c, 0x08);
+    IO::GPIO& bqReset = IO::getGPIO<BMS::BMS::BQ_RESET_PIN>();
+    BMS::dev::BQ76952 bq(i2c, 0x08, bqReset);
     BMS::BQSettingsStorage bqSettingsStorage(eeprom, bq);
     bqSettingsStorage.resetEEPROMOffset();
 

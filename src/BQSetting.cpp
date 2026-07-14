@@ -1,8 +1,8 @@
 #include <BQSetting.hpp>
 
-#include <EVT/utils/log.hpp>
+#include <core/utils/log.hpp>
 
-namespace log = EVT::core::log;
+namespace log = core::log;
 
 namespace BMS {
 
