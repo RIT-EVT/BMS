@@ -370,7 +370,7 @@ BQ76952::Status BQ76952::communicationStatus() {
     auto result = makeSubcommandRead(0x0001, &readID);
 
     if (result != BQ76952::Status::OK) {
-        return BQ76952::Status::ERROR;
+        return result;
     }
 
     if (readID == BQ_ID) {

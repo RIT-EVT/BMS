@@ -123,6 +123,12 @@ void BMS::process() {
         chargingState();
         break;
     }
+
+    static uint16_t loopNum = 0;
+    if (loopNum++ > 1000) {
+        loopNum = 0;
+        log::LOGGER.log(log::Logger::LogLevel::INFO, "Current State: %d", state);
+    }
 }
 
 void BMS::startState() {
