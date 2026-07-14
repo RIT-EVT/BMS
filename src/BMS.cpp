@@ -296,7 +296,7 @@ void BMS::systemReadyState() {
         return;
     }
 
-    if (interlock.isDetected()) {
+    if (true || interlock.isDetected()) {
         if (systemDetect.getIdentifiedSystem() == SystemDetect::System::BIKE) {
             state = State::POWER_DELIVERY;
             stateChanged = true;
@@ -345,7 +345,7 @@ void BMS::powerDeliveryState() {
         return;
     }
 
-    if (!interlock.isDetected()) {
+    if (false && !interlock.isDetected()) {
         state = State::SYSTEM_READY;
         stateChanged = true;
         return;
@@ -369,7 +369,7 @@ void BMS::chargingState() {
         return;
     }
 
-    if (!interlock.isDetected()) {
+    if (false && !interlock.isDetected()) {
         state = State::SYSTEM_READY;
         stateChanged = true;
         return;
