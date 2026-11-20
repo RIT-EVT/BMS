@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-#include <EVT/dev/storage/M24C32.hpp>
+#include <core/dev/storage/M24C32.hpp>
 
 #include <BQSetting.hpp>
 #include <dev/BQ76952.hpp>
@@ -37,7 +37,7 @@ public:
      * @param eeprom EEPROM instance that stores settings
      * @param bq BQ instance to send settings to
      */
-    BQSettingsStorage(EVT::core::DEV::M24C32& eeprom, DEV::BQ76952& bq);
+    BQSettingsStorage(core::dev::M24C32& eeprom, dev::BQ76952& bq);
 
     /**
      * Get the number of settings stored for the BQ
@@ -94,7 +94,7 @@ public:
      *
      * @return The EEPROM instance
      */
-    EVT::core::DEV::M24C32& getEEPROM();
+    core::dev::M24C32& getEEPROM();
 
     /**
      * Reset the transfer setting logic
@@ -126,7 +126,7 @@ public:
      * @param[out] isComplete Flag that represents all settings have been transferred
      * @return The resulting status of the transfer operation
      */
-    BMS::DEV::BQ76952::Status transferSetting(bool& isComplete);
+    dev::BQ76952::Status transferSetting(bool& isComplete);
 
     /**
      * Check if the settings are stored and can be used
@@ -158,11 +158,11 @@ private:
     /**
      * EEPROM for storing the BQ settings.
      */
-    EVT::core::DEV::M24C32& eeprom;
+    core::dev::M24C32& eeprom;
     /**
      * The BQ chip interface
      */
-    DEV::BQ76952& bq;
+    dev::BQ76952& bq;
     /**
      * This is a count of the number of settings that have been written into
      * EEPROM. This is used for determining if all the settings have been
@@ -175,7 +175,7 @@ private:
      */
     uint16_t numSettingsTransferred = 0;
 
-    friend class BMS;
+    friend class bms;
 };
 
 }// namespace BMS

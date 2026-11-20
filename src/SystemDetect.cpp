@@ -1,8 +1,8 @@
 #include <SystemDetect.hpp>
 
-#include <EVT/utils/time.hpp>
+#include <core/utils/time.hpp>
 
-namespace time = EVT::core::time;
+namespace time = core::time;
 
 namespace BMS {
 

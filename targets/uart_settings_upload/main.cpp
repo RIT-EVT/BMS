@@ -4,19 +4,19 @@
 */
 
 #include <BMS.hpp>
-#include <EVT/dev/storage/M24C32.hpp>
-#include <EVT/manager.hpp>
+#include <core/dev/storage/M24C32.hpp>
+#include <core/manager.hpp>
 
-namespace IO = EVT::core::IO;
+namespace io = core::io;
 
 int main() {
     // Initialize system
-    EVT::core::platform::init();
+    core::platform::init();
 
-    IO::UART& uart = IO::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(9600, true);
+    io::UART& uart = io::getUART<BMS::BMS::UART_TX_PIN, BMS::BMS::UART_RX_PIN>(9600);
 
-    IO::I2C& i2c = IO::getI2C<BMS::BMS::I2C_SCL_PIN, BMS::BMS::I2C_SDA_PIN>();
-    EVT::core::DEV::M24C32 eeprom(0x57, i2c);
+    io::I2C& i2c = io::getI2C<BMS::BMS::I2C_SCL_PIN, BMS::BMS::I2C_SDA_PIN>();
+    core::dev::M24C32 eeprom(0x57, i2c);
 
     uart.printf("Test start\r\n");
     uint8_t buf[2];

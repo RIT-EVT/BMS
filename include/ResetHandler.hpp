@@ -1,6 +1,6 @@
 #pragma once
 
-#include <EVT/io/types/CANMessage.hpp>
+#include <core/io/types/CANMessage.hpp>
 
 namespace BMS {
 
@@ -19,7 +19,7 @@ public:
      *
      * @param msg Message to register
      */
-    void registerInput(EVT::core::IO::CANMessage msg);
+    void registerInput(core::io::CANMessage msg);
 
     /**
      * Check whether reset messages have been received, indicating that the BMS
@@ -43,7 +43,7 @@ private:
         {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
 
     /** Array of last MSG_HIST_LEN messages received */
-    EVT::core::IO::CANMessage msgHistory[MSG_HIST_LEN] = {};
+    core::io::CANMessage msgHistory[MSG_HIST_LEN] = {};
     /** Index of the last registered message */
     uint8_t lastRegMsgIndex = 0;
 };

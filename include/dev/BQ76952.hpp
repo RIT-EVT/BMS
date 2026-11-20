@@ -1,13 +1,14 @@
 #pragma once
 
-#include <EVT/io/I2C.hpp>
+#include <core/io/I2C.hpp>
+#include <core/io/GPIO.hpp>
 
 #include <BMSInfo.hpp>
 #include <BQSetting.hpp>
 
 #include <co_obj.h>
 
-namespace BMS::DEV {
+namespace BMS::dev {
 
 /**
  * Represents the functionality of the BQ76952. This is a layer of abstraction
@@ -48,8 +49,9 @@ public:
      *
      * @param[in] i2c I2C interface to use to communicate on the bus
      * @param[in] i2cAddress The address of the BQ76952 to use
+     * @param[in] resetPin GPIO instance to reset the BQ
      */
-    BQ76952(EVT::core::IO::I2C& i2c, uint8_t i2cAddress);
+    BQ76952(core::io::I2C& i2c, uint8_t i2cAddress, core::io::GPIO& resetPin);
 
     /**
      * Write out the given setting
@@ -225,6 +227,11 @@ public:
      */
     Status getBQStatus(uint8_t bqStatusArr[7]);
 
+    /**
+     * Reset the BQ
+     */
+    void reset();
+
     /** CANopen interface for probing the state of the balancing */
     //CO_OBJ_TYPE balancingCANOpen;
 
@@ -278,9 +285,11 @@ private:
     static constexpr uint16_t BQ_ID = 0x7695;
 
     /** I2C bus to communicate over */
-    EVT::core::IO::I2C& i2c;
-    /** The address of the BQ76952 on the I2C bus */
+    core::io::I2C& i2c;
+    /** The address of the BQ on the I2C bus */
     uint8_t i2cAddress;
+    /** Reset pin of the BQ */
+    core::io::GPIO& resetPin;
 };
 
-}// namespace BMS::DEV
+}// namespace BMS::dev

@@ -1,13 +1,13 @@
 #pragma once
 
-#include <EVT/dev/Thermistor.hpp>
-#include <EVT/io/GPIO.hpp>
-#include <EVT/utils/time.hpp>
+#include <core/dev/Thermistor.hpp>
+#include <core/io/GPIO.hpp>
+#include <core/utils//time.hpp>
 
-namespace IO = EVT::core::IO;
-namespace time = EVT::core::time;
+namespace IO = core::io;
+namespace time = core::time;
 
-namespace BMS::DEV {
+namespace BMS::dev {
 
 /**
  * Multiplexer connected to thermistors
@@ -34,7 +34,7 @@ private:
     /** Array of MUX select pins */
     IO::GPIO* muxSelectArr[3];
     /** Thermistor instance to read the temperatures with */
-    EVT::core::DEV::Thermistor therm;
+    core::dev::Thermistor therm;
 
     /**
      * Conversion equation from ADC counts to temperature in Celsius
@@ -54,4 +54,4 @@ private:
     }
 };
 
-}// namespace BMS::DEV
+}// namespace BMS::dev

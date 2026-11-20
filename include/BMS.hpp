@@ -1,21 +1,19 @@
 #pragma once
 
-#include <cstdint>
-
-#include <EVT/io/CANDevice.hpp>
-#include <EVT/io/CANOpenMacros.hpp>
-#include <co_core.h>
+#include <core/io/CANDevice.hpp>
+#include <core/io/CANOpenMacros.hpp>
+#include <core/io/pin.hpp>
+#include <core/dev/IWDG.hpp>
 
 #include <BMSCANOpenMacros.hpp>
 #include <BQSettingStorage.hpp>
-#include <EVT/dev/IWDG.hpp>
-#include <EVT/io/pin.hpp>
 #include <ResetHandler.hpp>
 #include <SystemDetect.hpp>
+
 #include <dev/Interlock.hpp>
 #include <dev/ThermistorMux.hpp>
 
-namespace IO = EVT::core::IO;
+namespace IO = core::io;
 
 namespace BMS {
 
@@ -58,11 +56,13 @@ public:
     static constexpr IO::Pin CAN_RX_PIN = IO::Pin::PA_11;
     static constexpr IO::Pin I2C_SCL_PIN = IO::Pin::PB_6;
     static constexpr IO::Pin I2C_SDA_PIN = IO::Pin::PB_7;
-    static constexpr IO::Pin INTERLOCK_PIN = IO::Pin::PA_3;
+    static constexpr IO::Pin INTERLOCK_PIN = IO::Pin::PF_0;
     static constexpr IO::Pin TEMP_INPUT_PIN = IO::Pin::PA_0;
     static constexpr IO::Pin MUX_S1_PIN = IO::Pin::PA_15;
     static constexpr IO::Pin MUX_S2_PIN = IO::Pin::PB_4;
     static constexpr IO::Pin MUX_S3_PIN = IO::Pin::PA_8;
+    static constexpr IO::Pin ERROR_LED_PIN = IO::Pin::PA_7;
+    static constexpr IO::Pin BQ_RESET_PIN = IO::Pin::PB_1;
 
     /** Error values */
     static constexpr uint8_t BQ_COMM_ERROR = 0x01;
@@ -72,18 +72,20 @@ public:
     /**
      * Make a new instance of the BMS with the given devices
      *
-     * @param bqSettingsStorage Object used to manage BQ settings storage
-     * @param bq BQ chip instance
-     * @param interlock GPIO used to check the interlock status
-     * @param alarm GPIO used to check the BQ alarm status
-     * @param systemDetect Object used to detect what system the BMS is connected to
-     * @param bmsOK GPIO used to output the OK signal from the BMS
-     * @param thermMux MUX for pack thermistors
-     * @param resetHandler Handler for reset messages
+     * @param[in] bqSettingsStorage Object used to manage BQ settings storage
+     * @param[in] bq BQ chip instance
+     * @param[in] interlock GPIO used to check the interlock status
+     * @param[in] alarm GPIO used to check the BQ alarm status
+     * @param[in] systemDetect Object used to detect what system the BMS is connected to
+     * @param[in] bmsOK GPIO used to output the OK signal from the BMS
+     * @param[in] errorLed GPIO used to indicate a BMS error with an LED
+     * @param[in] thermMux MUX for pack thermistors
+     * @param[in] resetHandler Handler for reset messages
+     * @param[in] iwdg Internal watchdog to ensure the BMS code is running without getting stuck
      */
-    BMS(BQSettingsStorage& bqSettingsStorage, DEV::BQ76952 bq, DEV::Interlock& interlock,
-        IO::GPIO& alarm, SystemDetect& systemDetect, IO::GPIO& bmsOK,
-        DEV::ThermistorMux& thermMux, ResetHandler& resetHandler, EVT::core::DEV::IWDG& iwdg);
+    BMS(BQSettingsStorage& bqSettingsStorage, const dev::BQ76952 &bq, dev::Interlock& interlock,
+        IO::GPIO& alarm, SystemDetect& systemDetect, IO::GPIO& bmsOK, IO::GPIO& errorLed,
+        const dev::ThermistorMux& thermMux, ResetHandler& resetHandler, core::dev::IWDG& iwdg);
 
     /**
      * The node ID used to identify the device on the CAN network.
@@ -185,7 +187,7 @@ private:
     /**
      * Interface to the BQ chip
      */
-    DEV::BQ76952 bq;
+    dev::BQ76952 bq;
 
     /**
      * The current state of the BMS
@@ -195,7 +197,7 @@ private:
     /**
      * The interlock which is used to detect a cable plugged in
      */
-    DEV::Interlock& interlock;
+    dev::Interlock& interlock;
 
     /**
      * This GPIO is connected to the ALARM pin of the BQ
@@ -224,14 +226,19 @@ private:
     IO::GPIO& bmsOK;
 
     /**
+     * LED to indicate an error in the BMS
+     */
+    IO::GPIO& errorLed;
+
+    /**
      * Multiplexer to handle pack thermistors
      */
-    DEV::ThermistorMux thermistorMux;
+    dev::ThermistorMux thermistorMux;
 
     /**
      * Internal watchdog to detect STM hang
      */
-    EVT::core::DEV::IWDG& iwdg;
+    core::dev::IWDG& iwdg;
 
     /**
      * Boolean flag which represents that a state has just changed
@@ -318,7 +325,7 @@ private:
      * by reading the voltage from the BQ chip and is then exposed over
      * CANopen.
      */
-    uint16_t cellVoltage[DEV::BQ76952::NUM_CELLS] = {};
+    uint16_t cellVoltage[dev::BQ76952::NUM_CELLS] = {};
 
     /**
      * Used to store values which the BMS updates.

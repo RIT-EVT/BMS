@@ -1,6 +1,6 @@
 #pragma once
 
-#include <EVT/io/CANOpenMacros.hpp>
+#include <core/io/CANOpenMacros.hpp>
 
 /**
  * This macro creates a TPDO settings object for an extra node on a single
