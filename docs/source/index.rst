@@ -39,6 +39,7 @@ detailed description of the current state of the BMS software is linked below.
    srs.rst
    software_state.rst
    BQ/index.rst
+   testing_setup.rst
 
 State Transition Diagram
 ------------------------
